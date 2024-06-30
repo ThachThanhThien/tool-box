@@ -1,0 +1,20 @@
+<div class="container">
+  <h1>JSON Formatter</h1>
+  <div class="row">
+    <div class="col-5">
+      <label for="unformattedJson">Unformatted JSON:</label>
+      <mat-form-field class="w-100">
+        <textarea matInput id="unformattedJson" [(ngModel)]="baseValue" rows="25"></textarea>
+      </mat-form-field>
+    </div>
+    <div class="col-2 align-items-center d-flex justify-content-center">
+      <button (click)="onBaseValueChange()" class="btn btn-primary">Format JSON</button>
+    </div>
+    <div class="col-5 h-100">
+      <label for="formattedJson">Formatted JSON:</label>
+      <mat-form-field class="w-100">
+        <textarea matInput id="formattedJson" [value]="resultValue" rows="25" readonly></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

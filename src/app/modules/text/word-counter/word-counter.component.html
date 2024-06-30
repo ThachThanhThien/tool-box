@@ -1,0 +1,12 @@
+<div class="mb-2" style="font-size: 20px">
+  <b>{{wordNumber}}</b> word{{wordNumber === 1 ? '' : 's'}}
+  <b>{{characterNumber}}</b> character{{characterNumber === 1 ? '' : 's'}}
+</div>
+<div class="row">
+  <div class="col-12">
+    <mat-form-field class="w-100">
+      <textarea matInput rows="13" [(ngModel)]="value" (ngModelChange)="count()"></textarea>
+    </mat-form-field>
+  </div>
+</div>
+

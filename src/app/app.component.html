@@ -1,0 +1,16 @@
+
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="side" opened class="sidebar-container"
+               [fixedInViewport]="true">
+    <app-side-menu></app-side-menu>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main-container">
+    <p><button mat-button (click)="sidenav.toggle()">Toggle</button></p>
+    <div class="p-3">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

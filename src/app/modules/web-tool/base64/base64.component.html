@@ -1,0 +1,22 @@
+
+
+<div class="container">
+  <h1>Base64 Converter</h1>
+  <mat-form-field class="w-100">
+    <textarea matInput rows="10" [(ngModel)]="baseValue" (ngModelChange)="onBaseValueChange()"></textarea>
+  </mat-form-field>
+
+  <button class="btn btn-primary my-2" (click)="decode()">
+    @if (isEncoding) {
+      Encode
+    } @else {
+      Decode
+    }
+  </button>
+
+  <mat-form-field class="w-100">
+    <textarea matInput rows="10" [(ngModel)]="resultValue"></textarea>
+  </mat-form-field>
+
+  <button class="btn btn-primary my-2" (click)="copy()"><i class="fa-regular fa-copy me-2"></i>Copy to clipboard</button>
+</div>
