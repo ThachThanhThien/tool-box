@@ -1,4 +1,6 @@
-<div class="mt-2">
+<app-page-header header="Color Picker" description="Pick your color"></app-page-header>
+
+<div class="mt-4">
   <div class="col-12 d-flex justify-content-center">
     <div class="cur-col" style="--color: {{hexValue}}"></div>
     <app-color-palette [hue]="hue" (color)="onSelectColor($event)"></app-color-palette>
@@ -13,6 +15,7 @@
         <ng-template #content>
           <p class="m-2">
             {{ hexValue }}
+            <i class="fa-regular fa-copy mx-2" style="cursor: pointer" (click)="copy(hexValue)"></i>
           </p>
         </ng-template>
       </app-field-set>

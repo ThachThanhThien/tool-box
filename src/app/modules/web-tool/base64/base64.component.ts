@@ -5,16 +5,18 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {copyToClipboard} from "../../../shared/Helper";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 
 @Component({
   selector: 'app-base64',
   standalone: true,
-    imports: [
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormField,
-        MatInput
-    ],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormField,
+    MatInput,
+    PageHeaderComponent
+  ],
   templateUrl: './base64.component.html',
   styleUrl: './base64.component.scss'
 })

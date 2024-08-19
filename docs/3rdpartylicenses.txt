@@ -387,6 +387,9 @@ licenses; we recommend you read them, as their terms may differ from the
 terms above.
 
 
+ngx-scanner-qrcode
+LGPL-2.1+
+
 qrcode
 MIT
 The MIT License (MIT)

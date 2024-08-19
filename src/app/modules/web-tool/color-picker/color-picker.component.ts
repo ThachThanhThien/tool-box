@@ -4,6 +4,9 @@ import {ColorPaletteComponent} from "./color-palette/color-palette.component";
 import {ColorSliderComponent} from "./color-slider/color-slider.component";
 import {NgStyle} from "@angular/common";
 import {FieldSetComponent} from "../../../shared/components/field-set/field-set.component";
+import {copyToClipboard} from "../../../shared/Helper";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 
 @Component({
   selector: 'app-color-picker',
@@ -14,6 +17,7 @@ import {FieldSetComponent} from "../../../shared/components/field-set/field-set.
     ColorSliderComponent,
     NgStyle,
     FieldSetComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './color-picker.component.html',
   styleUrl: './color-picker.component.scss'
@@ -25,6 +29,9 @@ export class ColorPickerComponent {
   cmykValue = '';
   hslValue = '';
   hsvValue = '';
+
+  constructor(private _snackBar: MatSnackBar) {
+  }
 
   onSelectColor(rgbValue: string[]) {
     this.rgbValue = rgbValue.join(', ');
@@ -129,5 +136,12 @@ export class ColorPickerComponent {
       }
     }
     return [Math.round(hue) + '°', Math.round(saturation * 100) + '%', Math.round(value * 100) + '%'];
+  }
+
+  protected readonly copyToClipboard = copyToClipboard;
+
+  copy(hexValue: string) {
+    copyToClipboard(hexValue);
+    this._snackBar.open('Copy successfully', '', { duration: 2000 });
   }
 }

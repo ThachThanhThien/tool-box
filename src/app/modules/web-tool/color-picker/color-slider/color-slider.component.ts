@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, ViewChild} from '@angular/core';
+import {randomInRange} from "../../../../shared/Helper";
 
 @Component({
   selector: 'app-color-slider',
@@ -16,7 +17,7 @@ export class ColorSliderComponent implements AfterViewInit {
   width = 400;
   height = 100;
   selectedCircleRadius = 13;
-  defaultPositionX = 200;
+  defaultPositionX = randomInRange(0, this.width);
   defaultPositionY = 40
 
   ngAfterViewInit() {
@@ -96,8 +97,18 @@ export class ColorSliderComponent implements AfterViewInit {
   }
 
   getColorAtPosition(x: number, y: number) {
-    const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-    return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    try {
+      if (x > this.width - this.selectedCircleRadius) {
+        x = this.width - this.selectedCircleRadius;
+      }
+      if (x < this.selectedCircleRadius) {
+        x = this.selectedCircleRadius;
+      }
+      const imageData = this.ctx.getImageData(x, y, 1, 1).data;
+      return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    } catch (e){
+      throw e;
+    }
   }
 
   modifySelectedWidth() {

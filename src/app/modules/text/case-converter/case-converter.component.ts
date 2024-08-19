@@ -6,18 +6,20 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {copyToClipboard} from "../../../shared/Helper";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import {AppBaseComponent} from "../../../shared/components/app-base/app-base.component";
 
 @Component({
   selector: 'app-case-converter',
   standalone: true,
   imports: [
     FormsModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule
+    MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, PageHeaderComponent
   ],
   templateUrl: './case-converter.component.html',
   styleUrl: './case-converter.component.scss'
 })
-export class CaseConverterComponent implements OnInit {
+export class CaseConverterComponent extends AppBaseComponent implements OnInit {
   protected readonly copyToClipboard = copyToClipboard;
   primaryValue = '';
   targetValue = [
@@ -29,10 +31,7 @@ export class CaseConverterComponent implements OnInit {
     {label: 'Camel Case', value: '', func: (val: string) => this.toCamelCase(val)},
     {label: 'Snake Case ', value: '', func: (val: string) => this.toSnakeCase(val)},
     {label: 'PascalCase', value: '', func: (val: string) => this.toPascalCase(val)},
-  ]
-
-  constructor(private _snackBar: MatSnackBar) {
-  }
+  ];
 
   ngOnInit() {
     this.primaryValue = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit';
@@ -102,11 +101,4 @@ export class CaseConverterComponent implements OnInit {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join('');
   }
-
-
-  copy(value: string) {
-    copyToClipboard(value);
-    this._snackBar.open('Copy successfully', '', {duration: 2000});
-  }
-
 }

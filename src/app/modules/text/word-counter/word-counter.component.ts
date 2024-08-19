@@ -3,11 +3,12 @@ import {FormsModule} from "@angular/forms";
 import {size} from "lodash";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 
 @Component({
   selector: 'app-word-counter',
   standalone: true,
-  imports: [FormsModule, MatFormFieldModule, MatInputModule],
+    imports: [FormsModule, MatFormFieldModule, MatInputModule, PageHeaderComponent],
 
   templateUrl: './word-counter.component.html',
   styleUrl: './word-counter.component.scss'

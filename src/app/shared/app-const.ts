@@ -35,6 +35,11 @@ export class AppConst {
           icon: '/assets/icons/case-converter.png',
           routerLink: 'case-converted'
         },
+        {
+          name: 'Text generator',
+          icon: '/assets/icons/case-converter.png',
+          routerLink: 'text-generator'
+        },
       ],
       isExpanded: true,
     },
@@ -45,6 +50,11 @@ export class AppConst {
           name: 'QR Generator',
           icon: '/assets/icons/qr.webp',
           routerLink: 'qr-generator'
+        },
+        {
+          name: 'QR Scanner',
+          icon: '/assets/icons/qr.webp',
+          routerLink: 'qr-scanner'
         },
       ],
       isExpanded: true,

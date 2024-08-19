@@ -6,20 +6,22 @@ import {MatIcon} from "@angular/material/icon";
 import {MatButton} from "@angular/material/button";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 
 @Component({
   selector: 'app-qr-generator',
   standalone: true,
-  imports: [
-    QRCodeModule,
-    FormsModule,
-    MatSlider,
-    MatSliderThumb,
-    MatIcon,
-    MatButton,
-    MatFormField,
-    MatInput,
-  ],
+    imports: [
+        QRCodeModule,
+        FormsModule,
+        MatSlider,
+        MatSliderThumb,
+        MatIcon,
+        MatButton,
+        MatFormField,
+        MatInput,
+        PageHeaderComponent,
+    ],
   templateUrl: './qr-generator.component.html',
   styleUrl: './qr-generator.component.scss'
 })

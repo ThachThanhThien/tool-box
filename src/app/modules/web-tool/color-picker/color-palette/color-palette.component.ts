@@ -9,6 +9,7 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
+import {randomInRange} from "../../../../shared/Helper";
 
 @Component({
   selector: 'app-color-palette',
@@ -24,10 +25,10 @@ export class ColorPaletteComponent implements OnChanges, AfterViewInit {
   width = 400;
   height = 200;
   private ctx: CanvasRenderingContext2D | any;
-  private mousedown: boolean = false
+  private mousedown = false
   public selectedPosition: { x: number; y: number } = {
-    x: 250,
-    y: 0
+    x: randomInRange(1, this.width),
+    y: randomInRange(1, this.height),
   };
 
   ngAfterViewInit() {
@@ -39,7 +40,7 @@ export class ColorPaletteComponent implements OnChanges, AfterViewInit {
       return;
     }
     if (!this.ctx) {
-      this.ctx = this.canvas.nativeElement.getContext('2d');;
+      this.ctx = this.canvas.nativeElement.getContext('2d');
     }
     const width = this.canvas.nativeElement.width;
     const height = this.canvas.nativeElement.height;
@@ -67,7 +68,7 @@ export class ColorPaletteComponent implements OnChanges, AfterViewInit {
       this.ctx.arc(
         this.selectedPosition.x,
         this.selectedPosition.y,
-        13,
+        10,
         0,
         2 * Math.PI
       );
@@ -80,7 +81,7 @@ export class ColorPaletteComponent implements OnChanges, AfterViewInit {
     if (changes['hue']) {
       this.draw();
       const pos = this.selectedPosition;
-      if (pos) {
+      if (pos && this.ctx) {
         this.color.emit(this.getColorAtPosition(pos.x, pos.y));
       }
     }
@@ -112,7 +113,13 @@ export class ColorPaletteComponent implements OnChanges, AfterViewInit {
   }
 
   getColorAtPosition(x: number, y: number) {
-    const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-    return [imageData[0], imageData[1], imageData[2]];
+    try{
+      x = x > this.width ? this.width : (x < 0 ? 0 : x);
+      y = y > this.height ? this.height : (y < 0 ? 0 : y);
+      const imageData = this.ctx.getImageData(x, y, 1, 1).data;
+      return [imageData[0], imageData[1], imageData[2]];
+    } catch (e) {
+      throw e;
+    }
   }
 }
