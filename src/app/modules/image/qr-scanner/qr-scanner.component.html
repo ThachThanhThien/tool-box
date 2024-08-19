@@ -1,0 +1,19 @@
+<app-page-header header="QR Scanner" description="Scan QR Code"></app-page-header>
+
+<div class="row">
+  <div class="col-12 d-flex justify-content-center align-items-center">
+    <div>
+      <button class="btn btn-primary" >Open Camera</button>
+    </div>
+    <span class="mx-2">or</span>
+    <div>
+      <input #file type="file" (change)="onSelects(file.files)" [multiple]="'multiple'"
+             [accept]="'.jpg, .png, .gif, .jpeg'" class="btn btn-primary"/>
+    </div>
+  </div>
+  <div class="col-12 text-center">
+    @for (item of qrCodeResult; track item) {
+      <ngx-scanner-qrcode #actionFile="scanner" [src]="item.url" [config]="config"></ngx-scanner-qrcode>
+    }
+  </div>
+</div>
