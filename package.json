@@ -4,9 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --output-path docs --base-href /tool-box/",
+    "build": "ng build --output-path=dist/tool-box --base-href=/tool-box/",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "npx angular-cli-ghpages --dir=dist/tool-box"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +24,7 @@
     "@fortawesome/angular-fontawesome": "^0.14.1",
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@ngrx/store": "^17.1.1",
+    "angular-cli-ghpages": "^2.0.1",
     "angularx-qrcode": "^17.0.0",
     "bootstrap": "^5.3.3",
     "jquery": "^3.7.1",
