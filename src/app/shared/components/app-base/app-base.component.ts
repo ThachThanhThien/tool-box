@@ -12,7 +12,7 @@ export abstract class AppBaseComponent {
   constructor(private _snackBar: MatSnackBar) {
   }
 
-  copyString(value: string) {
+  copyString(value: string | null) {
     copyToClipboard(value);
     this._snackBar.open('Copy successfully', '', { duration: 2000 });
   }
