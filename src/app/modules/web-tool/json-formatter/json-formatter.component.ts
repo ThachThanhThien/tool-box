@@ -3,6 +3,7 @@ import {FormsModule} from "@angular/forms";
 import {JsonPipe} from "@angular/common";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 
 @Component({
   selector: 'app-json-formatter',
@@ -11,7 +12,8 @@ import {MatInput} from "@angular/material/input";
         FormsModule,
         JsonPipe,
         MatFormField,
-        MatInput
+        MatInput,
+        PageHeaderComponent
     ],
   templateUrl: './json-formatter.component.html',
   styleUrl: './json-formatter.component.scss'

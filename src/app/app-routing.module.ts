@@ -34,6 +34,10 @@ const routes: Routes = [
     path: 'qr-scanner',
     loadComponent: () => import('./modules/image/qr-scanner/qr-scanner.component').then(mod => mod.QrScannerComponent)
   },
+  {
+    path: 'spinning-wheel',
+    loadComponent: () => import('./modules/others/spinning-wheel/spinning-wheel.component').then(mod => mod.SpinningWheelComponent)
+  },
 ];
 
 @NgModule({

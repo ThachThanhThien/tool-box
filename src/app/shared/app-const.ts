@@ -5,18 +5,18 @@ export class AppConst {
       items: [
         {
           name: 'Color picker',
-          icon: 'assets//icons/color-picker.png',
+          icon: 'assets/icons/color-picker.png',
           routerLink: 'color-picker'
         },
 
         {
           name: 'Base64',
-          icon: 'assets//icons/base64.png',
+          icon: 'assets/icons/base64.png',
           routerLink: 'base64'
         },
         {
           name: 'JSON Formatter',
-          icon: 'assets//icons/json.png',
+          icon: 'assets/icons/json.png',
           routerLink: 'json-formatter'
         },
       ],
@@ -27,17 +27,17 @@ export class AppConst {
       items: [
         {
           name: 'Word counter',
-          icon: 'assets//icons/word-counter.png',
+          icon: 'assets/icons/word-counter.png',
           routerLink: 'word-counter'
         },
         {
           name: 'Case converted',
-          icon: 'assets//icons/case-converter.png',
+          icon: 'assets/icons/case-converter.png',
           routerLink: 'case-converted'
         },
         {
           name: 'Text generator',
-          icon: 'assets//icons/case-converter.png',
+          icon: 'assets/icons/case-converter.png',
           routerLink: 'text-generator'
         },
       ],
@@ -48,13 +48,24 @@ export class AppConst {
       items: [
         {
           name: 'QR Generator',
-          icon: 'assets//icons/qr.webp',
+          icon: 'assets/icons/qr.webp',
           routerLink: 'qr-generator'
         },
         {
           name: 'QR Scanner',
-          icon: 'assets//icons/qr.webp',
+          icon: 'assets/icons/qr-scanner.png',
           routerLink: 'qr-scanner'
+        },
+      ],
+      isExpanded: true,
+    },
+    {
+      name: 'Others',
+      items: [
+        {
+          name: 'Spinning wheel',
+          icon: 'assets/icons/spinningwheel.png',
+          routerLink: 'spinning-wheel'
         },
       ],
       isExpanded: true,

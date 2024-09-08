@@ -1,9 +1,9 @@
 <div class="p-2">
   @for (menuGroup of menu; track menuGroup.name) {
-    <div class="side-menu-item my-1">
+    <div class="side-menu-item mb-3">
       <button class="btn p-0 text-white" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#'+$index"
-              aria-expanded="false" [attr.aria-controls]="$index">
-        <i class="fa fa-angle-down" aria-hidden="true"></i>
+              aria-expanded="false" [attr.aria-controls]="$index" (click)="menuGroup.isExpanded = !menuGroup.isExpanded">
+        <i class="fa" [ngClass]="menuGroup.isExpanded ? 'fa-angle-down' : 'fa-angle-right'" aria-hidden="true"></i>
         {{ menuGroup.name }}
       </button>
 

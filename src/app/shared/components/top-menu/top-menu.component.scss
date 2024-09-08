@@ -1,0 +1,21 @@
+:host ::ng-deep mat-form-field {
+  .mdc-text-field--filled {
+    height: 40px !important;
+  }
+  .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+  }
+  .mat-mdc-form-field-icon-suffix {
+    button {
+      height: fit-content;
+      padding: 0;
+      .mat-mdc-button-persistent-ripple::before {
+        background-color: transparent;
+      }
+      i {
+
+        font-size: 17px;
+      }
+    }
+  }
+}

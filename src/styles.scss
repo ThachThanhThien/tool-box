@@ -57,3 +57,18 @@ body {
 .text-muted {
   color: rgb(169 169 169) !important;
 }
+
+.mdc-text-field {
+  border-radius: 5px !important;
+}
+
+.mat-mdc-form-field-infix {
+  display: flex;
+  align-items: center;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.side-menu-toggle .mat-mdc-button-persistent-ripple::before {
+  background: transparent !important;
+}

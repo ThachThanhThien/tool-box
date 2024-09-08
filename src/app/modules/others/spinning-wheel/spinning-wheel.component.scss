@@ -1,0 +1,23 @@
+.wheel-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+canvas {
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:disabled {
+  background-color: #ccc;
+}

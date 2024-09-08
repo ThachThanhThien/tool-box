@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col-lg-8 col-md-12 col-sm-12 wheel-container">
+    <canvas #canvas id="wheel" width="600" height="600" (click)="spin()"></canvas>
+  </div>
+  <div class="col-lg-4 col-md-12 col-sm-12">
+    <label for="entries">Entries:</label>
+    <mat-form-field class="w-100">
+      <textarea matInput id="entries" [(ngModel)]="inputValues" rows="25" (ngModelChange)="onValuesChanged()"></textarea>
+    </mat-form-field>
+  </div>
+</div>
+<div>
+  <p>Selected Value: {{ selectedValue }}</p>
+</div>

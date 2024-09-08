@@ -1,16 +1,17 @@
+<app-page-header header="JSON Formatter" description="JSON Formatter"></app-page-header>
+
 <div>
-  <h1>JSON Formatter</h1>
-  <div class="row">
-    <div class="col-5">
+  <div class="mt-4 d-flex justify-content-between align-items-center">
+    <div style="width: 45%">
       <label for="unformattedJson">Unformatted JSON:</label>
       <mat-form-field class="w-100">
-        <textarea matInput id="unformattedJson" [(ngModel)]="baseValue" rows="25"></textarea>
+        <textarea matInput id="unformattedJson" [(ngModel)]="baseValue" rows="25" (ngModelChange)="onBaseValueChange()"></textarea>
       </mat-form-field>
     </div>
-    <div class="col-2 align-items-center d-flex justify-content-center">
+    <div class="">
       <button (click)="onBaseValueChange()" class="btn btn-primary">Format JSON</button>
     </div>
-    <div class="col-5 h-100">
+    <div style="width: 45%">
       <label for="formattedJson">Formatted JSON:</label>
       <mat-form-field class="w-100">
         <textarea matInput id="formattedJson" [value]="resultValue" rows="25" readonly></textarea>

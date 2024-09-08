@@ -23,7 +23,7 @@ import {PageHeaderComponent} from "../../../shared/components/page-header/page-h
 export class Base64Component implements OnInit{
   baseValue = '';
   resultValue = '';
-  isEncoding = true;
+  isEncoding = false;
 
   constructor(private _snackBar: MatSnackBar) {
   }
