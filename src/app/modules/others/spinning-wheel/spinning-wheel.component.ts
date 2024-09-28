@@ -1,7 +1,12 @@
-import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import {MatDialog} from "@angular/material/dialog";
+import {DialogComponent} from "../../../shared/components/dialog/dialog.component";
+import {DialogData} from "../../../core/models/dialog-data";
+import {size} from "lodash";
 
 @Component({
   selector: 'app-spinning-wheel',
@@ -10,21 +15,27 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     MatFormField,
     MatInput,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    PageHeaderComponent
   ],
   templateUrl: './spinning-wheel.component.html',
   styleUrl: './spinning-wheel.component.scss'
 })
-export class SpinningWheelComponent implements AfterViewInit {
+export class SpinningWheelComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   values: string[] = [];
   selectedValue: string | null = null;
   inputValues = '';
+  dialog = inject(MatDialog);
   private context!: CanvasRenderingContext2D;
   private startAngle = 0;
   private spinAngle = 0;
   private isSpinning = false;
   private colors = ['#3369e8', '#d50f25', '#eeb211', '#009925'];
+
+  ngOnInit() {
+    this.values = ['Anne', 'Ben', 'Camile', 'Dick'];
+  }
 
   ngAfterViewInit(): void {
     this.context = this.canvasRef.nativeElement.getContext('2d')!;
@@ -77,7 +88,7 @@ export class SpinningWheelComponent implements AfterViewInit {
 
   // Spin the wheel with acceleration and deceleration
   spin(): void {
-    if (this.isSpinning) return;
+    if (this.isSpinning || !size(this.values)) return;
 
     this.isSpinning = true;
     const spinDuration = 5000; // Spin time in milliseconds
@@ -145,6 +156,11 @@ export class SpinningWheelComponent implements AfterViewInit {
     const segmentAngle = (2 * Math.PI) / numValues;
     const selectedIndex = Math.floor((2 * Math.PI - finalAngle) / segmentAngle) % numValues;
     this.selectedValue = this.values[selectedIndex];
-
+    const dialogData = new DialogData();
+    dialogData.title = 'Congratulation'
+    dialogData.message = this.selectedValue;
+    this.dialog.open(DialogComponent, {
+      data: dialogData
+    })
   }
 }

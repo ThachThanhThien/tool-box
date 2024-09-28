@@ -1,0 +1,12 @@
+<app-page-header header="Stopwatch" description="Stopwatch"></app-page-header>
+
+<div class="stopwatch d-flex justify-content-center">
+  <div class="clock d-flex align-items-center justify-content-center">
+    {{getFormattedTime()}}
+  </div>
+</div>
+<div class="text-center">
+  <button class="btn btn-outline-success mx-2" (click)="start()" *ngIf="!running">Start</button>
+  <button class="btn btn-outline-warning mx-2" (click)="pause()" *ngIf="running">Pause</button>
+  <button class="btn btn-outline-secondary mx-2" (click)="stop()" *ngIf="running || pausing">Stop</button>
+</div>

@@ -38,6 +38,10 @@ const routes: Routes = [
     path: 'spinning-wheel',
     loadComponent: () => import('./modules/others/spinning-wheel/spinning-wheel.component').then(mod => mod.SpinningWheelComponent)
   },
+  {
+    path: 'stopwatch',
+    loadComponent: () => import('./modules/others/stopwatch/stopwatch.component').then(mod => mod.StopwatchComponent)
+  },
 ];
 
 @NgModule({

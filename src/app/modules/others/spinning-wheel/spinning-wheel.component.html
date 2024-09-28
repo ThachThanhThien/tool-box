@@ -1,3 +1,5 @@
+<app-page-header header="Spinning wheel" description="Spinning wheel"></app-page-header>
+
 <div class="row">
   <div class="col-lg-8 col-md-12 col-sm-12 wheel-container">
     <canvas #canvas id="wheel" width="600" height="600" (click)="spin()"></canvas>
@@ -8,7 +10,4 @@
       <textarea matInput id="entries" [(ngModel)]="inputValues" rows="25" (ngModelChange)="onValuesChanged()"></textarea>
     </mat-form-field>
   </div>
-</div>
-<div>
-  <p>Selected Value: {{ selectedValue }}</p>
 </div>
