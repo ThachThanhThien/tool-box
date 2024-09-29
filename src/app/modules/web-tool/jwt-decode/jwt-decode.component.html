@@ -1,0 +1,43 @@
+<app-page-header header="JWT parser" description="JSON Web Tokens are an open, industry standard RFC 7519 method for representing claims securely between two parties."></app-page-header>
+
+<div class="mt-3 px-4">
+  <label>JWT</label>
+  <mat-form-field class="w-100">
+    <textarea matInput rows="10" [(ngModel)]="jwtToken" (ngModelChange)="decodeToken()"></textarea>
+  </mat-form-field>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-12" *ngIf="size(decodedHeader)">
+      <div class="col-12 header">
+        <label>Header</label>
+      </div>
+      <div class="row" *ngFor="let val of decodedHeader; let i = index">
+        <div class="col-6 text-break">
+          <span [matTooltip]="getTooltipForJwtProps(val[0])" matTooltipPosition="right">{{ val[0] }}</span>
+        </div>
+        <div class="col-6 text-break">{{ val[1] }}</div>
+        <div class="col-12" *ngIf="i < size(decodedHeader) - 1">
+          <hr class="my-2">
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="col-12 header" *ngIf="size(decodedToken)">
+        <label>Payload</label>
+      </div>
+      <div class="row" *ngFor="let val of decodedToken; let i = index">
+        <div class="col-6 text-break">
+          <span [matTooltip]="getTooltipForJwtProps(val[0])" matTooltipPosition="right">{{ val[0] }}</span>
+        </div>
+        <div class="col-6 text-break">{{ val[1] }}</div>
+        <div class="col-12" *ngIf="i < size(decodedToken) - 1">
+          <hr class="my-2">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -25,7 +25,7 @@ export class AppConst {
         },
         {
           name: 'JWT Parser',
-          icon: 'assets/icons/jwt-parser.png',
+          icon: 'assets/icons/jwt.png',
           routerLink: 'jwt-parser'
         },
       ],

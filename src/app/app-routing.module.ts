@@ -42,6 +42,10 @@ const routes: Routes = [
     path: 'stopwatch',
     loadComponent: () => import('./modules/others/stopwatch/stopwatch.component').then(mod => mod.StopwatchComponent)
   },
+  {
+    path: 'jwt-parser',
+    loadComponent: () => import('./modules/web-tool/jwt-decode/jwt-decode.component').then(mod => mod.JwtDecodeComponent)
+  },
 ];
 
 @NgModule({

@@ -72,3 +72,8 @@ body {
 .side-menu-toggle .mat-mdc-button-persistent-ripple::before {
   background: transparent !important;
 }
+
+.mat-mdc-tooltip .mdc-tooltip__surface {
+  min-width: 300px;
+  text-align: left;
+}
