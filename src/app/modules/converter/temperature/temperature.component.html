@@ -1,0 +1,19 @@
+<app-page-header header="Temperature Converter" description="Temperature Converter"></app-page-header>
+
+<div class="row d-flex justify-content-center mt-4">
+  @for (item of targetValue; track item) {
+    <div class="row w-75 mb-2 d-flex align-items-center">
+      <div class="col-2 field-prefix">
+        <label>{{ item.label }}</label>
+      </div>
+      <div class="col-8 p-0 m-0">
+        <mat-form-field class="w-100">
+          <input matInput [(ngModel)]="item.value" spellcheck="false" (ngModelChange)="onChangeTemperature(item)"/>
+        </mat-form-field>
+      </div>
+      <div class="col-1 field-suffix justify-content-center">
+        <label>{{ item.unit }}</label>
+      </div>
+    </div>
+  }
+</div>

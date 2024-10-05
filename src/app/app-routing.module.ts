@@ -46,6 +46,10 @@ const routes: Routes = [
     path: 'jwt-parser',
     loadComponent: () => import('./modules/web-tool/jwt-decode/jwt-decode.component').then(mod => mod.JwtDecodeComponent)
   },
+  {
+    path: 'temperature',
+    loadComponent: () => import('./modules/converter/temperature/temperature.component').then(mod => mod.TemperatureComponent)
+  },
 ];
 
 @NgModule({
