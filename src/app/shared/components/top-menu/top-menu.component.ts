@@ -5,8 +5,10 @@ import {FormsModule} from "@angular/forms";
 import {MatFormField, MatSuffix} from "@angular/material/form-field";
 import {MatIconButton} from "@angular/material/button";
 import {MatInput} from "@angular/material/input";
+import {debounce} from "lodash";
+import {debounceTime, distinctUntilChanged, Subject} from "rxjs";
+import {SearchResultComponent} from "./search-result/search-result.component";
 
-const {appMenu} = AppConst;
 
 @Component({
   selector: 'app-top-menu',
@@ -16,21 +18,12 @@ const {appMenu} = AppConst;
     MatFormField,
     MatIconButton,
     MatInput,
-    MatSuffix
+    MatSuffix,
+    SearchResultComponent
   ],
   templateUrl: './top-menu.component.html',
   styleUrl: './top-menu.component.scss'
 })
-export class TopMenuComponent implements OnInit {
-  items: MenuItem[] = [];
-  searchedText = '';
-
-  ngOnInit() {
-    this.items = appMenu
-  }
-
-  search() {
-
-  }
+export class TopMenuComponent {
 
 }

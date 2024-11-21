@@ -1,0 +1,21 @@
+.search-panel {
+  .search-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #171719cf;
+    z-index: 10;
+  }
+
+  .search-res {
+    width: 60%;
+    height: 50%;
+    background-color: #262626;
+    position: absolute;
+    z-index: 11;
+    left: 20%;
+    top: 15%
+  }
+}

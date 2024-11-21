@@ -50,6 +50,10 @@ const routes: Routes = [
     path: 'temperature',
     loadComponent: () => import('./modules/converter/temperature/temperature.component').then(mod => mod.TemperatureComponent)
   },
+  {
+    path: 'text-diff',
+    loadComponent: () => import('./modules/text/text-diff/text-diff.component').then(mod => mod.TextDiffComponent)
+  },
 ];
 
 @NgModule({

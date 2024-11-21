@@ -6,10 +6,8 @@ import {MatInputModule} from "@angular/material/input";
 import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 
 @Component({
-  selector: 'app-word-counter',
   standalone: true,
-    imports: [FormsModule, MatFormFieldModule, MatInputModule, PageHeaderComponent],
-
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, PageHeaderComponent],
   templateUrl: './word-counter.component.html',
   styleUrl: './word-counter.component.scss'
 })

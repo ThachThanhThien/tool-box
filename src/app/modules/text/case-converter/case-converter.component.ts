@@ -5,12 +5,10 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {copyToClipboard} from "../../../shared/Helper";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 import {AppBaseComponent} from "../../../shared/components/app-base/app-base.component";
 
 @Component({
-  selector: 'app-case-converter',
   standalone: true,
   imports: [
     FormsModule,

@@ -1,0 +1,18 @@
+@if (isShow) {
+  <div class="search-panel">
+    <div class="search-backdrop" (click)="isShow = false">
+    </div>
+    <div class="search-res">
+      <mat-form-field class="w-100">
+        <input #searchInput matInput [(ngModel)]="searchedText" spellcheck="false"
+               (ngModelChange)="this.searchTextUpdated.next($event)"/>
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </mat-form-field>
+      @if (searchedText) {
+        <button class="btn btn-primary w-100" *ngFor="let menu of menuRes" (click)="onMenuClick(menu.routerLink)">
+          {{ menu.name }}
+        </button>
+      }
+    </div>
+  </div>
+}

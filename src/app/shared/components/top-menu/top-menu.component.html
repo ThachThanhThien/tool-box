@@ -1,6 +1,4 @@
-<mat-form-field class="w-100">
-  <input matInput [ngModel]="searchedText" spellcheck="false"/>
-  <button mat-icon-button matSuffix (click)="search()" [attr.aria-label]="'Search'">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-</mat-form-field>
+<button (click)="searchResult.show()" class="btn btn-primary w-100 text-end">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+<app-search-result #searchResult></app-search-result>

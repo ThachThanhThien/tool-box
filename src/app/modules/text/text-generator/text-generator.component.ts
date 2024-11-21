@@ -4,8 +4,6 @@ import {FormsModule} from "@angular/forms";
 import {MatFormField, MatSuffix} from "@angular/material/form-field";
 import {MatIconButton} from "@angular/material/button";
 import {MatInput} from "@angular/material/input";
-import {copyToClipboard} from "../../../shared/Helper";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {AppBaseComponent} from "../../../shared/components/app-base/app-base.component";
 
 const words = [
@@ -21,7 +19,6 @@ const words = [
 ];
 
 @Component({
-  selector: 'app-text-generator',
   standalone: true,
   imports: [
     PageHeaderComponent,

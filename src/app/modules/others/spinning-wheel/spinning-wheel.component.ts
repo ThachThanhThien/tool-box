@@ -93,6 +93,7 @@ export class SpinningWheelComponent implements OnInit, AfterViewInit {
     this.isSpinning = true;
     const spinDuration = 5000; // Spin time in milliseconds
     const totalRotationDegrees = Math.random() * 360 + 360 * 10; // Total random degrees to spin (at least 10 full rotations)
+    console.log(totalRotationDegrees)
     let currentAngle = 0;
     let startTime: number;
 
@@ -157,7 +158,7 @@ export class SpinningWheelComponent implements OnInit, AfterViewInit {
     const selectedIndex = Math.floor((2 * Math.PI - finalAngle) / segmentAngle) % numValues;
     this.selectedValue = this.values[selectedIndex];
     const dialogData = new DialogData();
-    dialogData.title = 'Congratulation'
+    dialogData.title = 'The chosen one is'
     dialogData.message = this.selectedValue;
     this.dialog.open(DialogComponent, {
       data: dialogData
