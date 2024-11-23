@@ -54,6 +54,10 @@ const routes: Routes = [
     path: 'text-diff',
     loadComponent: () => import('./modules/text/text-diff/text-diff.component').then(mod => mod.TextDiffComponent)
   },
+  {
+    path: 'password-generator',
+    loadComponent: () => import('./modules/web-tool/password-generator/password-generator.component').then(mod => mod.PasswordGeneratorComponent)
+  },
 ];
 
 @NgModule({

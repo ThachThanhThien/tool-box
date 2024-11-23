@@ -3,15 +3,19 @@
     <div class="search-backdrop" (click)="isShow = false">
     </div>
     <div class="search-res">
-      <mat-form-field class="w-100">
+      <mat-form-field class="w-100 mb-2">
         <input #searchInput matInput [(ngModel)]="searchedText" spellcheck="false"
-               (ngModelChange)="this.searchTextUpdated.next($event)"/>
+               (ngModelChange)="menuRes = []; this.searchTextUpdated.next($event)"/>
         <i class="fa-solid fa-magnifying-glass"></i>
       </mat-form-field>
-      @if (searchedText) {
-        <button class="btn btn-primary w-100" *ngFor="let menu of menuRes" (click)="onMenuClick(menu.routerLink)">
-          {{ menu.name }}
-        </button>
+      @if (searchedText && size(menuRes)) {
+        <div class="menu-res">
+          <button class="btn btn-primary w-100 menu-item-res d-flex align-items-center" *ngFor="let menu of menuRes"
+                  (click)="onMenuClick(menu.routerLink)">
+            <img class="me-2" [ngSrc]="menu.icon" [alt]="menu.name" width="15" height="15" priority>
+            {{ menu.name }}
+          </button>
+        </div>
       }
     </div>
   </div>

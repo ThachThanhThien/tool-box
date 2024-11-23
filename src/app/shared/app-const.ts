@@ -28,6 +28,11 @@ export class AppConst {
           icon: 'assets/icons/jwt.png',
           routerLink: 'jwt-parser'
         },
+        {
+          name: 'Password generator',
+          icon: 'assets/icons/password.png',
+          routerLink: 'password-generator'
+        },
       ],
       isExpanded: true,
     },

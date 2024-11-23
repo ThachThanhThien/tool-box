@@ -11,11 +11,29 @@
 
   .search-res {
     width: 60%;
-    height: 50%;
+    height: auto;
+    max-height: 600px;
     background-color: #262626;
     position: absolute;
     z-index: 11;
     left: 20%;
-    top: 15%
+    top: 15%;
+    padding: 10px;
+
+    .menu-res {
+      max-height: 500px;
+      overflow-y: auto;
+      scrollbar-width: none;
+
+      .menu-item-res {
+        text-align: left;
+        height: 68px;
+        background: transparent;
+
+        &:hover {
+          background-color: #0d5f6b;
+        }
+      }
+    }
   }
 }

@@ -1,12 +1,13 @@
 import {ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {MenuItem} from "../../../../core/models/menu-item";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {MatFormField} from "@angular/material/form-field";
 import {FormsModule} from "@angular/forms";
 import {debounceTime, distinctUntilChanged, Subject} from "rxjs";
 import {MatInput} from "@angular/material/input";
 import {AppConst} from "../../../app-const";
 import {Router} from "@angular/router";
+import {size} from "lodash";
 
 const {appMenu} = AppConst;
 
@@ -18,7 +19,8 @@ const {appMenu} = AppConst;
     MatFormField,
     FormsModule,
     MatInput,
-    NgForOf
+    NgForOf,
+    NgOptimizedImage
   ],
   templateUrl: './search-result.component.html',
   styleUrl: './search-result.component.scss'
@@ -26,9 +28,9 @@ const {appMenu} = AppConst;
 export class SearchResultComponent implements OnInit {
   isShow = false;
   searchedText = '';
-  menuItems: MenuItem[] = [];
   searchTextUpdated = new Subject<string>();
   menuRes: any = [];
+  protected readonly size = size;
   @ViewChild('searchInput') searchInput: ElementRef | undefined;
 
   constructor(private router: Router,
@@ -36,10 +38,10 @@ export class SearchResultComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.menuItems = appMenu;
+    this.searchedText = '';
     this.searchTextUpdated.pipe(
-      debounceTime(400),
-      distinctUntilChanged())
+      debounceTime(300),
+      )
       .subscribe(value => {
         this.search(value)
       });
@@ -54,7 +56,7 @@ export class SearchResultComponent implements OnInit {
   }
 
   search(value: string) {
-    this.menuRes = this.menuItems.map(menu => menu.items).flat().filter((item: any) => item.name.toLowerCase().includes(value.toLowerCase()));
+    this.menuRes = appMenu.map(menu => menu.items).flat().filter((item: any) => item.name.toLowerCase().includes(value.toLowerCase()));
   }
 
   onMenuClick(url: string) {
