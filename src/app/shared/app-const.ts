@@ -30,7 +30,7 @@ export class AppConst {
         },
         {
           name: 'Password generator',
-          icon: 'assets/icons/password.png',
+          icon: 'assets/icons/password-generator.png',
           routerLink: 'password-generator'
         },
       ],

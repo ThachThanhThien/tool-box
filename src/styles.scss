@@ -78,3 +78,8 @@ body {
 .mdc-line-ripple {
   display: none;
 }
+
+.mat-mdc-form-field-icon-suffix {
+  display: flex !important;
+  align-items: baseline !important;
+}

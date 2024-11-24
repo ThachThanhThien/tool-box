@@ -63,4 +63,5 @@ export class SearchResultComponent implements OnInit {
     this.isShow = false;
     this.router.navigate([url]).then();
   }
+
 }
