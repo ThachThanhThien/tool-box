@@ -92,7 +92,7 @@ export class AppConst {
           routerLink: 'integer-base'
         },
         {
-          name: 'Roman Number',
+          name: 'Roman Numeral Converter',
           icon: 'assets/icons/roman-number.png',
           routerLink: 'roman-number'
         },
@@ -111,6 +111,11 @@ export class AppConst {
           name: 'Stopwatch',
           icon: 'assets/icons/stopwatch.png',
           routerLink: 'stopwatch'
+        },
+        {
+          name: 'Current Local Time',
+          icon: 'assets/icons/stopwatch.png',
+          routerLink: 'current-time'
         },
       ],
       isExpanded: true,

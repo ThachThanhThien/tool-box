@@ -1,0 +1,59 @@
+<app-page-header header="Keycode Info"
+                 description="Keycode Info"></app-page-header>
+
+<div class="row mt-4 d-flex justify-content-center">
+  <div class="col-7 d-flex justify-content-center">
+    <div class="press-key d-flex align-items-center justify-content-center">
+      @if (keyInfo.key) {
+        <div class="key-info">
+          {{ keyInfo.key }}
+        </div>
+      }
+      <div class="press-key-tip" >
+        Press any key...
+      </div>
+    </div>
+  </div>
+  <div class="col-7 mt-2">
+    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
+      <div class="col-2">
+        <label>{{ 'Key:' }}</label>
+      </div>
+      <div class="col-10 p-0 m-0">
+        <mat-form-field class="w-100">
+          <input matInput [ngModel]="keyInfo.key" spellcheck="false" disabled/>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
+      <div class="col-2">
+        <label>{{ 'Key code:' }}</label>
+      </div>
+      <div class="col-10 p-0 m-0">
+        <mat-form-field class="w-100">
+          <input matInput [ngModel]="keyInfo.keyCode" spellcheck="false" disabled/>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
+      <div class="col-2">
+        <label>{{ 'Code:' }}</label>
+      </div>
+      <div class="col-10 p-0 m-0">
+        <mat-form-field class="w-100">
+          <input matInput [ngModel]="keyInfo.code" spellcheck="false" disabled/>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
+      <div class="col-2">
+        <label>{{ 'Location:' }}</label>
+      </div>
+      <div class="col-10 p-0 m-0">
+        <mat-form-field class="w-100">
+          <input matInput [ngModel]="keyInfoLocation" spellcheck="false" disabled/>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>

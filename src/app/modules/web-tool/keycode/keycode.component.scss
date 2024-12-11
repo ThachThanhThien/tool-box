@@ -1,0 +1,29 @@
+.press-key {
+  height: 200px;
+  width: 100%;
+  background-color: #1e2325;
+  text-align: center;
+  color: #a9a9a9;
+  position: relative;
+
+  .key-info {
+    font-size: 65px;
+    font-weight: 500;
+  }
+  .press-key-tip {
+    position: absolute;
+    font-size: 15px;
+    bottom: 10px;
+  }
+}
+
+:host ::ng-deep mat-form-field {
+  height: 40px !important;
+  input {
+    color: white !important;
+  }
+
+  .mat-mdc-form-field-infix{
+    min-height: 40px !important;
+  }
+}

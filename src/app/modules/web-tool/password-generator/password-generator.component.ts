@@ -82,6 +82,7 @@ export class PasswordGeneratorComponent extends AppBaseComponent implements OnIn
     this.password = '';
 
     if (!characterPool) {
+      this.passStrength = {};
       return;
     }
 

@@ -7,6 +7,10 @@ const routes: Routes = [
     loadComponent: () => import('./modules/web-tool/color-picker/color-picker.component').then(mod => mod.ColorPickerComponent)
   },
   {
+    path: 'keycode-info',
+    loadComponent: () => import('./modules/web-tool/keycode/keycode.component').then(mod => mod.KeycodeComponent)
+  },
+  {
     path: 'qr-generator',
     loadComponent: () => import('./modules/image/qr-generator/qr-generator.component').then(mod => mod.QrGeneratorComponent)
   },
@@ -51,12 +55,20 @@ const routes: Routes = [
     loadComponent: () => import('./modules/converter/temperature/temperature.component').then(mod => mod.TemperatureComponent)
   },
   {
+    path: 'roman-number',
+    loadComponent: () => import('./modules/converter/roman-num/roman-num.component').then(mod => mod.RomanNumComponent)
+  },
+  {
     path: 'text-diff',
     loadComponent: () => import('./modules/text/text-diff/text-diff.component').then(mod => mod.TextDiffComponent)
   },
   {
     path: 'password-generator',
     loadComponent: () => import('./modules/web-tool/password-generator/password-generator.component').then(mod => mod.PasswordGeneratorComponent)
+  },
+  {
+    path: 'current-time',
+    loadComponent: () => import('./modules/others/current-time/current-time.component').then(mod => mod.CurrentTimeComponent)
   },
 ];
 

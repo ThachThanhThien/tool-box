@@ -1,0 +1,27 @@
+<app-page-header header="Roman Numeral Converter"
+                 description="Roman Numeral Converter"></app-page-header>
+
+<div class="row mt-4 d-flex justify-content-center">
+  <div class="col-7 mt-2">
+    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
+      <div class="col-4">
+        <label>{{ 'Roman Numeral:' }}</label>
+      </div>
+      <div class="col-8 p-0 m-0">
+        <mat-form-field class="w-100">
+          <input matInput [(ngModel)]="romanNum" spellcheck="false" (ngModelChange)="romanToInt()"/>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
+      <div class="col-4">
+        <label>{{ 'Number:' }}</label>
+      </div>
+      <div class="col-8 p-0 m-0">
+        <mat-form-field class="w-100">
+          <input matInput [(ngModel)]="intNum" spellcheck="false" (ngModelChange)="intToRoman()"/>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>
