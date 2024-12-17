@@ -100,6 +100,17 @@ export class AppConst {
       isExpanded: true,
     },
     {
+      name: 'Code Snippets',
+      items: [
+        {
+          name: 'Javascript',
+          icon: 'assets/icons/spinningwheel.png',
+          routerLink: 'js-snippet'
+        },
+      ],
+      isExpanded: true,
+    },
+    {
       name: 'Others',
       items: [
         {

@@ -1,0 +1,9 @@
+<div class="code-block">
+  <div class="code-header">
+    <span>{{ language }}</span>
+    <button (click)="copy()" title="Copy code">
+      <i class="fas fa-copy me-1"></i> Copy code
+    </button>
+  </div>
+  <pre><code [class]="language" [innerHTML]="formattedCode"></code></pre>
+</div>

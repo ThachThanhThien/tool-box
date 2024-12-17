@@ -70,6 +70,10 @@ const routes: Routes = [
     path: 'current-time',
     loadComponent: () => import('./modules/others/current-time/current-time.component').then(mod => mod.CurrentTimeComponent)
   },
+  {
+    path: 'js-snippet',
+    loadComponent: () => import('./modules/snippets/js-snippet/js-snippet.component').then(mod => mod.JsSnippetComponent)
+  },
 ];
 
 @NgModule({

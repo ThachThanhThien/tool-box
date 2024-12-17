@@ -1,0 +1,46 @@
+.code-block {
+  background-color: #262626;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  font-family: "Fira Code", monospace;
+  color: #f8f8f2;
+}
+
+.code-header {
+  background: #1f1f1f;
+  color: #aaa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.code-header button {
+  background: none;
+  border: none;
+  color: #f8f8f2; /* Light color for button text */
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.code-header button:hover {
+  color: #ffffff; /* Brighter on hover */
+}
+
+pre {
+  margin: 0;
+  padding: .5rem;
+  overflow-x: auto; /* Horizontal scroll for long lines */
+  color: #f8f8f2; /* Light gray text */
+}
+
+code {
+  font-size: 0.9rem;
+  display: block;
+  white-space: pre-wrap; /* Preserve formatting */
+  color: #f8f8f2; /* Light text color for code */
+}

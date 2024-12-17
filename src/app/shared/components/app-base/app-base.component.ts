@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {copyToClipboard} from "../../Helper";
+import {Component, Injector} from '@angular/core';
+import {HelperServices} from "../../../core/services/helper-services";
 
 @Component({
   selector: 'app-app-base',
@@ -9,11 +8,13 @@ import {copyToClipboard} from "../../Helper";
   template: '',
 })
 export abstract class AppBaseComponent {
-  constructor(private _snackBar: MatSnackBar) {
+  helperServices: HelperServices;
+
+  constructor(injector: Injector) {
+    this.helperServices = injector.get(HelperServices);
   }
 
   copyString(value: string | null) {
-    copyToClipboard(value);
-    this._snackBar.open('Copy successfully', '', { duration: 2000 });
+    this.helperServices.copyString(value);
   }
 }

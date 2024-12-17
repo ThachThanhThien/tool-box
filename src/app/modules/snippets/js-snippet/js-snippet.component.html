@@ -1,0 +1,21 @@
+<app-page-header header="JS Snippets" description="JS Snippets"></app-page-header>
+
+<div class="row">
+  <div class="col-4">
+    <div class="snippet-list">
+      <mat-list>
+        @for (item of codeSnippets; track item) {
+          <mat-list-item>
+            <span class="pointer" (click)="selectedSnippet = item.code">{{ item.name }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    </div>
+  </div>
+  <div class="col-8">
+    <app-code-snippet *ngIf="selectedSnippet"
+                      [code]="selectedSnippet"
+                      language="javascript">
+    </app-code-snippet>
+  </div>
+</div>

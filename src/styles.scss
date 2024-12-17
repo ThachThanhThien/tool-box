@@ -1,6 +1,7 @@
 @import "node_modules/bootstrap/dist/css/bootstrap.min.css";
 @import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400..800&display=swap');
 @import "node_modules/@fortawesome/fontawesome-free/css/all.css";
+@import "assets/stylesheet/code-highlight";
 
 $baseColor: #2fb0d7;
 
@@ -82,4 +83,12 @@ body {
 .mat-mdc-form-field-icon-suffix {
   display: flex !important;
   align-items: baseline !important;
+}
+
+.hljs {
+  background: #15191b;
+}
+
+.pointer {
+  cursor: pointer !important;
 }
