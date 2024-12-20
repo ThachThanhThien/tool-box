@@ -74,6 +74,10 @@ const routes: Routes = [
     path: 'js-snippet',
     loadComponent: () => import('./modules/snippets/js-snippet/js-snippet.component').then(mod => mod.JsSnippetComponent)
   },
+  {
+    path: 'css-snippet',
+    loadComponent: () => import('./modules/snippets/css-snippet/css-snippet.component').then(mod => mod.CssSnippetComponent)
+  },
 ];
 
 @NgModule({

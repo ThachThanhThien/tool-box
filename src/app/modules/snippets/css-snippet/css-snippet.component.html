@@ -1,0 +1,22 @@
+<app-page-header header="CSS Snippets" description="CSS Snippets"></app-page-header>
+
+<div class="row">
+  <div class="col-4">
+    <div class="snippet-list">
+      <mat-list>
+        @for (item of codeSnippets; track item) {
+          <mat-list-item>
+            <span class="pointer" (click)="onSelect(item.snippets)">{{ item.name }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    </div>
+  </div>
+  <div class="col-8 row">
+    <div *ngFor="let template of safeTemplates"
+         class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-center justify-content-center snippet-item"
+         (click)="copySnippet(template)">
+      <span [innerHTML]="template.html"></span>
+    </div>
+  </div>
+</div>

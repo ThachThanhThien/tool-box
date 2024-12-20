@@ -104,8 +104,13 @@ export class AppConst {
       items: [
         {
           name: 'Javascript',
-          icon: 'assets/icons/spinningwheel.png',
+          icon: 'assets/icons/js.png',
           routerLink: 'js-snippet'
+        },
+        {
+          name: 'CSS',
+          icon: 'assets/icons/css.png',
+          routerLink: 'css-snippet'
         },
       ],
       isExpanded: true,
