@@ -1,5 +1,18 @@
 <app-page-header header="Current Local Time"
                  description="Current Local Time"></app-page-header>
 
-{{currentTime|date:'HH:mm:ss'}}
+<div class="time d-flex align-items-center justify-content-center">
+  <span class="time-unit">
+    {{currentTime|date:'HH'}}
+  </span> :
+  <span class="time-unit">
+    {{currentTime|date:'mm'}}
+  </span> :
+  <span class="time-unit">
+    {{currentTime|date:'ss'}}
+  </span>
+</div>
+<div class="date" (click)="openCalendar()">
+  {{currentTime|date:'EEEE, MMMM d, y, zzzz'}}, Week {{weekNumber}}
+</div>
 

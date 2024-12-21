@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Bowlby+One&display=swap');
+
+:host ::ng-deep .mat-calendar-header,
+:host ::ng-deep .mat-calendar-body-label[colspan="7"] {
+  display: none;
+}
+
+:host ::ng-deep .mat-calendar-body-label {
+  visibility: hidden;
+}
+
+:host ::ng-deep mat-calendar {
+  .mat-calendar-content {
+    padding: 0 !important;
+  }
+  .mat-calendar-table-header th {
+    padding: 0 0 5px 0;
+  }
+  .mat-calendar-table-header-divider {
+    display: none;
+  }
+  .mat-calendar-body-cell-container {
+
+  }
+  .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+    border-color: #50adbf;
+    background-color: #50adbf;
+  }
+  .mat-calendar-body-cell:hover  {
+    .mat-calendar-body-cell-content {
+      background-color: #82d1e1 !important;
+    }
+  }
+}
+
+.year {
+  font-family: "Bowlby One", serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 30px;
+  height: 50px;
+}
+
+.month {
+  font-family: "Bowlby One", serif;
+  font-weight: 100;
+  font-size: 15px;
+}
+
+.month-divider {
+  margin: 6px 0;
+}

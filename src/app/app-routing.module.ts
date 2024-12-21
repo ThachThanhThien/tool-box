@@ -78,6 +78,10 @@ const routes: Routes = [
     path: 'css-snippet',
     loadComponent: () => import('./modules/snippets/css-snippet/css-snippet.component').then(mod => mod.CssSnippetComponent)
   },
+  {
+    path: 'calendar',
+    loadComponent: () => import('./modules/others/calendar/calendar.component').then(mod => mod.CalendarComponent)
+  },
 ];
 
 @NgModule({

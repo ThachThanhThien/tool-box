@@ -1,5 +1,6 @@
 import {Component, Injector} from '@angular/core';
 import {HelperServices} from "../../../core/services/helper-services";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-app-base',
@@ -9,9 +10,11 @@ import {HelperServices} from "../../../core/services/helper-services";
 })
 export abstract class AppBaseComponent {
   helperServices: HelperServices;
+  router: Router;
 
   constructor(injector: Injector) {
     this.helperServices = injector.get(HelperServices);
+    this.router = injector.get(Router);
   }
 
   copyString(value: string | null) {
