@@ -7,7 +7,7 @@
   <div class="col-lg-4 col-md-12 col-sm-12">
     <label for="entries">Entries:</label>
     <mat-form-field class="w-100">
-      <textarea matInput id="entries" [(ngModel)]="inputValues" rows="25" (ngModelChange)="onValuesChanged()"></textarea>
+      <textarea matInput id="entries" [(ngModel)]="inputValues" rows="25" (ngModelChange)="onValuesChanged()" [disabled]="isSpinning"></textarea>
     </mat-form-field>
   </div>
 </div>

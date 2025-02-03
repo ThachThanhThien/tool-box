@@ -100,15 +100,26 @@ export class AppConst {
       isExpanded: true,
     },
     {
-      name: 'Code Snippets',
+      name: 'Playground',
       items: [
         {
-          name: 'Javascript',
+          name: 'Javascript Playground',
+          icon: 'assets/icons/js.png',
+          routerLink: 'js-playground'
+        },
+      ],
+      isExpanded: true,
+    },
+    {
+      name: 'Collection',
+      items: [
+        {
+          name: 'Javascript Snippets',
           icon: 'assets/icons/js.png',
           routerLink: 'js-snippet'
         },
         {
-          name: 'CSS',
+          name: 'CSS Snippets',
           icon: 'assets/icons/css.png',
           routerLink: 'css-snippet'
         },

@@ -30,11 +30,12 @@ export class SpinningWheelComponent implements OnInit, AfterViewInit {
   private context!: CanvasRenderingContext2D;
   private startAngle = 0;
   private spinAngle = 0;
-  private isSpinning = false;
+  isSpinning = false;
   private colors = ['#3369e8', '#d50f25', '#eeb211', '#009925'];
 
   ngOnInit() {
     this.values = ['Anne', 'Ben', 'Camile', 'Dick'];
+    this.inputValues = this.values.join('\n')
   }
 
   ngAfterViewInit(): void {
@@ -67,7 +68,7 @@ export class SpinningWheelComponent implements OnInit, AfterViewInit {
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-      ctx.fillStyle = this.colors[i % 4];
+      ctx.fillStyle = this.colors[i % 4 === 0 && i >= 4 && i === this.values.length - 1 ? 1 : i % 4];
       ctx.fill();
       ctx.stroke();
 
@@ -93,7 +94,6 @@ export class SpinningWheelComponent implements OnInit, AfterViewInit {
     this.isSpinning = true;
     const spinDuration = 5000; // Spin time in milliseconds
     const totalRotationDegrees = Math.random() * 360 + 360 * 10; // Total random degrees to spin (at least 10 full rotations)
-    console.log(totalRotationDegrees)
     let currentAngle = 0;
     let startTime: number;
 

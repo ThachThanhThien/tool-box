@@ -56,7 +56,6 @@ export class JsSnippetComponent {
 
       `
     },
-
     {
       name: 'Copy Text to Clipboard', code: `
     function copyToClipboard(text) {
@@ -90,7 +89,28 @@ export class JsSnippetComponent {
       // Usage
       console.log(removeDuplicates([1, 2, 2, 3, 4, 4])); // [1, 2, 3, 4]
       `
-    }
+    },
+    {
+      name: 'Sort array',
+      code: `
+      //Ascending
+      const sortAscending = (array) => array.sort((a, b) => a - b);
+
+      //Descending
+      const sortDescending = (array) => array.sort((a, b) => b - a);
+      `
+    },
+    {
+      name: 'Remove duplicated values in an array',
+      code: `
+      function removeDuplicatedVal(arr) {
+        return [...new Set(arr)];
+      }
+
+      // Usage
+      console.log(removeDuplicatedVal([1, 2, 2, 3, 4, 4])); // [1, 2, 3, 4]
+      `
+    },
   ];
 
   selectedSnippet = '';

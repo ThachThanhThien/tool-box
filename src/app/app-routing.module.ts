@@ -82,6 +82,10 @@ const routes: Routes = [
     path: 'calendar',
     loadComponent: () => import('./modules/others/calendar/calendar.component').then(mod => mod.CalendarComponent)
   },
+  {
+    path: 'js-playground',
+    loadComponent: () => import('./modules/playground/js-playground/js-playground.component').then(mod => mod.JsPlaygroundComponent)
+  },
 ];
 
 @NgModule({
