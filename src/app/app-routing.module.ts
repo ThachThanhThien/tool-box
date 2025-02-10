@@ -86,6 +86,10 @@ const routes: Routes = [
     path: 'js-playground',
     loadComponent: () => import('./modules/playground/js-playground/js-playground.component').then(mod => mod.JsPlaygroundComponent)
   },
+  {
+    path: 'css-gradient',
+    loadComponent: () => import('./modules/playground/css-gradient/css-gradient.component').then(mod => mod.CssGradientComponent)
+  },
 ];
 
 @NgModule({

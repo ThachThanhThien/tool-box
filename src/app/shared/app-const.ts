@@ -107,6 +107,11 @@ export class AppConst {
           icon: 'assets/icons/js.png',
           routerLink: 'js-playground'
         },
+        {
+          name: 'CSS Gradient',
+          icon: 'assets/icons/css.png',
+          routerLink: 'css-gradient'
+        },
       ],
       isExpanded: true,
     },

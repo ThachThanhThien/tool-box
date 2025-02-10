@@ -1,0 +1,47 @@
+<app-page-header header="CSS Gradient" description="CSS Gradient"></app-page-header>
+
+<div class="sample-gradient" [style.background]="gradientStyle"></div>
+
+<div class="mt-4">
+  <div class="col-12 d-flex justify-content-center">
+    <app-color-palette [hue]="hue" (color)="onSelectColor($event)"></app-color-palette>
+  </div>
+  <div class="col-12 d-flex justify-content-center">
+    <app-color-slider (color)="hue=$event"></app-color-slider>
+  </div>
+</div>
+
+<div class="row">
+  @for (item of colorStops; track item; let i = $index) {
+    <div class="col-12 row py-2" style="height: 60px">
+      <div class="col-2">
+        <div class="sample-color-container" [ngClass]="currentColorIndex === i ? 'selected' : ''">
+          <div class="sample-color" style="--color: {{item.color}}" (click)="currentColorIndex = i"></div>
+        </div>
+      </div>
+      <div class="col-4 d-flex">
+        <mat-form-field class="input-field">
+          <input matInput type="number" [(ngModel)]="item.stop" (change)="onColorStopChanged(item)">
+        </mat-form-field>
+        <button mat-icon-button matSuffix (click)="removeColor(i)">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+  }
+  <button mat-icon-button matSuffix (click)="addColorStop()">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+</div>
+<div>
+  <mat-button-toggle-group name="gradient-mode" [(ngModel)]="selectedMode" (ngModelChange)="updateGradient()">
+    @for (item of gradientModes; track item) {
+      <mat-button-toggle [value]="item.value">{{ item.name }}</mat-button-toggle>
+    }
+  </mat-button-toggle-group>
+</div>
+
+<app-code-snippet [code]="gradientCode" language="css">
+</app-code-snippet>
+
+
