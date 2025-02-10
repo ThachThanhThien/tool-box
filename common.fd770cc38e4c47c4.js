@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunktool_box=self.webpackChunktool_box||[]).push([[76],{5752:(u,e,n)=>{function t(o){navigator.clipboard.writeText(o||"").then()}function a(o,r){return Math.floor(Math.random()*(r-o+1))+o}n.d(e,{U:()=>a,l:()=>t})}}]);
