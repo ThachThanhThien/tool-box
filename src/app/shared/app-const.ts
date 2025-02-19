@@ -96,6 +96,11 @@ export class AppConst {
           icon: 'assets/icons/roman-number.png',
           routerLink: 'roman-number'
         },
+        {
+          name: 'PDF to Images',
+          icon: 'assets/icons/roman-number.png',
+          routerLink: 'pdf-to-img'
+        },
       ],
       isExpanded: true,
     },

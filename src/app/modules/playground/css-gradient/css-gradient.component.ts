@@ -10,6 +10,7 @@ import {MatButtonToggle, MatButtonToggleGroup} from "@angular/material/button-to
 import {NgClass, NgIf} from "@angular/common";
 import {MatIconButton} from "@angular/material/button";
 import {CodeSnippetComponent} from "../../../shared/components/code-snippet/code-snippet.component";
+import {DegreeSelectComponent} from "./degree-select/degree-select.component";
 
 @Component({
   selector: 'app-css-gradient',
@@ -29,7 +30,8 @@ import {CodeSnippetComponent} from "../../../shared/components/code-snippet/code
     MatIconButton,
     MatSuffix,
     CodeSnippetComponent,
-    NgIf
+    NgIf,
+    DegreeSelectComponent
   ],
   templateUrl: './css-gradient.component.html',
   styleUrl: './css-gradient.component.scss'

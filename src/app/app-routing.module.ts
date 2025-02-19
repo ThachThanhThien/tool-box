@@ -90,6 +90,10 @@ const routes: Routes = [
     path: 'css-gradient',
     loadComponent: () => import('./modules/playground/css-gradient/css-gradient.component').then(mod => mod.CssGradientComponent)
   },
+  {
+    path: 'pdf-to-img',
+    loadComponent: () => import('./modules/converter/pdf-to-img/pdf-to-img.component').then(mod => mod.PdfToImgComponent)
+  },
 ];
 
 @NgModule({
