@@ -1,0 +1,16 @@
+<div class="container">
+  <h2>Upload Images & Convert to PDF</h2>
+
+  <!-- File Input -->
+  <input type="file" (change)="onFileSelected($event)" multiple accept="image/*" />
+
+  <!-- Preview Uploaded Images -->
+  <div class="preview">
+    <div *ngFor="let img of images">
+      <img [src]="img.url" width="100" />
+    </div>
+  </div>
+
+  <!-- Convert to PDF Button -->
+  <button (click)="generatePDF()" [disabled]="images.length === 0">Download PDF</button>
+</div>
