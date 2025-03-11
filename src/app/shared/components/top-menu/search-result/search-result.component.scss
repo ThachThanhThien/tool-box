@@ -10,6 +10,7 @@
   }
 
   .search-res {
+    border-radius: 5px;
     width: 60%;
     height: auto;
     max-height: 600px;
@@ -24,10 +25,11 @@
       max-height: 500px;
       overflow-y: auto;
       scrollbar-width: none;
+      margin-top: 10px;
 
       .menu-item-res {
         text-align: left;
-        height: 68px;
+        height: 60px;
         background: transparent;
 
         &:hover {

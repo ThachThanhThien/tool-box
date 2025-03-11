@@ -94,6 +94,10 @@ const routes: Routes = [
     path: 'pdf-to-img',
     loadComponent: () => import('./modules/converter/pdf-to-img/pdf-to-img.component').then(mod => mod.PdfToImgComponent)
   },
+  {
+    path: 'img-to-pdf',
+    loadComponent: () => import('./modules/converter/img-to-pdf/img-to-pdf.component').then(mod => mod.ImgToPdfComponent)
+  },
 ];
 
 @NgModule({

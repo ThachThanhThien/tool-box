@@ -3,8 +3,9 @@
     <div class="search-backdrop" (click)="isShow = false">
     </div>
     <div class="search-res">
-      <mat-form-field class="w-100 mb-2">
+      <mat-form-field class="w-100">
         <input #searchInput matInput [(ngModel)]="searchedText" spellcheck="false"
+               placeholder="Type to search a tool"
                (ngModelChange)="menuRes = []; this.searchTextUpdated.next($event)"/>
         <i class="fa-solid fa-magnifying-glass"></i>
       </mat-form-field>

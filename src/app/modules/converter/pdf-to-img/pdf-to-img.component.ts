@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 import * as pdfjsLib from 'pdfjs-dist';
 import {NgForOf, NgIf} from "@angular/common";
+import {FileUploaderComponent} from "../../../shared/components/file-uploader/file-uploader.component";
 
 @Component({
   selector: 'app-pdf-to-img',
@@ -9,7 +10,8 @@ import {NgForOf, NgIf} from "@angular/common";
   imports: [
     PageHeaderComponent,
     NgIf,
-    NgForOf
+    NgForOf,
+    FileUploaderComponent
   ],
   templateUrl: './pdf-to-img.component.html',
   styleUrl: './pdf-to-img.component.scss'

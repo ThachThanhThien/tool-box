@@ -94,3 +94,7 @@ body {
 .pointer {
   cursor: pointer !important;
 }
+
+.mat-sidenav .mat-drawer-inner-container::-webkit-scrollbar {
+  display: none;
+}
