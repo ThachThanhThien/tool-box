@@ -51,14 +51,14 @@ export class AppConst {
         },
         {
           name: 'Text generator',
-          icon: 'assets/icons/case-converter.png',
+          icon: 'assets/icons/text-gen.png',
           routerLink: 'text-generator'
         },
-        {
-          name: 'Text diff',
-          icon: 'assets/icons/text-diff.png',
-          routerLink: 'text-diff'
-        },
+        // {
+        //   name: 'Text diff',
+        //   icon: 'assets/icons/text-diff.png',
+        //   routerLink: 'text-diff'
+        // },
       ],
       isExpanded: true,
     },
@@ -86,11 +86,11 @@ export class AppConst {
           icon: 'assets/icons/temperature.png',
           routerLink: 'temperature'
         },
-        {
-          name: 'Integer base',
-          icon: 'assets/icons/integer-base.png',
-          routerLink: 'integer-base'
-        },
+        // {
+        //   name: 'Integer base',
+        //   icon: 'assets/icons/integer-base.png',
+        //   routerLink: 'integer-base'
+        // },
         {
           name: 'Roman Numeral Converter',
           icon: 'assets/icons/roman-number.png',
@@ -98,12 +98,12 @@ export class AppConst {
         },
         {
           name: 'PDF to Images',
-          icon: 'assets/icons/roman-number.png',
+          icon: 'assets/icons/pdf-to-img.png',
           routerLink: 'pdf-to-img'
         },
         {
           name: 'Images to PDF',
-          icon: 'assets/icons/roman-number.png',
+          icon: 'assets/icons/img-to-pdf.png',
           routerLink: 'img-to-pdf'
         },
       ],
@@ -112,14 +112,14 @@ export class AppConst {
     {
       name: 'Playground',
       items: [
-        {
-          name: 'Javascript Playground',
-          icon: 'assets/icons/js.png',
-          routerLink: 'js-playground'
-        },
+        // {
+        //   name: 'Javascript Playground',
+        //   icon: 'assets/icons/js.png',
+        //   routerLink: 'js-playground'
+        // },
         {
           name: 'CSS Gradient',
-          icon: 'assets/icons/css.png',
+          icon: 'assets/icons/gradient.png',
           routerLink: 'css-gradient'
         },
       ],
@@ -156,7 +156,7 @@ export class AppConst {
         },
         {
           name: 'Current Local Time',
-          icon: 'assets/icons/stopwatch.png',
+          icon: 'assets/icons/calendar.png',
           routerLink: 'current-time'
         },
       ],

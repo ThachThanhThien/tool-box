@@ -2,20 +2,19 @@
 
 <div>
   <div class="mt-4 d-flex justify-content-between align-items-center">
-    <div style="width: 45%">
+    <div style="width: 49%">
       <label for="unformattedJson">Unformatted JSON:</label>
       <mat-form-field class="w-100">
         <textarea matInput id="unformattedJson" [(ngModel)]="baseValue" rows="25" (ngModelChange)="onBaseValueChange()"></textarea>
       </mat-form-field>
     </div>
-    <div class="">
-      <button (click)="onBaseValueChange()" class="btn btn-primary">Format JSON</button>
-    </div>
-    <div style="width: 45%">
-      <label for="formattedJson">Formatted JSON:</label>
-      <mat-form-field class="w-100">
-        <textarea matInput id="formattedJson" [value]="resultValue" rows="25" readonly></textarea>
-      </mat-form-field>
+    <div style="width: 49%">
+      <label for="formattedJson">
+        Formatted JSON:
+      </label>
+      <div class="json-res">
+        <ngx-json-viewer id="formattedJson" [json]="resultValue" [expanded]="false"></ngx-json-viewer>
+      </div>
     </div>
   </div>
 </div>

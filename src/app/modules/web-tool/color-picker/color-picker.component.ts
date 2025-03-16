@@ -25,9 +25,15 @@ import {PageHeaderComponent} from "../../../shared/components/page-header/page-h
 export class ColorPickerComponent {
   hue = '';
   rgbValue = '';
+  rgbTooltip = 'An RGB color value represents RED, GREEN, and BLUE light sources. Each parameter (red, green, and blue) defines the intensity of the color with a value between 0 and 255.';
   hexValue = '';
+  hexTooltip = 'A hexadecimal color is specified with: #RRGGBB, where the RR (red), GG (green) and BB (blue) hexadecimal integers specify the components of the color';
   cmykValue = '';
   hslValue = '';
+  hslTooltip = `HSL stands for hue, saturation, and lightness.
+                      Hue is a degree on the color wheel from 0 to 360. 0 is red, 120 is green, and 240 is blue.
+                      Saturation is a percentage value. 0% means a shade of gray, and 100% is the full color.
+                      Lightness is also a percentage value. 0% is black, and 100% is white.`;
   hsvValue = '';
 
   constructor(private _snackBar: MatSnackBar) {

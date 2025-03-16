@@ -10,7 +10,7 @@
   </div>
   <div class="row">
     <div class="col-12 text-center">
-      <app-field-set legend="HEX">
+      <app-field-set legend="HEX" [legendTooltip]="hexTooltip">
         <ng-template #content>
           <p class="m-2">
             {{ hexValue }}
@@ -20,7 +20,7 @@
       </app-field-set>
     </div>
     <div class="col-3">
-      <app-field-set legend="RGB">
+      <app-field-set legend="RGB"  [legendTooltip]="rgbTooltip">
         <ng-template #content>
           <p class="m-2">
             {{ rgbValue }}
@@ -38,7 +38,7 @@
       </app-field-set>
     </div>
     <div class="col-3">
-      <app-field-set legend="HSV">
+      <app-field-set legend="HSV" >
         <ng-template #content>
           <p class="m-2">
             {{ hsvValue }}
@@ -47,7 +47,7 @@
       </app-field-set>
     </div>
     <div class="col-3">
-      <app-field-set legend="HSL">
+      <app-field-set legend="HSL" [legendTooltip]="hslTooltip">
         <ng-template #content>
           <p class="m-2">
             {{ hslValue }}

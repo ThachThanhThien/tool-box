@@ -1,0 +1,35 @@
+.json-res {
+  height: 600px;
+  background-color: var(--mdc-filled-text-field-container-color);
+  border-radius: 5px;
+  padding: 0 16px;
+}
+
+:host ::ng-deep mat-form-field{
+  height: 600px;
+  textarea {
+    scrollbar-width: none;
+    resize: none;
+  }
+}
+
+:host ::ng-deep ngx-json-viewer  {
+  section.ngx-json-viewer {
+    overflow-y: scroll !important;
+    scrollbar-width: none;
+  }
+  span.segment-key {
+    filter: invert(1);
+  }
+}
+
+.format-btn {
+  padding: 0 10px;
+  button {
+    font-size: 10px;
+  }
+}
+
+label {
+  margin-bottom: 5px;
+}

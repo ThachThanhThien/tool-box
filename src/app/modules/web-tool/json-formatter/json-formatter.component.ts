@@ -4,34 +4,27 @@ import {JsonPipe} from "@angular/common";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import {NgxJsonViewerModule} from "ngx-json-viewer";
+import {cloneDeep} from "lodash";
 
 @Component({
   selector: 'app-json-formatter',
   standalone: true,
-    imports: [
-        FormsModule,
-        JsonPipe,
-        MatFormField,
-        MatInput,
-        PageHeaderComponent
-    ],
+  imports: [
+    FormsModule,
+    MatFormField,
+    MatInput,
+    PageHeaderComponent,
+    NgxJsonViewerModule
+  ],
   templateUrl: './json-formatter.component.html',
   styleUrl: './json-formatter.component.scss'
 })
 export class JsonFormatterComponent {
   baseValue = '';
-  resultValue = '';
+  resultValue = {};
 
   onBaseValueChange() {
-    this.resultValue = this.formatJson(this.baseValue);
-  }
-
-  formatJson(unformattedJson: string): string {
-    try {
-      const jsonObject = JSON.parse(unformattedJson);
-      return JSON.stringify(jsonObject, null, 2);
-    } catch (error) {
-      return 'Invalid JSON';
-    }
+    this.resultValue = JSON.parse(this.baseValue);
   }
 }
