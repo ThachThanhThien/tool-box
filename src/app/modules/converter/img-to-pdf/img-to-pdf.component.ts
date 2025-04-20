@@ -1,12 +1,19 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import jsPDF from 'jspdf';
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import {FileUploaderComponent} from "../../../shared/components/file-uploader/file-uploader.component";
+import {DocPreviewComponent} from "../../../shared/components/doc-preview/doc-preview.component";
 
 @Component({
   selector: 'app-img-to-pdf',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    PageHeaderComponent,
+    FileUploaderComponent,
+    NgIf,
+    DocPreviewComponent
   ],
   templateUrl: './img-to-pdf.component.html',
   styleUrl: './img-to-pdf.component.scss'

@@ -5,8 +5,8 @@
     <div class="snippet-list">
       <mat-list class="d-flex justify-content-start">
         @for (item of codeSnippets; track item) {
-          <mat-list-item style="width: auto">
-            <span class="pointer" (click)="onSelect(item.snippets)">{{ item.name }}</span>
+          <mat-list-item style="width: auto" [ngClass]="item.isSelected ? 'selected' : ''">
+            <span class="pointer" (click)="onSelect(item)">{{ item.name }}</span>
           </mat-list-item>
         }
       </mat-list>

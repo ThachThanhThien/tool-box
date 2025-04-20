@@ -1,16 +1,14 @@
-<div class="container">
-  <h2>Upload Images & Convert to PDF</h2>
+<app-page-header header="Images to PDF" description="Images to PDF"></app-page-header>
 
-  <!-- File Input -->
-  <input type="file" (change)="onFileSelected($event)" multiple accept="image/*" />
-
-  <!-- Preview Uploaded Images -->
-  <div class="preview">
-    <div *ngFor="let img of images">
-      <img [src]="img.url" width="100" />
+<div class="container mt-4">
+  <app-file-uploader (onFileUploaded)="onFileSelected($event)" acceptFile="image/*" [multiple]="true"></app-file-uploader>
+  <div class="row">
+    <div class="col m-2 p-2 image-container d-flex align-items-center" *ngFor="let img of images">
+      <img [src]="img.url" alt="PDF Page" class="pdf-image" (click)="docPreview.show(img.url)">
     </div>
   </div>
 
-  <!-- Convert to PDF Button -->
-  <button (click)="generatePDF()" [disabled]="images.length === 0">Download PDF</button>
+  <button class="button-7" (click)="generatePDF()" *ngIf="images?.length">Generate PDF</button>
 </div>
+
+<app-doc-preview #docPreview></app-doc-preview>

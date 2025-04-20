@@ -3,6 +3,7 @@ import {PageHeaderComponent} from "../../../shared/components/page-header/page-h
 import * as pdfjsLib from 'pdfjs-dist';
 import {NgForOf, NgIf} from "@angular/common";
 import {FileUploaderComponent} from "../../../shared/components/file-uploader/file-uploader.component";
+import {DocPreviewComponent} from "../../../shared/components/doc-preview/doc-preview.component";
 
 @Component({
   selector: 'app-pdf-to-img',
@@ -11,7 +12,8 @@ import {FileUploaderComponent} from "../../../shared/components/file-uploader/fi
     PageHeaderComponent,
     NgIf,
     NgForOf,
-    FileUploaderComponent
+    FileUploaderComponent,
+    DocPreviewComponent
   ],
   templateUrl: './pdf-to-img.component.html',
   styleUrl: './pdf-to-img.component.scss'

@@ -3,8 +3,9 @@
   <p>drag and drop your file here or click to select a file!</p>
   <div class="file-list">
     @for (file of fileList; track file) {
-      {{file.name}}
+      {{ file.name }}
     }
   </div>
 </label>
-<input class="input" name="text" id="file" type="file" (change)="onFileChosen($event)" accept="application/pdf"/>
+<input class="input" name="text" id="file" type="file" (change)="onFileChosen($event)" [accept]="acceptFile"
+       [multiple]="multiple"/>

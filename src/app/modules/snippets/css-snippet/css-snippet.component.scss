@@ -3,3 +3,7 @@
   height: 150px;
   cursor: pointer;
 }
+
+mat-list-item.selected .pointer  {
+  color: #50adbf !important;
+}

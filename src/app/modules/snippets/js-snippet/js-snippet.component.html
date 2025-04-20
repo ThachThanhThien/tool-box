@@ -1,15 +1,15 @@
 <app-page-header header="JS Snippets" description="JS Snippets"></app-page-header>
 
-<div class="row">
+<div class="row mt-4">
   <div class="col-4">
     <div class="snippet-list">
-      <mat-list>
-        @for (item of codeSnippets; track item) {
-          <mat-list-item>
-            <span class="pointer" (click)="selectedSnippet = item.code">{{ item.name }}</span>
-          </mat-list-item>
-        }
-      </mat-list>
+      @for (item of codeSnippets; track item) {
+        <div class="snippet-item d-flex align-items-top" [ngClass]="item.isSelected ? 'selected' : ''"
+             (click)="onSnippetSelected(item)">
+          <div class="me-1"><i class="fa-solid fa-code"></i></div>
+          {{ item.name }}
+        </div>
+      }
     </div>
   </div>
   <div class="col-8">

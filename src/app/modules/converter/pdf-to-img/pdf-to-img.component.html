@@ -1,13 +1,15 @@
 <app-page-header header="PDF to Images" description="PDF to Images"></app-page-header>
 
-<div class="container">
+<div class="container mt-4">
   <app-file-uploader (onFileUploaded)="onFileSelected($event)"></app-file-uploader>
   <div class="mt-2" *ngIf="images.length">
     <h3 class="m-0">Converted Images:</h3>
     <div class="row">
       <div class="col-2 mt-2 image-container" *ngFor="let img of images">
-        <img [src]="img" alt="PDF Page" class="pdf-image">
+        <img [src]="img" alt="PDF Page" class="pdf-image" (click)="docPreview.show(img)">
       </div>
     </div>
   </div>
 </div>
+
+<app-doc-preview #docPreview></app-doc-preview>
