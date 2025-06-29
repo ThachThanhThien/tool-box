@@ -24,3 +24,12 @@
 :host ::ng-deep .mat-pseudo-checkbox {
   display: none;
 }
+
+:host ::ng-deep .mat-button-toggle {
+  color: #878787 !important;
+}
+
+:host ::ng-deep .mat-button-toggle-checked {
+  background-color: #50adbf !important;
+  color: white !important;
+}
