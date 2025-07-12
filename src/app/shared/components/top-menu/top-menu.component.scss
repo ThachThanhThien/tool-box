@@ -1,20 +1,93 @@
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-button {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 14px 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  
+  &:hover {
+    background: var(--bg-secondary);
+    border-color: var(--glass-border);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: var(--text-primary);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  .search-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    i {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+  }
+  
+  .search-shortcut {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
 :host ::ng-deep mat-form-field {
   .mdc-text-field--filled {
-    height: 40px !important;
+    height: 48px !important;
+    border-radius: 16px !important;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
   }
+  
   .mat-mdc-form-field-infix {
-    min-height: 40px !important;
+    min-height: 48px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
   }
+  
   .mat-mdc-form-field-icon-suffix {
     button {
       height: fit-content;
-      padding: 0;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: var(--bg-secondary);
+      }
+      
       .mat-mdc-button-persistent-ripple::before {
         background-color: transparent;
       }
+      
       i {
-
-        font-size: 17px;
+        font-size: 18px;
+        color: var(--text-secondary);
       }
     }
   }

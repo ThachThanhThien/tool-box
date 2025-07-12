@@ -1,45 +1,146 @@
 @import "node_modules/bootstrap/dist/css/bootstrap.min.css";
-@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 @import "node_modules/@fortawesome/fontawesome-free/css/all.css";
 @import "assets/stylesheet/code-highlight";
 @import "assets/stylesheet/css-btn-snippet";
 @import "assets/stylesheet/css-loader-snippet";
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Wix+Madefor+Display:wght@400..800&display=swap');
 
-$baseColor: #2fb0d7;
+// Modern Color Palette
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --dark-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  --bg-primary: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  --bg-secondary: rgba(255, 255, 255, 0.1);
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --text-primary: #ffffff;
+  --text-secondary: #b8c5d6;
+  --text-muted: #8892b0;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+$baseColor: #667eea;
 
 html, body {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
-  font-family: "Wix Madefor Display", sans-serif !important;
+  font-family: "Inter", sans-serif !important;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+// Modern UI Utilities
 .w-95 {
   width: 95% !important;
 }
 
+// Glass morphism card
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+}
+
+// Modern buttons
+.btn-modern {
+  background: var(--primary-gradient);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  color: white;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, #7c8fe8 0%, #8b5fbf 100%);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
 .btn-primary {
-  background-color: #343434;
+  background: var(--primary-gradient);
   border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: linear-gradient(135deg, #7c8fe8 0%, #8b5fbf 100%);
+    transform: translateY(-1px);
+  }
 }
 
-.btn:hover {
-  background-color: #545454;
+.btn-secondary {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: var(--bg-secondary);
+    border-color: var(--glass-border);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+  }
 }
 
-.btn:focus-visible {
-  background-color: #676767;
-  border: none;
-}
-.btn:first-child:active,
-:not(.btn-check)+.btn:active {
-  background-color: #676767;
-  border: none;
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
 }
 
+h1 {
+  font-size: 2.5rem;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Material UI Customization
 .mat-mdc-slider .mdc-slider__thumb-knob {
   background-color: $baseColor!important;
   border-color: $baseColor!important;
@@ -52,26 +153,88 @@ body {
 .mat-mdc-slider .mdc-slider__track--active_fill {
   border-color: $baseColor!important;
 }
-.mat-mdc-form-field-bottom-align {
-  display: none;
+
+.mat-mdc-form-field {
+  .mat-mdc-form-field-bottom-align {
+    display: none;
+  }
+  
+  .mdc-text-field {
+    border-radius: 12px !important;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    
+    &:hover {
+      border-color: var(--glass-border);
+    }
+    
+    &.mdc-text-field--focused {
+      border-color: $baseColor;
+    }
+  }
+  
+  .mat-mdc-form-field-infix {
+    display: flex;
+    align-items: center;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+  
+  input {
+    color: var(--text-primary) !important;
+  }
 }
+
+.mat-mdc-checkbox {
+  .mdc-checkbox {
+    .mdc-checkbox__background {
+      border-color: var(--border-color);
+    }
+    
+    &.mdc-checkbox--selected {
+      .mdc-checkbox__background {
+        background-color: $baseColor;
+        border-color: $baseColor;
+      }
+    }
+  }
+}
+
 .text-muted {
-  color: rgb(169 169 169) !important;
+  color: var(--text-muted) !important;
 }
 
-.mdc-text-field {
-  border-radius: 5px !important;
+.text-secondary {
+  color: var(--text-secondary) !important;
 }
 
-.mat-mdc-form-field-infix {
-  display: flex;
-  align-items: center;
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
+// Animation utilities
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
 }
 
-.side-menu-toggle .mat-mdc-button-persistent-ripple::before {
-  background: transparent !important;
+.slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mat-mdc-tooltip .mdc-tooltip__surface {
