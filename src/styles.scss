@@ -16,7 +16,7 @@
   --bg-secondary: rgba(255, 255, 255, 0.1);
   --bg-card: rgba(255, 255, 255, 0.05);
   --text-primary: #ffffff;
-  --text-secondary: #b8c5d6;
+  --text-secondary: #a0aabd;
   --text-muted: #8892b0;
   --border-color: rgba(255, 255, 255, 0.1);
   --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
@@ -57,7 +57,7 @@ body {
   border-radius: 16px;
   box-shadow: var(--shadow-lg);
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -77,13 +77,13 @@ body {
   transition: all 0.3s ease;
   box-shadow: var(--shadow-md);
   color: white;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
     background: linear-gradient(135deg, #7c8fe8 0%, #8b5fbf 100%);
   }
-  
+
   &:active {
     transform: translateY(0);
   }
@@ -95,7 +95,7 @@ body {
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: linear-gradient(135deg, #7c8fe8 0%, #8b5fbf 100%);
     transform: translateY(-1px);
@@ -109,7 +109,7 @@ body {
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: var(--bg-secondary);
     border-color: var(--glass-border);
@@ -158,28 +158,28 @@ h1 {
   .mat-mdc-form-field-bottom-align {
     display: none;
   }
-  
+
   .mdc-text-field {
     border-radius: 12px !important;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    
+
     &:hover {
       border-color: var(--glass-border);
     }
-    
+
     &.mdc-text-field--focused {
       border-color: $baseColor;
     }
   }
-  
+
   .mat-mdc-form-field-infix {
     display: flex;
     align-items: center;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
   }
-  
+
   input {
     color: var(--text-primary) !important;
   }
@@ -190,7 +190,7 @@ h1 {
     .mdc-checkbox__background {
       border-color: var(--border-color);
     }
-    
+
     &.mdc-checkbox--selected {
       .mdc-checkbox__background {
         background-color: $baseColor;

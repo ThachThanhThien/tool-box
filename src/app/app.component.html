@@ -9,11 +9,13 @@
       <button class="side-menu-toggle" mat-button (click)="sidenav.toggle()">
         <i class="fa-solid fa-bars"></i>
       </button>
-      <app-top-menu style="flex-grow: 1"></app-top-menu>
+      <app-top-menu style="flex-grow: 1" (showSearchResult)="searchResult.show()"></app-top-menu>
     </div>
     <div class="content-wrapper fade-in">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+<app-search-result #searchResult></app-search-result>
+
 

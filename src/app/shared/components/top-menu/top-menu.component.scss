@@ -1,7 +1,5 @@
 .search-container {
-  position: relative;
   width: 100%;
-  max-width: 500px;
 }
 
 .search-button {
@@ -20,7 +18,7 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  
+
   &:hover {
     background: var(--bg-secondary);
     border-color: var(--glass-border);
@@ -28,22 +26,22 @@
     box-shadow: var(--shadow-md);
     color: var(--text-primary);
   }
-  
+
   &:active {
     transform: translateY(0);
   }
-  
+
   .search-text {
     display: flex;
     align-items: center;
     gap: 12px;
-    
+
     i {
       font-size: 16px;
       color: var(--text-muted);
     }
   }
-  
+
   .search-shortcut {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -63,28 +61,28 @@
     background: var(--glass-bg);
     border: 1px solid var(--border-color);
   }
-  
+
   .mat-mdc-form-field-infix {
     min-height: 48px !important;
     padding-top: 12px !important;
     padding-bottom: 12px !important;
   }
-  
+
   .mat-mdc-form-field-icon-suffix {
     button {
       height: fit-content;
       padding: 8px;
       border-radius: 8px;
       transition: all 0.3s ease;
-      
+
       &:hover {
         background: var(--bg-secondary);
       }
-      
+
       .mat-mdc-button-persistent-ripple::before {
         background-color: transparent;
       }
-      
+
       i {
         font-size: 18px;
         color: var(--text-secondary);

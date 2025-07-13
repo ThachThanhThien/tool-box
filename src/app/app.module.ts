@@ -20,31 +20,33 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
+import {SearchResultComponent} from "./shared/components/top-menu/search-result/search-result.component";
 
 @NgModule({
   declarations: [
     AppComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    TopMenuComponent,
-    BrowserAnimationsModule,
-    SideMenuComponent,
-    MatDrawer,
-    MatDrawerContainer,
-    MatDrawerContent,
-    MatSidenavContainer,
-    MatSidenav,
-    MatToolbarModule,
-    MatSidenavModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatInputModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        TopMenuComponent,
+        BrowserAnimationsModule,
+        SideMenuComponent,
+        MatDrawer,
+        MatDrawerContainer,
+        MatDrawerContent,
+        MatSidenavContainer,
+        MatSidenav,
+        MatToolbarModule,
+        MatSidenavModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatCheckboxModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatInputModule,
+        SearchResultComponent,
+    ],
   providers: [
     provideAnimationsAsync()
   ],

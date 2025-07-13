@@ -2,19 +2,18 @@
   <!-- Brand/Logo Section -->
   <div class="sidebar-brand">
     <h3>ToolBox</h3>
-    <p>Modern Developer Tools</p>
   </div>
 
   <!-- Menu Items -->
   @for (menuGroup of menu; track menuGroup.name; let i = $index) {
     <div class="side-menu-item">
-      <button 
+      <button
         class="menu-group-header"
-        type="button" 
-        data-bs-toggle="collapse" 
+        type="button"
+        data-bs-toggle="collapse"
         [attr.data-bs-target]="'#menu-' + i"
         [attr.aria-expanded]="menuGroup.isExpanded"
-        [attr.aria-controls]="'menu-' + i" 
+        [attr.aria-controls]="'menu-' + i"
         (click)="menuGroup.isExpanded = !menuGroup.isExpanded">
         <i class="fa fa-angle-right" aria-hidden="true"></i>
         {{ menuGroup.name }}
@@ -33,7 +32,7 @@
         </div>
       }
     </div>
-    
+
     <!-- Add divider between sections -->
     @if (i < menu.length - 1) {
       <div class="menu-section-divider"></div>

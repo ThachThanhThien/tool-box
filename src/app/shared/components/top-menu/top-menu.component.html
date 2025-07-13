@@ -1,10 +1,8 @@
 <div class="search-container">
-  <button class="search-button" (click)="searchResult.show()">
+  <button class="search-button" (click)="showSearchResult.emit()">
     <div class="search-text">
       <i class="fa-solid fa-magnifying-glass"></i>
       <span>Search tools...</span>
     </div>
-    <div class="search-shortcut">⌘K</div>
   </button>
-  <app-search-result #searchResult></app-search-result>
 </div>

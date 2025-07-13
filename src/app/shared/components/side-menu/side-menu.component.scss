@@ -1,20 +1,19 @@
 .side-menu-container {
   height: 100vh;
-  padding: 24px 0;
   overflow-y: auto;
-  
+
   &::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: var(--border-color);
     border-radius: 3px;
-    
+
     &:hover {
       background: var(--glass-border);
     }
@@ -22,8 +21,6 @@
 }
 
 .side-menu-item {
-  margin-bottom: 8px;
-  
   .menu-group-header {
     background: none !important;
     border: none !important;
@@ -38,19 +35,21 @@
     position: relative;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    
+    display: flex;
+    align-items: center;
+
     &:hover {
       background: var(--bg-secondary) !important;
       color: var(--text-primary);
     }
-    
+
     i {
       font-size: 12px;
       margin-right: 12px;
       transition: transform 0.3s ease;
       color: var(--text-secondary);
     }
-    
+
     &[aria-expanded="true"] i {
       transform: rotate(90deg);
     }
@@ -68,7 +67,7 @@
   gap: 12px;
   position: relative;
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -81,36 +80,36 @@
     transition: transform 0.3s ease;
     border-radius: 0 2px 2px 0;
   }
-  
+
   &:hover {
     background: var(--bg-card);
     transform: translateX(8px);
     box-shadow: var(--shadow-md);
-    
+
     &::before {
       transform: scaleY(1);
     }
-    
+
     .menu-name {
       color: var(--text-primary);
     }
-    
+
     img {
       transform: scale(1.1);
       filter: brightness(1.2);
     }
   }
-  
+
   &:active {
     transform: translateX(4px);
   }
-  
+
   img {
     transition: all 0.3s ease;
     border-radius: 4px;
     box-shadow: var(--shadow-sm);
   }
-  
+
   .menu-name {
     font-size: 14px;
     font-weight: 500;
@@ -123,17 +122,15 @@
 .menu-section-divider {
   height: 1px;
   background: var(--border-color);
-  margin: 16px 24px;
   opacity: 0.5;
 }
 
 // Logo/Brand area at top
 .sidebar-brand {
-  padding: 24px;
+  padding: 12px;
   text-align: center;
   border-bottom: 1px solid var(--border-color);
-  margin-bottom: 24px;
-  
+
   h3 {
     font-size: 18px;
     font-weight: 700;
@@ -143,7 +140,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   p {
     font-size: 12px;
     color: var(--text-muted);
