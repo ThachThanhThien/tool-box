@@ -13,8 +13,8 @@
         background-color: transparent;
       }
       .fa-copy {
-        font-weight: 100!important;
-        font-size: 17px;
+        font-weight: 100 !important;
+        font-size: 16px;
       }
     }
   }
@@ -28,19 +28,22 @@
   height: 40px;
   padding: 10px;
   margin: 0;
-  background: #4a4a4a;
+  background: var(--bg-surface);
   display: flex;
   align-items: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .field-prefix {
-  border-right: 1px solid #858585;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-right: 1px solid var(--border);
+  border-top-left-radius: var(--radius-sm);
+  border-bottom-left-radius: var(--radius-sm);
 }
 
 .field-suffix {
-  border-left: 1px solid #858585;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-left: 1px solid var(--border);
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
 }

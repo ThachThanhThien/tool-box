@@ -1,29 +1,39 @@
 .press-key {
   height: 200px;
   width: 100%;
-  background-color: #1e2325;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   text-align: center;
-  color: #a9a9a9;
+  color: var(--text-secondary);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   .key-info {
-    font-size: 65px;
-    font-weight: 500;
+    font-size: 56px;
+    font-weight: 600;
+    color: var(--text-primary);
   }
+
   .press-key-tip {
     position: absolute;
-    font-size: 15px;
-    bottom: 10px;
+    font-size: 13px;
+    bottom: 16px;
+    color: var(--text-muted);
   }
 }
 
 :host ::ng-deep mat-form-field {
   height: 40px !important;
+
   input {
-    color: white !important;
+    color: var(--text-primary) !important;
   }
 
-  .mat-mdc-form-field-infix{
+  .mat-mdc-form-field-infix {
     min-height: 40px !important;
   }
 }

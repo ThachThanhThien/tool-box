@@ -1,46 +1,55 @@
 .code-block {
-  background-color: #262626;
-  border-radius: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   position: relative;
   overflow: hidden;
-  font-family: "Fira Code", monospace;
-  color: #f8f8f2;
+  font-family: "JetBrains Mono", monospace;
+  color: #e8e8ed;
 }
 
 .code-header {
-  background: #1f1f1f;
-  color: #aaa;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
 }
 
 .code-header button {
   background: none;
   border: none;
-  color: #f8f8f2; /* Light color for button text */
+  color: var(--text-secondary);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 12px;
   display: flex;
   align-items: center;
-}
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all var(--transition);
 
-.code-header button:hover {
-  color: #ffffff; /* Brighter on hover */
+  &:hover {
+    color: var(--text-primary);
+    background: var(--bg-surface-hover);
+  }
 }
 
 pre {
   margin: 0;
-  padding: .5rem;
-  overflow-x: auto; /* Horizontal scroll for long lines */
-  color: #f8f8f2; /* Light gray text */
+  padding: 16px;
+  overflow-x: auto;
+  color: #e8e8ed;
 }
 
 code {
-  font-size: 0.9rem;
+  font-size: 13px;
   display: block;
-  white-space: pre-wrap; /* Preserve formatting */
-  color: #f8f8f2; /* Light text color for code */
+  white-space: pre-wrap;
+  color: #e8e8ed;
+  line-height: 1.6;
 }

@@ -4,6 +4,6 @@
   cursor: pointer;
 }
 
-mat-list-item.selected .pointer  {
-  color: #50adbf !important;
+mat-list-item.selected .pointer {
+  color: var(--accent) !important;
 }

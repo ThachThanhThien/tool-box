@@ -3,52 +3,44 @@
 }
 
 .search-button {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 14px 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all 0.3s ease;
-  color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: 500;
+  transition: all var(--transition);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 400;
   cursor: pointer;
 
   &:hover {
-    background: var(--bg-secondary);
-    border-color: var(--glass-border);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-    color: var(--text-primary);
-  }
-
-  &:active {
-    transform: translateY(0);
+    background: var(--bg-surface-hover);
+    border-color: var(--border-hover);
+    color: var(--text-secondary);
   }
 
   .search-text {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 
     i {
-      font-size: 16px;
+      font-size: 14px;
       color: var(--text-muted);
     }
   }
 
   .search-shortcut {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 12px;
-    font-weight: 600;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
   }
@@ -56,27 +48,27 @@
 
 :host ::ng-deep mat-form-field {
   .mdc-text-field--filled {
-    height: 48px !important;
-    border-radius: 16px !important;
-    background: var(--glass-bg);
-    border: 1px solid var(--border-color);
+    height: 44px !important;
+    border-radius: var(--radius-md) !important;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
   }
 
   .mat-mdc-form-field-infix {
-    min-height: 48px !important;
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
+    min-height: 44px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
   }
 
   .mat-mdc-form-field-icon-suffix {
     button {
       height: fit-content;
       padding: 8px;
-      border-radius: 8px;
-      transition: all 0.3s ease;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
 
       &:hover {
-        background: var(--bg-secondary);
+        background: var(--bg-surface-hover);
       }
 
       .mat-mdc-button-persistent-ripple::before {
@@ -84,7 +76,7 @@
       }
 
       i {
-        font-size: 18px;
+        font-size: 16px;
         color: var(--text-secondary);
       }
     }

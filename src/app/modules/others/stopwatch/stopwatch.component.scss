@@ -1,9 +1,15 @@
-.clock{
+.clock {
   font-size: 48px;
   margin-bottom: 20px;
-  font-family: monospace;
+  font-family: 'JetBrains Mono', monospace;
   width: 500px;
+  max-width: 100%;
   height: 200px;
-  background: #373737;
-  border-radius: 5px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
