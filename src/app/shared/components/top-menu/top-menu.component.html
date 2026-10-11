@@ -1,9 +1,34 @@
-<div class="search-container">
-  <button class="search-button" (click)="showSearchResult.emit()">
-    <div class="search-text">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <span>Search tools...</span>
-    </div>
-    <span class="search-shortcut">Ctrl+K</span>
-  </button>
+<div class="top-menu-wrapper">
+  <!-- Search Trigger Button -->
+  <div class="search-container">
+    <button class="search-button" (click)="showSearchResult.emit()" type="button" aria-label="Search tools">
+      <div class="search-text">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <span>Search all tools & utilities...</span>
+      </div>
+      <kbd class="search-shortcut">{{ shortcutLabel }}</kbd>
+    </button>
+  </div>
+
+  <!-- Header Right Actions -->
+  <div class="top-menu-actions">
+    <!-- Home Quick Link -->
+    <a routerLink="/" class="header-action-btn" title="Go to Hub Homepage" aria-label="Hub Homepage">
+      <i class="fa-solid fa-house"></i>
+    </a>
+
+    <!-- Theme Switcher Button -->
+    <button
+      class="header-action-btn theme-toggle"
+      (click)="toggleTheme()"
+      type="button"
+      [title]="themeService.isDark() ? 'Switch to Light Theme' : 'Switch to Dark Theme'"
+      [attr.aria-label]="themeService.isDark() ? 'Switch to Light Theme' : 'Switch to Dark Theme'">
+      @if (themeService.isDark()) {
+        <i class="fa-solid fa-sun sun-icon"></i>
+      } @else {
+        <i class="fa-solid fa-moon moon-icon"></i>
+      }
+    </button>
+  </div>
 </div>

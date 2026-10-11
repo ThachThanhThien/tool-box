@@ -1,64 +1,130 @@
 import {Component, Injector, OnInit} from '@angular/core';
-import {MatList, MatListItem} from "@angular/material/list";
-import {NgClass, NgForOf} from "@angular/common";
-import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
-import {DomSanitizer} from "@angular/platform-browser";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {AppBaseComponent} from "../../../shared/components/app-base/app-base.component";
 import {codeSnippets} from "../../../shared/css-snippets";
-import {forEach} from "lodash";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import {CodeSnippetComponent} from "../../../shared/components/code-snippet/code-snippet.component";
+import {FormsModule} from "@angular/forms";
+import {NgIf, NgForOf} from "@angular/common";
+
+export interface RenderedSnippet {
+  id: number;
+  category: string;
+  name: string;
+  htmlCode: string;
+  css: string;
+  safeHtml: SafeHtml;
+  copiedType?: string | null;
+}
 
 @Component({
   selector: 'app-css-snippet',
   standalone: true,
   imports: [
-    MatList,
-    MatListItem,
     PageHeaderComponent,
-    NgForOf,
-    NgClass,
+    CodeSnippetComponent,
+    FormsModule,
+    NgIf,
+    NgForOf
   ],
   templateUrl: './css-snippet.component.html',
   styleUrl: './css-snippet.component.scss'
 })
 export class CssSnippetComponent extends AppBaseComponent implements OnInit {
-  codeSnippets: CssCodeSnippet[] = [];
-  safeTemplates: any[] = [];
+  categories: string[] = [];
+  selectedCategory = 'Button';
+  allSnippets: RenderedSnippet[] = [];
+  inspectedSnippet: RenderedSnippet | null = null;
+  codeViewMode: 'combined' | 'css' | 'html' = 'combined';
 
-  constructor(private sanitizer: DomSanitizer,
-              private injector: Injector) {
-    super(injector)
+  constructor(
+    private sanitizer: DomSanitizer,
+    injector: Injector
+  ) {
+    super(injector);
   }
 
   ngOnInit() {
-    this.codeSnippets = codeSnippets.map((item) => new CssCodeSnippet(item));
-    this.onSelect(this.codeSnippets[0]);
+    this.categories = codeSnippets.map(c => c.name);
+    if (this.categories.length > 0) {
+      this.selectedCategory = this.categories[0];
+    }
+    this.loadSnippets();
   }
 
-  onSelect(selectedSnippet: CssCodeSnippet) {
-    forEach(this.codeSnippets, item => {
-      item.isSelected = false
-    });
-    selectedSnippet.isSelected = true;
-    this.safeTemplates = selectedSnippet.snippets.map((template: any) => ({
-      ...template,
-      html: this.sanitizer.bypassSecurityTrustHtml(template.htmlCode)
-    }));
+  private loadSnippets() {
+    let globalIndex = 1;
+    const list: RenderedSnippet[] = [];
+
+    for (const group of codeSnippets) {
+      group.snippets.forEach((item, index) => {
+        if (!item.htmlCode || (!item.css && group.name === 'Loader' && index === 20)) {
+          return;
+        }
+        // Scope CSS using unique class or embed inline style block
+        const embedded = `${item.htmlCode}<style>${item.css}</style>`;
+        list.push({
+          id: globalIndex++,
+          category: group.name,
+          name: `${group.name} #${index + 1}`,
+          htmlCode: item.htmlCode.trim(),
+          css: item.css.trim(),
+          safeHtml: this.sanitizer.bypassSecurityTrustHtml(embedded),
+          copiedType: null
+        });
+      });
+    }
+    this.allSnippets = list;
   }
 
-  copySnippet(template: any) {
-    const fullSnippet = `${template.htmlCode}\n\n<style>\n${template.css}\n</style>`;
-    this.copyString(fullSnippet);
+  get currentCategorySnippets(): RenderedSnippet[] {
+    return this.allSnippets.filter(s => s.category === this.selectedCategory);
   }
-}
 
-class CssCodeSnippet {
-  name: string;
-  snippets: {htmlCode: string, css: string}[];
-  isSelected: boolean;
+  selectCategory(cat: string) {
+    this.selectedCategory = cat;
+    if (this.inspectedSnippet && this.inspectedSnippet.category !== cat) {
+      this.inspectedSnippet = null;
+    }
+  }
 
-  constructor(data: any) {
-    this.name = data.name;
-    this.snippets = data.snippets;
-    this.isSelected = false;
+  copyFullSnippet(snippet: RenderedSnippet) {
+    const full = `${snippet.htmlCode}\n\n<style>\n${snippet.css}\n</style>`;
+    this.copyString(full);
+    this.showCopied(snippet, 'all');
+  }
+
+  copyCssOnly(snippet: RenderedSnippet) {
+    this.copyString(snippet.css);
+    this.showCopied(snippet, 'css');
+  }
+
+  copyHtmlOnly(snippet: RenderedSnippet) {
+    this.copyString(snippet.htmlCode);
+    this.showCopied(snippet, 'html');
+  }
+
+  inspectSnippet(snippet: RenderedSnippet) {
+    this.inspectedSnippet = this.inspectedSnippet?.id === snippet.id ? null : snippet;
+  }
+
+  get inspectCodeContent(): string {
+    if (!this.inspectedSnippet) return '';
+    if (this.codeViewMode === 'css') return this.inspectedSnippet.css;
+    if (this.codeViewMode === 'html') return this.inspectedSnippet.htmlCode;
+    return `${this.inspectedSnippet.htmlCode}\n\n<style>\n${this.inspectedSnippet.css}\n</style>`;
+  }
+
+  get inspectCodeLanguage(): string {
+    if (this.codeViewMode === 'css') return 'css';
+    if (this.codeViewMode === 'html') return 'html';
+    return 'html';
+  }
+
+  private showCopied(snippet: RenderedSnippet, type: string) {
+    snippet.copiedType = type;
+    setTimeout(() => {
+      snippet.copiedType = null;
+    }, 1800);
   }
 }

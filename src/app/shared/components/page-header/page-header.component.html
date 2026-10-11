@@ -1,4 +1,44 @@
 <div class="page-header slide-up">
-  <h1>{{header}}</h1>
-  <p class="description">{{description}}</p>
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <a (click)="navigateHome()" class="breadcrumb-link" style="cursor: pointer;">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    @if (category) {
+      <i class="fa-solid fa-chevron-right breadcrumb-separator"></i>
+      <span class="breadcrumb-item category">{{ category }}</span>
+    }
+    <i class="fa-solid fa-chevron-right breadcrumb-separator"></i>
+    <span class="breadcrumb-item current">{{ header }}</span>
+  </nav>
+
+  <!-- Title & Action Bar -->
+  <div class="header-main">
+    <div class="title-wrap">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <h1 class="page-title">{{ header }}</h1>
+        @if (badge) {
+          <span class="tag-badge">{{ badge }}</span>
+        }
+      </div>
+      @if (description) {
+        <p class="page-description">{{ description }}</p>
+      }
+    </div>
+
+    <!-- Right Header Actions (Favorite button + Project Actions) -->
+    <div class="header-actions">
+      <button
+        type="button"
+        class="favorite-btn"
+        [class.active]="isFavorite()"
+        (click)="toggleFavorite()"
+        [title]="isFavorite() ? 'Remove from favorites' : 'Pin to favorites'"
+        [attr.aria-label]="isFavorite() ? 'Remove from favorites' : 'Pin to favorites'">
+        <i [class]="isFavorite() ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+        <span class="d-none d-sm-inline">{{ isFavorite() ? 'Pinned' : 'Pin Tool' }}</span>
+      </button>
+    </div>
+  </div>
 </div>

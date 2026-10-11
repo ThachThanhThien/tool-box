@@ -1,13 +1,98 @@
-<app-page-header header="Spinning wheel" description="Spinning wheel"></app-page-header>
+<app-page-header header="Decision Spinning Wheel" description="Random selection wheel for team turn order, lunch picks, raffles, giveaways, and decision-making."></app-page-header>
 
-<div class="row">
-  <div class="col-lg-8 col-md-12 col-sm-12 wheel-container">
-    <canvas #canvas id="wheel" width="600" height="600" (click)="spin()"></canvas>
+<div class="row g-4 mt-1">
+  <!-- Wheel Stage (Left / Center) -->
+  <div class="col-lg-7 col-md-12">
+    <div class="hub-card p-4 d-flex flex-column align-items-center justify-content-center wheel-stage-card">
+      <!-- Winner Celebration Alert -->
+      @if (selectedValue && !isSpinning) {
+        <div class="winner-banner w-100 mb-3 p-3 text-center rounded animate-fade-in">
+          <div class="text-xs text-uppercase fw-bold text-accent mb-1">
+            <i class="fa-solid fa-trophy text-amber me-1"></i> Result
+          </div>
+          <div class="winner-name fs-4 fw-bold text-primary">{{ selectedValue }}</div>
+          <div class="mt-2">
+            <button class="btn btn-sm btn-outline-danger" (click)="removeWinner()">
+              <i class="fa-solid fa-trash me-1"></i> Remove from Entries
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Canvas Container -->
+      <div class="wheel-canvas-wrapper" (click)="spin()">
+        <canvas #canvas id="wheel" width="540" height="540" class="wheel-canvas"></canvas>
+      </div>
+
+      <!-- Spin Button -->
+      <div class="mt-4 d-flex gap-3">
+        <button class="btn btn-primary btn-lg px-5 spin-btn"
+                [disabled]="isSpinning || values.length < 2"
+                (click)="spin()">
+          <i class="fa-solid" [class.fa-spinner]="isSpinning" [class.fa-spin]="isSpinning" [class.fa-dharmachakra]="!isSpinning"></i>
+          <span>{{ isSpinning ? 'Spinning...' : 'Spin the Wheel!' }}</span>
+        </button>
+      </div>
+
+      <!-- Spin History Chips -->
+      @if (history.length > 0) {
+        <div class="mt-4 w-100 pt-3 border-top text-center">
+          <span class="text-xs text-muted text-uppercase fw-semibold me-2">Recent Winners:</span>
+          <div class="d-inline-flex flex-wrap gap-1 justify-content-center">
+            @for (winner of history; track $index) {
+              <span class="badge bg-subtle text-accent">{{ winner }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
   </div>
-  <div class="col-lg-4 col-md-12 col-sm-12">
-    <label for="entries">Entries:</label>
-    <mat-form-field class="w-100">
-      <textarea matInput id="entries" [(ngModel)]="inputValues" rows="25" (ngModelChange)="onValuesChanged()" [disabled]="isSpinning"></textarea>
-    </mat-form-field>
+
+  <!-- Entries & Presets Sidebar (Right) -->
+  <div class="col-lg-5 col-md-12">
+    <div class="hub-card p-4">
+      <!-- Quick Presets -->
+      <div class="mb-4 pb-3 border-bottom">
+        <label class="form-label text-xs fw-semibold text-muted text-uppercase mb-2">Quick Presets</label>
+        <div class="d-flex flex-wrap gap-1">
+          @for (preset of presets; track preset.name) {
+            <button class="preset-pill" [disabled]="isSpinning" (click)="loadPreset(preset)">
+              {{ preset.name }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Entries Input & Controls -->
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label text-xs fw-semibold text-muted text-uppercase mb-0">
+          Entries ({{ values.length }})
+        </label>
+        <div class="d-flex gap-1">
+          <button class="btn-action-pill" [disabled]="isSpinning || values.length <= 1" (click)="shuffleEntries()" title="Shuffle order">
+            <i class="fa-solid fa-shuffle text-accent"></i>
+            <span>Shuffle</span>
+          </button>
+          <button class="btn-action-pill" [disabled]="isSpinning || values.length === 0" (click)="clearEntries()" title="Clear entries">
+            <i class="fa-solid fa-trash-can text-rose"></i>
+            <span>Clear</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <textarea class="form-control font-monospace entries-textarea"
+                  rows="14"
+                  placeholder="Enter one item per line..."
+                  [(ngModel)]="inputValues"
+                  (ngModelChange)="onValuesChanged()"
+                  [disabled]="isSpinning"></textarea>
+      </div>
+
+      <div class="text-xs text-muted">
+        <i class="fa-solid fa-circle-info me-1 text-accent"></i>
+        Enter one choice per line. The wheel updates live with proportional slices. Minimum 2 entries to spin.
+      </div>
+    </div>
   </div>
 </div>

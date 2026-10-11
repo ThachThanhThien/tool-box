@@ -1,19 +1,109 @@
-<app-page-header header="Text Generator" description=""></app-page-header>
+<app-page-header
+  header="Lorem Ipsum &amp; Placeholder Generator"
+  category="Text Utilities"
+  description="Generate dummy text by paragraphs, sentences, or words with customizable formatting and instant copy."
+  badge="Text Utilities">
+</app-page-header>
 
-<div class="row d-flex align-items-center mt-3">
-  <div class="col-2">
-    <label>Text length:</label>
-  </div>
-  <div class="col-10">
-    <mat-form-field class="input-field">
-      <input matInput type="number" [(ngModel)]="length" (ngModelChange)="generateParagraph()">
-    </mat-form-field>
-  </div>
-</div>
-<div class="col-12 mt-3">
-  <mat-form-field class="w-100">
-    <textarea matInput rows="10" [(ngModel)]="paragraph"></textarea>
-  </mat-form-field>
+<div class="text-gen-hub fade-in">
+  <!-- Controls Workspace Card -->
+  <div class="tool-workspace-card mb-4">
+    <div class="row g-3 align-items-center">
+      <!-- Unit Selection -->
+      <div class="col-md-4 col-12">
+        <label class="form-label-sm">Generate by:</label>
+        <div class="unit-toggle-group">
+          <button
+            type="button"
+            class="unit-btn"
+            [class.active]="generationUnit === 'paragraphs'"
+            (click)="generationUnit = 'paragraphs'; generate()">
+            Paragraphs
+          </button>
+          <button
+            type="button"
+            class="unit-btn"
+            [class.active]="generationUnit === 'sentences'"
+            (click)="generationUnit = 'sentences'; generate()">
+            Sentences
+          </button>
+          <button
+            type="button"
+            class="unit-btn"
+            [class.active]="generationUnit === 'words'"
+            (click)="generationUnit = 'words'; generate()">
+            Words
+          </button>
+        </div>
+      </div>
 
-  <button class="btn btn-primary my-2" (click)="copyString(paragraph)"><i class="fa-regular fa-copy me-2"></i>Copy to clipboard</button>
+      <!-- Quantity Count Input -->
+      <div class="col-md-3 col-6">
+        <label class="form-label-sm">Quantity:</label>
+        <input
+          type="number"
+          class="count-input"
+          min="1"
+          max="100"
+          [(ngModel)]="count"
+          (ngModelChange)="generate()">
+      </div>
+
+      <!-- Options Checkboxes -->
+      <div class="col-md-5 col-12">
+        <label class="form-label-sm">Formatting Options:</label>
+        <div class="d-flex flex-wrap gap-3">
+          <label class="check-opt">
+            <input type="checkbox" [(ngModel)]="startWithLorem" (ngModelChange)="generate()">
+            <span>Start with "Lorem ipsum..."</span>
+          </label>
+          @if (generationUnit === 'paragraphs') {
+            <label class="check-opt">
+              <input type="checkbox" [(ngModel)]="includeHtmlTags" (ngModelChange)="generate()">
+              <span>Wrap in &lt;p&gt; tags</span>
+            </label>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Presets Row -->
+    <div class="d-flex align-items-center gap-2 mt-3 pt-3 border-top flex-wrap">
+      <span class="text-muted" style="font-size: 12px; font-weight: 600;">Presets:</span>
+      <button type="button" class="btn-action-pill" (click)="setPreset('paragraphs', 1)">1 Paragraph</button>
+      <button type="button" class="btn-action-pill" (click)="setPreset('paragraphs', 3)">3 Paragraphs</button>
+      <button type="button" class="btn-action-pill" (click)="setPreset('paragraphs', 5)">5 Paragraphs</button>
+      <button type="button" class="btn-action-pill" (click)="setPreset('words', 50)">50 Words</button>
+      <button type="button" class="btn-action-pill" (click)="setPreset('words', 200)">200 Words</button>
+    </div>
+  </div>
+
+  <!-- Generated Text Area Card -->
+  <div class="tool-workspace-card">
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <h3 class="panel-heading">Generated Output</h3>
+        <span class="meta-stats">{{ wordCount }} words / {{ charCount }} characters</span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn-secondary btn-sm" (click)="generate()" title="Generate new text">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>Regenerate</span>
+        </button>
+        <button type="button" class="btn-primary btn-sm" (click)="copy()" [disabled]="!generatedText">
+          <i class="fa-regular fa-copy"></i>
+          <span>Copy Text</span>
+        </button>
+      </div>
+    </div>
+
+    <textarea
+      class="gen-textarea"
+      rows="12"
+      [ngModel]="generatedText"
+      readonly
+      spellcheck="false">
+    </textarea>
+  </div>
 </div>

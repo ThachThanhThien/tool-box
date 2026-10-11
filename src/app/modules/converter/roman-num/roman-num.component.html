@@ -1,27 +1,111 @@
-<app-page-header header="Roman Numeral Converter"
-                 description="Roman Numeral Converter"></app-page-header>
+<app-page-header
+  header="Roman Numeral Converter"
+  category="Converters"
+  description="Convert between Roman numerals and integers with breakdown decomposition, standard rules, and validation."
+  badge="Converters">
+</app-page-header>
 
-<div class="row mt-4 d-flex justify-content-center">
-  <div class="col-7 mt-2">
-    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
-      <div class="col-4">
-        <label>{{ 'Roman Numeral:' }}</label>
-      </div>
-      <div class="col-8 p-0 m-0">
-        <mat-form-field class="w-100">
-          <input matInput [(ngModel)]="romanNum" spellcheck="false" (ngModelChange)="romanToInt()"/>
-        </mat-form-field>
+<div class="roman-hub-container fade-in">
+  <!-- Presets Toolbar -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="text-muted fw-bold" style="font-size: 12px; text-transform: uppercase;">Historical Presets:</span>
+      @for (p of presets; track p.label) {
+        <button
+          type="button"
+          class="btn-action-pill"
+          (click)="setPreset(p.intVal)">
+          {{ p.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Dual Interactive Conversion Workstation -->
+  <div class="row g-4 mb-4">
+    <!-- Roman Input Card -->
+    <div class="col-lg-6 col-12">
+      <div class="tool-workspace-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <label class="form-label-title">Roman Numeral</label>
+          <button type="button" class="btn-ghost btn-sm" (click)="copy(romanInput, 'Roman Numeral')" [disabled]="!romanInput">
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy</span>
+          </button>
+        </div>
+
+        <input
+          type="text"
+          class="large-roman-input font-mono"
+          [(ngModel)]="romanInput"
+          (ngModelChange)="onRomanChange()"
+          placeholder="e.g. MMXXVI"
+          spellcheck="false">
+
+        <span class="text-muted mt-2 d-block" style="font-size: 12px;">
+          Type letters I, V, X, L, C, D, M (subtractive combinations like IV, IX, XL are supported).
+        </span>
       </div>
     </div>
-    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
-      <div class="col-4">
-        <label>{{ 'Number:' }}</label>
+
+    <!-- Integer Input Card -->
+    <div class="col-lg-6 col-12">
+      <div class="tool-workspace-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <label class="form-label-title">Arabic Integer (1 - 3999)</label>
+          <button type="button" class="btn-primary btn-sm" (click)="copy(intInput, 'Number')" [disabled]="intInput === null">
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy Number</span>
+          </button>
+        </div>
+
+        <input
+          type="number"
+          class="large-roman-input font-mono text-gradient"
+          [(ngModel)]="intInput"
+          (ngModelChange)="onIntChange()"
+          min="1"
+          max="3999"
+          placeholder="e.g. 2026">
+
+        <span class="text-muted mt-2 d-block" style="font-size: 12px;">
+          Standard Roman numerals support integers between 1 and 3999.
+        </span>
       </div>
-      <div class="col-8 p-0 m-0">
-        <mat-form-field class="w-100">
-          <input matInput [(ngModel)]="intNum" spellcheck="false" (ngModelChange)="intToRoman()"/>
-        </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  @if (errorMessage) {
+    <div class="error-alert mb-4">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+
+  <!-- Breakdown Calculation Card -->
+  @if (breakdown.length > 0) {
+    <div class="tool-workspace-card mb-4">
+      <h3 class="panel-heading mb-2">Decomposition Breakdown</h3>
+      <div class="breakdown-chips-row">
+        @for (part of breakdown; track part) {
+          <span class="breakdown-chip font-mono">{{ part }}</span>
+        }
+        <span class="equals-tag font-mono fw-bold">= {{ intInput }}</span>
       </div>
+    </div>
+  }
+
+  <!-- Reference Symbols Cheat Sheet -->
+  <div class="tool-workspace-card">
+    <h3 class="panel-heading mb-3">Roman Numeral Reference Table</h3>
+    <div class="reference-symbols-grid">
+      @for (ref of referenceSymbols; track ref.symbol) {
+        <div class="symbol-card hub-card">
+          <span class="ref-sym font-mono">{{ ref.symbol }}</span>
+          <span class="ref-val font-mono">{{ ref.value }}</span>
+        </div>
+      }
     </div>
   </div>
 </div>

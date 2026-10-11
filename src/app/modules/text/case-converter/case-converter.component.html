@@ -1,32 +1,64 @@
-<app-page-header header="Case Converter" description="Convert text case to various formats"></app-page-header>
+<app-page-header
+  header="Case Converter"
+  category="Text Utilities"
+  description="Instantly transform text between camelCase, snake_case, kebab-case, PascalCase, Title Case, and more."
+  badge="Text Utilities">
+</app-page-header>
 
-<div class="row d-flex align-items-center mt-4">
-  <div class="col-2">
-    <label>Your string:</label>
-  </div>
-  <div class="col-10">
-    <mat-form-field class="w-100">
-      <input matInput [(ngModel)]="primaryValue" (ngModelChange)="onPrimaryValueChanged()" spellcheck="false"/>
-    </mat-form-field>
-  </div>
-</div>
-<div class="row d-flex justify-content-center">
-  <div class="col-12">
-    <hr class="my-3">
-  </div>
-</div>
-@for (item of targetValue; track item) {
-  <div class="row mb-2 d-flex align-items-center">
-    <div class="col-2">
-      <label>{{ item.label }}:</label>
-    </div>
-    <div class="col-10">
-      <mat-form-field class="w-100">
-        <input matInput [ngModel]="item.value" spellcheck="false"/>
-        <button mat-icon-button matSuffix (click)="copyString(item.value)" [attr.aria-label]="'Copy'">
-          <i class="fa-regular fa-copy"></i>
+<div class="case-hub-container fade-in">
+  <!-- Input Card -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <h3 class="panel-heading">Source Text</h3>
+        <span class="count-tag">{{ inputText.length }} chars</span>
+      </div>
+      <div class="d-flex align-items-center gap-1">
+        <button type="button" class="btn-ghost btn-sm" (click)="paste()" title="Paste from clipboard">
+          <i class="fa-regular fa-paste"></i>
+          <span>Paste</span>
         </button>
-      </mat-form-field>
+        <button type="button" class="btn-ghost btn-sm" (click)="clear()" [disabled]="!inputText" title="Clear text">
+          <i class="fa-regular fa-trash-can"></i>
+          <span>Clear</span>
+        </button>
+      </div>
     </div>
+
+    <textarea
+      class="case-textarea"
+      rows="4"
+      [(ngModel)]="inputText"
+      (ngModelChange)="onInputChange()"
+      placeholder="Type or paste any text or variable string here..."
+      spellcheck="false">
+    </textarea>
   </div>
-}
+
+  <!-- Formats Grid -->
+  <div class="row g-3">
+    @for (fmt of formats; track fmt.id) {
+      <div class="col-lg-6 col-12">
+        <div class="case-card hub-card" (click)="copyCase(fmt)">
+          <div class="case-card-header">
+            <span class="case-pill">{{ fmt.label }}</span>
+            <button
+              type="button"
+              class="copy-btn-icon"
+              (click)="$event.stopPropagation(); copyCase(fmt)"
+              [disabled]="!fmt.value"
+              title="Copy {{ fmt.label }}">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+
+          <div class="case-value-wrap font-mono">
+            {{ fmt.value || fmt.example }}
+          </div>
+
+          <span class="case-desc">{{ fmt.description }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

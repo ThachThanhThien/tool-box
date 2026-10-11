@@ -1,153 +1,207 @@
-import {Component} from '@angular/core';
-import {FormsModule} from "@angular/forms";
-import {ColorPaletteComponent} from "./color-palette/color-palette.component";
-import {ColorSliderComponent} from "./color-slider/color-slider.component";
-import {NgStyle} from "@angular/common";
-import {FieldSetComponent} from "../../../shared/components/field-set/field-set.component";
-import {copyToClipboard} from "../../../shared/Helper";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ColorPaletteComponent } from './color-palette/color-palette.component';
+import { ColorSliderComponent } from './color-slider/color-slider.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { copyToClipboard } from '../../../shared/Helper';
 
 @Component({
   selector: 'app-color-picker',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
+    MatSnackBarModule,
     ColorPaletteComponent,
     ColorSliderComponent,
-    NgStyle,
-    FieldSetComponent,
-    PageHeaderComponent,
+    PageHeaderComponent
   ],
   templateUrl: './color-picker.component.html',
   styleUrl: './color-picker.component.scss'
 })
-export class ColorPickerComponent {
-  hue = '';
-  rgbValue = '';
-  rgbTooltip = 'An RGB color value represents RED, GREEN, and BLUE light sources. Each parameter (red, green, and blue) defines the intensity of the color with a value between 0 and 255.';
-  hexValue = '';
-  hexTooltip = 'A hexadecimal color is specified with: #RRGGBB, where the RR (red), GG (green) and BB (blue) hexadecimal integers specify the components of the color';
-  cmykValue = '';
-  hslValue = '';
-  hslTooltip = `HSL stands for hue, saturation, and lightness.
-                      Hue is a degree on the color wheel from 0 to 360. 0 is red, 120 is green, and 240 is blue.
-                      Saturation is a percentage value. 0% means a shade of gray, and 100% is the full color.
-                      Lightness is also a percentage value. 0% is black, and 100% is white.`;
-  hsvValue = '';
+export class ColorPickerComponent implements OnInit {
+  hue = '#6366f1';
+  hexValue = '#6366f1';
+  rgbValue = '99, 102, 241';
+  hslValue = '239°, 84%, 67%';
+  cmykValue = '59%, 58%, 0%, 5%';
+  hsvValue = '239°, 59%, 95%';
 
-  constructor(private _snackBar: MatSnackBar) {
+  contrastWhite = '3.9:1';
+  contrastBlack = '5.4:1';
+  passesWhiteAA = false;
+  passesBlackAA = true;
+
+  hasEyeDropper = typeof window !== 'undefined' && 'EyeDropper' in window;
+
+  readonly presetPalettes = [
+    { name: 'Indigo Accent', hex: '#6366f1' },
+    { name: 'Cyan Neon', hex: '#06b6d4' },
+    { name: 'Emerald', hex: '#10b981' },
+    { name: 'Amber Warm', hex: '#f59e0b' },
+    { name: 'Rose Vivid', hex: '#f43f5e' },
+    { name: 'Violet Deep', hex: '#8b5cf6' },
+    { name: 'Slate Dark', hex: '#1e293b' },
+    { name: 'Pure Black', hex: '#000000' },
+    { name: 'Pure White', hex: '#ffffff' },
+    { name: 'Sky Blue', hex: '#0284c7' },
+    { name: 'Fuchsia', hex: '#d946ef' },
+    { name: 'Teal Sharp', hex: '#14b8a6' }
+  ];
+
+  constructor(private snackBar: MatSnackBar) {}
+
+  ngOnInit(): void {
+    this.updateFromHex(this.hexValue);
   }
 
-  onSelectColor(rgbValue: string[]) {
-    this.rgbValue = rgbValue.join(', ');
-    this.hexValue = this.rgbToHex(rgbValue);
-    this.cmykValue = this.rbgToCmyk(rgbValue).map(item => `${Math.round(item * 100)}%`).join(', ');
-    this.hslValue = this.rgbToHsl(rgbValue).join(', ');
-    this.hsvValue = this.rgbToHsV(rgbValue).join(', ');
+  onSelectColor(rgb: string[]): void {
+    const r = parseInt(rgb[0], 10);
+    const g = parseInt(rgb[1], 10);
+    const b = parseInt(rgb[2], 10);
+    this.setRgbValues(r, g, b);
   }
 
-  rgbToHex(rgb: any[]) {
-    const [r, g, b] = rgb.map(item => parseInt(item));
-    return '#' + ((r << 16) + (g << 8) + b).toString(16).padStart(6, '0');
+  onHexInput(hex: string): void {
+    if (!hex.startsWith('#')) hex = '#' + hex;
+    if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+      this.updateFromHex(hex);
+    }
   }
 
-  rbgToCmyk(rgb: any[]) {
-    let computedC = 0;
-    let computedM = 0;
-    let computedY = 0;
-    let computedK = 0;
-    const [r, g, b] = rgb.map(item => parseInt(item));
+  applyPreset(hex: string): void {
+    this.updateFromHex(hex);
+  }
 
-    computedC = 1 - (r / 255);
-    computedM = 1 - (g / 255);
-    computedY = 1 - (b / 255);
+  async openEyeDropper(): Promise<void> {
+    if (!this.hasEyeDropper) return;
+    try {
+      const eyeDropper = new (window as any).EyeDropper();
+      const result = await eyeDropper.open();
+      if (result?.sRGBHex) {
+        this.updateFromHex(result.sRGBHex);
+        this.snackBar.open(`Sampled color: ${result.sRGBHex}`, '', { duration: 2500 });
+      }
+    } catch {
+      // User cancelled picker
+    }
+  }
 
+  private updateFromHex(hex: string): void {
+    this.hexValue = hex.toLowerCase();
+    const clean = hex.replace('#', '');
+    const r = parseInt(clean.substring(0, 2), 16);
+    const g = parseInt(clean.substring(2, 4), 16);
+    const b = parseInt(clean.substring(4, 6), 16);
+    this.setRgbValues(r, g, b);
+  }
+
+  private setRgbValues(r: number, g: number, b: number): void {
+    this.rgbValue = `${r}, ${g}, ${b}`;
+    this.hexValue = this.rgbToHex([r, g, b]);
+    this.hslValue = this.rgbToHsl([r, g, b]).join(', ');
+    this.cmykValue = this.rgbToCmyk([r, g, b]).map(item => `${Math.round(item * 100)}%`).join(', ');
+    this.hsvValue = this.rgbToHsV([r, g, b]).join(', ');
+    this.calculateContrast(r, g, b);
+  }
+
+  private calculateContrast(r: number, g: number, b: number): void {
+    const lum = this.getLuminance(r, g, b);
+    const lumWhite = 1.0;
+    const lumBlack = 0.0;
+
+    const crWhite = (lumWhite + 0.05) / (lum + 0.05);
+    const crBlack = (lum + 0.05) / (lumBlack + 0.05);
+
+    this.contrastWhite = `${crWhite.toFixed(2)}:1`;
+    this.contrastBlack = `${crBlack.toFixed(2)}:1`;
+
+    this.passesWhiteAA = crWhite >= 4.5;
+    this.passesBlackAA = crBlack >= 4.5;
+  }
+
+  private getLuminance(r: number, g: number, b: number): number {
+    const a = [r, g, b].map(v => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+  }
+
+  rgbToHex(rgb: number[]): string {
+    const [r, g, b] = rgb;
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  rgbToCmyk(rgb: number[]): number[] {
+    const [r, g, b] = rgb;
+    const computedC = 1 - (r / 255);
+    const computedM = 1 - (g / 255);
+    const computedY = 1 - (b / 255);
     const minCMY = Math.min(computedC, Math.min(computedM, computedY));
-    computedC = (computedC - minCMY) / (1 - minCMY);
-    computedM = (computedM - minCMY) / (1 - minCMY);
-    computedY = (computedY - minCMY) / (1 - minCMY);
-    computedK = minCMY;
-
-    return [computedC, computedM, computedY, computedK];
+    const k = minCMY;
+    if (k === 1) return [0, 0, 0, 1];
+    return [
+      (computedC - minCMY) / (1 - minCMY),
+      (computedM - minCMY) / (1 - minCMY),
+      (computedY - minCMY) / (1 - minCMY),
+      k
+    ];
   }
 
-  rgbToHsl(rgb: any[]) {
-    const [r, g, b] = rgb
-    const normalizedR = r / 255;
-    const normalizedG = g / 255;
-    const normalizedB = b / 255;
+  rgbToHsl(rgb: number[]): string[] {
+    const [r, g, b] = rgb;
+    const nR = r / 255;
+    const nG = g / 255;
+    const nB = b / 255;
+    const max = Math.max(nR, nG, nB);
+    const min = Math.min(nR, nG, nB);
+    const l = (max + min) / 2;
+    let h = 0;
+    let s = 0;
 
-    // Find the maximum and minimum values of RGB
-    const max = Math.max(normalizedR, normalizedG, normalizedB);
-    const min = Math.min(normalizedR, normalizedG, normalizedB);
-
-    // Calculate lightness
-    const lightness = (max + min) / 2;
-
-    let hue = 0;
-    let saturation = 0;
-
-    // Calculate saturation and hue if not grayscale
     if (max !== min) {
-      const delta = max - min;
-      saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
-
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
       switch (max) {
-        case normalizedR:
-          hue = ((normalizedG - normalizedB) / delta + (normalizedG < normalizedB ? 6 : 0)) * 60;
-          break;
-        case normalizedG:
-          hue = ((normalizedB - normalizedR) / delta + 2) * 60;
-          break;
-        case normalizedB:
-          hue = ((normalizedR - normalizedG) / delta + 4) * 60;
-          break;
+        case nR: h = ((nG - nB) / d + (nG < nB ? 6 : 0)) * 60; break;
+        case nG: h = ((nB - nR) / d + 2) * 60; break;
+        case nB: h = ((nR - nG) / d + 4) * 60; break;
       }
     }
-    return [Math.round(hue) + '°', Math.round(saturation * 100) + '%', Math.round(lightness * 100) + '%'];
+    return [`${Math.round(h)}°`, `${Math.round(s * 100)}%`, `${Math.round(l * 100)}%`];
   }
 
-  rgbToHsV(rgb: any[]) {
-    const [r, g, b] = rgb
-    const normalizedR = r / 255;
-    const normalizedG = g / 255;
-    const normalizedB = b / 255;
+  rgbToHsV(rgb: number[]): string[] {
+    const [r, g, b] = rgb;
+    const nR = r / 255;
+    const nG = g / 255;
+    const nB = b / 255;
+    const max = Math.max(nR, nG, nB);
+    const min = Math.min(nR, nG, nB);
+    const v = max;
+    let h = 0;
+    let s = 0;
 
-    // Find the maximum and minimum values of RGB
-    const max = Math.max(normalizedR, normalizedG, normalizedB);
-    const min = Math.min(normalizedR, normalizedG, normalizedB);
-
-    // Calculate value
-    const value = max;
-
-    let hue = 0;
-    let saturation = 0;
-
-    // Calculate saturation and hue if not grayscale
     if (max !== min) {
-      const delta = max - min;
-      saturation = delta / max;
-
+      const d = max - min;
+      s = d / max;
       switch (max) {
-        case normalizedR:
-          hue = ((normalizedG - normalizedB) / delta + (normalizedG < normalizedB ? 6 : 0)) * 60;
-          break;
-        case normalizedG:
-          hue = ((normalizedB - normalizedR) / delta + 2) * 60;
-          break;
-        case normalizedB:
-          hue = ((normalizedR - normalizedG) / delta + 4) * 60;
-          break;
+        case nR: h = ((nG - nB) / d + (nG < nB ? 6 : 0)) * 60; break;
+        case nG: h = ((nB - nR) / d + 2) * 60; break;
+        case nB: h = ((nR - nG) / d + 4) * 60; break;
       }
     }
-    return [Math.round(hue) + '°', Math.round(saturation * 100) + '%', Math.round(value * 100) + '%'];
+    return [`${Math.round(h)}°`, `${Math.round(s * 100)}%`, `${Math.round(v * 100)}%`];
   }
 
-  protected readonly copyToClipboard = copyToClipboard;
-
-  copy(hexValue: string) {
-    copyToClipboard(hexValue);
-    this._snackBar.open('Copy successfully', '', { duration: 2000 });
+  copy(formatName: string, value: string): void {
+    let textToCopy = value;
+    if (formatName === 'RGB') textToCopy = `rgb(${value})`;
+    if (formatName === 'HSL') textToCopy = `hsl(${value.replace(/°/g, '')})`;
+    copyToClipboard(textToCopy);
+    this.snackBar.open(`Copied ${formatName}: ${textToCopy}`, '', { duration: 2000 });
   }
 }

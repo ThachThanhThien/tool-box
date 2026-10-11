@@ -1,22 +1,323 @@
-<app-page-header header="Base64" description="Decode from Base64 encoding and encode into it"></app-page-header>
+<app-page-header
+  header="Base64 Encoder / Decoder"
+  category="Web Tools"
+  description="High-throughput client-side Base64 encoder and decoder with UTF-8 precision, URL-safe RFC 4648 variant, file drag-and-drop, and MIME line-wrapping."
+  badge="Essential">
+</app-page-header>
 
-<div class="mt-4">
-  <h1>Base64 Converter</h1>
-  <mat-form-field class="w-100">
-    <textarea matInput rows="10" [(ngModel)]="baseValue" (ngModelChange)="onBaseValueChange()"></textarea>
-  </mat-form-field>
+<div class="base64-studio-hub fade-in">
+  <!-- Top Command & Settings Bar -->
+  <div class="hub-card p-3 mb-4 settings-toolbar">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <!-- Mode Segmented Control -->
+      <div class="mode-segmented-control" role="tablist">
+        <button
+          type="button"
+          class="seg-btn"
+          [class.active]="mode === 'encode'"
+          (click)="setMode('encode')">
+          <i class="fa-solid fa-lock me-2"></i>
+          <span>Encode to Base64</span>
+        </button>
+        <button
+          type="button"
+          class="seg-btn"
+          [class.active]="mode === 'decode'"
+          (click)="setMode('decode')">
+          <i class="fa-solid fa-lock-open me-2"></i>
+          <span>Decode from Base64</span>
+        </button>
+      </div>
 
-  <button class="btn btn-primary my-2" (click)="decode()">
-    @if (isEncoding) {
-      Encode
-    } @else {
-      Decode
-    }
-  </button>
+      <!-- Advanced Encoding / Formatting Toggles -->
+      <div class="d-flex align-items-center flex-wrap gap-2">
+        @if (mode === 'encode') {
+          <!-- URL-Safe Toggle -->
+          <label class="option-pill-checkbox" title="Replace + and / with - and _, omit trailing padding">
+            <input type="checkbox" [(ngModel)]="urlSafe" (ngModelChange)="process()">
+            <span>URL-Safe (RFC 4648 §5)</span>
+          </label>
 
-  <mat-form-field class="w-100">
-    <textarea matInput rows="10" [(ngModel)]="resultValue"></textarea>
-  </mat-form-field>
+          <!-- Line Wrapping Dropdown / Pill -->
+          <div class="line-wrap-selector d-flex align-items-center gap-1">
+            <span class="text-xs text-muted fw-semibold">Wrap:</span>
+            <button
+              type="button"
+              class="wrap-btn"
+              [class.active]="lineWrap === 'none'"
+              (click)="lineWrap = 'none'; process()">None</button>
+            <button
+              type="button"
+              class="wrap-btn"
+              [class.active]="lineWrap === '64'"
+              (click)="lineWrap = '64'; process()"
+              title="64 characters per line (RFC 1421 / PEM)">64</button>
+            <button
+              type="button"
+              class="wrap-btn"
+              [class.active]="lineWrap === '76'"
+              (click)="lineWrap = '76'; process()"
+              title="76 characters per line (RFC 2045 / MIME)">76</button>
+          </div>
+        }
 
-  <button class="btn btn-primary my-2" (click)="copy()"><i class="fa-regular fa-copy me-2"></i>Copy to clipboard</button>
+        <!-- Swap Action -->
+        <button
+          type="button"
+          class="btn-action-pill"
+          (click)="swapInputOutput()"
+          [disabled]="!outputText || !!errorMessage"
+          title="Swap input and output">
+          <i class="fa-solid fa-arrow-right-arrow-left text-accent"></i>
+          <span>Swap</span>
+        </button>
+
+        <!-- Sample Dropdown / Quick Buttons -->
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn-action-pill" (click)="loadSample('json')" title="Load Sample JSON">
+            <i class="fa-solid fa-code text-cyan"></i>
+            <span>Sample JSON</span>
+          </button>
+          <button type="button" class="btn-action-pill" (click)="loadSample('quote')" title="Load Sample Text">
+            <i class="fa-solid fa-quote-left text-amber"></i>
+            <span>Sample Text</span>
+          </button>
+          <button type="button" class="btn-action-pill" (click)="loadSample('image')" title="Load Sample Base64 Image">
+            <i class="fa-solid fa-image text-emerald"></i>
+            <span>Sample Pixel</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dual Workstation Editor Grid -->
+  <div class="row g-4 align-items-stretch">
+    <!-- Left Panel: Input Editor -->
+    <div class="col-lg-6 col-12">
+      <div
+        class="hub-card p-4 h-100 d-flex flex-column editor-card"
+        [class.drag-highlight]="isDragging"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)">
+
+        <!-- Hidden Native File Input -->
+        <input
+          #fileInput
+          type="file"
+          class="d-none"
+          (change)="onFileSelected($event)">
+
+        <!-- Card Header Bar -->
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="panel-icon-wrap" [class.encode-icon]="mode === 'encode'" [class.decode-icon]="mode === 'decode'">
+              <i class="fa-solid" [class.fa-file-lines]="mode === 'encode'" [class.fa-barcode]="mode === 'decode'"></i>
+            </div>
+            <div>
+              <h3 class="panel-title mb-0">
+                {{ mode === 'encode' ? 'Plain Text Source' : 'Base64 Encoded Source' }}
+              </h3>
+              <div class="d-flex align-items-center gap-2 mt-1">
+                <span class="badge bg-subtle text-muted text-xs font-monospace">
+                  {{ inputText.length }} chars
+                </span>
+                <span class="badge bg-subtle text-muted text-xs font-monospace">
+                  {{ inputByteCount }} bytes
+                </span>
+                <span class="badge bg-subtle text-muted text-xs font-monospace">
+                  {{ lineCount }} lines
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Header Quick Actions -->
+          <div class="d-flex align-items-center gap-1">
+            <button
+              type="button"
+              class="btn-ghost-pill"
+              (click)="pasteFromClipboard()"
+              title="Paste from clipboard">
+              <i class="fa-regular fa-paste"></i>
+              <span>Paste</span>
+            </button>
+            <button
+              type="button"
+              class="btn-ghost-pill"
+              (click)="triggerFileInput()"
+              title="Upload text or binary file">
+              <i class="fa-solid fa-upload"></i>
+              <span>File</span>
+            </button>
+            <button
+              type="button"
+              class="btn-ghost-pill"
+              (click)="clear()"
+              [disabled]="!inputText"
+              title="Clear input">
+              <i class="fa-regular fa-trash-can"></i>
+              <span>Clear</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Textarea Editor Frame -->
+        <div class="editor-frame flex-grow-1 position-relative">
+          @if (isDragging) {
+            <div class="drag-drop-overlay">
+              <i class="fa-solid fa-cloud-arrow-up fs-2 text-accent mb-2"></i>
+              <span class="fw-bold">Drop file here to encode or decode</span>
+            </div>
+          }
+          <textarea
+            class="hub-textarea font-monospace"
+            [(ngModel)]="inputText"
+            (ngModelChange)="process()"
+            [placeholder]="mode === 'encode' ? 'Type, paste UTF-8 text, or drop a file here to encode...' : 'Paste Base64 encoded string or drop a file here to decode...'"
+            spellcheck="false">
+          </textarea>
+        </div>
+
+        <!-- Bottom Footer Hint -->
+        <div class="d-flex align-items-center justify-content-between mt-3 pt-2 text-xs text-muted">
+          <span><i class="fa-solid fa-arrow-turn-down-right me-1"></i> Drag & drop files directly onto this panel</span>
+          <span>UTF-8 / Binary Compliant</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Output Viewer -->
+    <div class="col-lg-6 col-12">
+      <div class="hub-card p-4 h-100 d-flex flex-column editor-card">
+        <!-- Card Header Bar -->
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="panel-icon-wrap output-icon">
+              <i class="fa-solid" [class.fa-barcode]="mode === 'encode'" [class.fa-file-lines]="mode === 'decode'"></i>
+            </div>
+            <div>
+              <h3 class="panel-title mb-0">
+                {{ mode === 'encode' ? 'Base64 Output' : 'Decoded UTF-8 Output' }}
+              </h3>
+              <div class="d-flex align-items-center gap-2 mt-1">
+                @if (outputText) {
+                  <span class="badge bg-subtle text-muted text-xs font-monospace">
+                    {{ outputText.length }} chars
+                  </span>
+                  <span class="badge bg-subtle text-muted text-xs font-monospace">
+                    {{ outputByteCount }} bytes
+                  </span>
+                  @if (mode === 'encode') {
+                    <span class="badge bg-subtle text-accent text-xs font-monospace">
+                      {{ sizeChangePercent }} overhead
+                    </span>
+                  }
+                } @else {
+                  <span class="text-xs text-muted">Awaiting input...</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Header Actions: Copy & Download -->
+          <div class="d-flex align-items-center gap-2">
+            <button
+              type="button"
+              class="btn-ghost-pill"
+              (click)="downloadOutput()"
+              [disabled]="!outputText || !!errorMessage"
+              title="Download output as a file">
+              <i class="fa-solid fa-download"></i>
+              <span>Download</span>
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-primary px-3"
+              [class.btn-success]="copied"
+              (click)="copyResult()"
+              [disabled]="!outputText || !!errorMessage"
+              title="Copy output to clipboard">
+              <i class="fa-solid" [class.fa-check]="copied" [class.fa-copy]="!copied"></i>
+              <span class="ms-1">{{ copied ? 'Copied!' : 'Copy' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error Notification Banner -->
+        @if (errorMessage) {
+          <div class="error-banner mb-3 animate-fade-in">
+            <i class="fa-solid fa-triangle-exclamation text-rose me-2 fs-5"></i>
+            <div>
+              <div class="fw-bold text-rose">Decoding Failed</div>
+              <div class="text-xs text-muted mt-1">{{ errorMessage }}</div>
+            </div>
+          </div>
+        }
+
+        <!-- Image Preview (if Base64 represents an image) -->
+        @if (previewImageUrl) {
+          <div class="image-preview-banner mb-3 p-2 d-flex align-items-center gap-3 rounded animate-fade-in">
+            <img [src]="previewImageUrl" alt="Base64 Image Preview" class="image-thumbnail">
+            <div class="text-xs">
+              <div class="fw-bold text-emerald">Detected Base64 Image</div>
+              <div class="text-muted">Live rendered thumbnail from decoded binary source</div>
+            </div>
+          </div>
+        }
+
+        <!-- Textarea Output Frame -->
+        <div class="editor-frame flex-grow-1">
+          <textarea
+            class="hub-textarea font-monospace output-textarea"
+            [ngModel]="outputText"
+            readonly
+            placeholder="Generated result will appear here automatically..."
+            spellcheck="false">
+          </textarea>
+        </div>
+
+        <!-- Bottom Footer Info -->
+        <div class="d-flex align-items-center justify-content-between mt-3 pt-2 text-xs text-muted">
+          <span><i class="fa-solid fa-shield-halved me-1 text-emerald"></i> 100% processed client-side (no network transmission)</span>
+          <span>RFC 4648 Compliant</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Educational Specs & Reference Card -->
+  <div class="hub-card p-4 mt-4 specs-guide-card">
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <i class="fa-solid fa-circle-info text-accent fs-5"></i>
+      <h4 class="fs-6 fw-bold mb-0 text-primary">Base64 Specifications & Technical Reference</h4>
+    </div>
+    <div class="row g-3 text-xs text-secondary">
+      <div class="col-md-4 col-12">
+        <div class="spec-tile p-3 rounded h-100">
+          <div class="fw-bold text-primary mb-1">Standard (RFC 4648)</div>
+          <p class="mb-0 text-muted">
+            Uses 64 characters: <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, plus <code>+</code> and <code>/</code>, with <code>=</code> padding at the end. Standard for data URLs and MIME attachments.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 col-12">
+        <div class="spec-tile p-3 rounded h-100">
+          <div class="fw-bold text-primary mb-1">URL & Filename Safe (RFC 4648 §5)</div>
+          <p class="mb-0 text-muted">
+            Replaces <code>+</code> with <code>-</code> and <code>/</code> with <code>_</code>, and removes trailing <code>=</code> padding so strings can be safely placed in URLs, JWT tokens, and filenames without percent-encoding.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 col-12">
+        <div class="spec-tile p-3 rounded h-100">
+          <div class="fw-bold text-primary mb-1">Size Overhead (+33.3%)</div>
+          <p class="mb-0 text-muted">
+            Base64 maps every 3 raw binary bytes (24 bits) into 4 ASCII characters (6 bits each). The encoded output is mathematically guaranteed to be ~33.3% larger than the raw binary input.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

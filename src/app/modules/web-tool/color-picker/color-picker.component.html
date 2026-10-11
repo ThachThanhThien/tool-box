@@ -1,59 +1,165 @@
-<app-page-header header="Color Picker" description="Pick your color and we will let you know its color code"></app-page-header>
+<app-page-header
+  header="Color Picker &amp; Converter"
+  category="Web Tools"
+  description="Select, inspect, and convert colors across HEX, RGB, HSL, CMYK, and HSV formats with WCAG contrast verification."
+  badge="Popular">
+</app-page-header>
 
-<div class="mt-4">
-  <div class="col-12 d-flex justify-content-center">
-    <div class="cur-col" style="--color: {{hexValue}}"></div>
-    <app-color-palette [hue]="hue" (color)="onSelectColor($event)"></app-color-palette>
-  </div>
-  <div class="col-12 d-flex justify-content-center">
-    <app-color-slider (color)="hue=$event"></app-color-slider>
-  </div>
-  <div class="row">
-    <div class="col-12 text-center">
-      <app-field-set legend="HEX" [legendTooltip]="hexTooltip">
-        <ng-template #content>
-          <p class="m-2">
-            {{ hexValue }}
-            <i class="fa-regular fa-copy mx-2" style="cursor: pointer" (click)="copy(hexValue)"></i>
-          </p>
-        </ng-template>
-      </app-field-set>
+<div class="color-picker-hub fade-in">
+  <div class="row g-4">
+    <!-- Left Column: Visual Picker & Canvas -->
+    <div class="col-lg-6 col-12">
+      <div class="tool-workspace-card">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="card-section-title">Color Canvas &amp; Selector</h3>
+          @if (hasEyeDropper) {
+            <button type="button" class="btn-action-pill" (click)="openEyeDropper()">
+              <i class="fa-solid fa-eye-dropper"></i>
+              <span>Sample Screen Color</span>
+            </button>
+          }
+        </div>
+
+        <!-- Canvas and Spectrum -->
+        <div class="canvas-wrapper">
+          <div class="palette-container">
+            <app-color-palette [hue]="hue" (color)="onSelectColor($event)"></app-color-palette>
+          </div>
+          <div class="slider-container mt-3">
+            <app-color-slider (color)="hue = $event"></app-color-slider>
+          </div>
+        </div>
+
+        <!-- Swatches / Preset Palettes -->
+        <div class="preset-palettes-wrap mt-4">
+          <label class="preset-label">Curated Swatches:</label>
+          <div class="swatches-grid">
+            @for (item of presetPalettes; track item.hex) {
+              <button
+                type="button"
+                class="swatch-btn"
+                [style.background]="item.hex"
+                [class.selected]="hexValue.toLowerCase() === item.hex.toLowerCase()"
+                (click)="applyPreset(item.hex)"
+                [title]="item.name + ' (' + item.hex + ')'"
+                [attr.aria-label]="item.name + ' (' + item.hex + ')'">
+              </button>
+            }
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-3">
-      <app-field-set legend="RGB"  [legendTooltip]="rgbTooltip">
-        <ng-template #content>
-          <p class="m-2">
-            {{ rgbValue }}
-          </p>
-        </ng-template>
-      </app-field-set>
-    </div>
-    <div class="col-3">
-      <app-field-set legend="CMYK">
-        <ng-template #content>
-          <p class="m-2">
-            {{ cmykValue }}
-          </p>
-        </ng-template>
-      </app-field-set>
-    </div>
-    <div class="col-3">
-      <app-field-set legend="HSV" >
-        <ng-template #content>
-          <p class="m-2">
-            {{ hsvValue }}
-          </p>
-        </ng-template>
-      </app-field-set>
-    </div>
-    <div class="col-3">
-      <app-field-set legend="HSL" [legendTooltip]="hslTooltip">
-        <ng-template #content>
-          <p class="m-2">
-            {{ hslValue }}
-          </p>
-        </ng-template>
-      </app-field-set>
+
+    <!-- Right Column: Color Formats, Direct Input & WCAG Contrast -->
+    <div class="col-lg-6 col-12">
+      <!-- Live Preview Block -->
+      <div class="tool-workspace-card mb-4">
+        <div class="live-preview-box" [style.background]="hexValue">
+          <div class="preview-overlay">
+            <span class="preview-hex">{{ hexValue }}</span>
+            <span class="preview-rgb">rgb({{ rgbValue }})</span>
+          </div>
+        </div>
+
+        <!-- Direct HEX Input Bar -->
+        <div class="direct-hex-bar mt-3">
+          <label class="form-label-sm">Hex Code:</label>
+          <div class="input-copy-group">
+            <span class="input-prefix">#</span>
+            <input
+              type="text"
+              class="direct-input font-mono"
+              [ngModel]="hexValue.replace('#', '')"
+              (ngModelChange)="onHexInput($event)"
+              placeholder="e.g. 6366f1"
+              maxlength="7">
+            <button type="button" class="copy-action-btn" (click)="copy('HEX', hexValue)" title="Copy HEX">
+              <i class="fa-regular fa-copy"></i>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Color Formats Cards Grid -->
+      <div class="formats-cards-grid">
+        <div class="format-card hub-card">
+          <div class="format-header">
+            <span class="format-name">RGB</span>
+            <button class="mini-copy" (click)="copy('RGB', rgbValue)" title="Copy RGB">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+          <div class="format-val font-mono">rgb({{ rgbValue }})</div>
+        </div>
+
+        <div class="format-card hub-card">
+          <div class="format-header">
+            <span class="format-name">HSL</span>
+            <button class="mini-copy" (click)="copy('HSL', hslValue)" title="Copy HSL">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+          <div class="format-val font-mono">hsl({{ hslValue }})</div>
+        </div>
+
+        <div class="format-card hub-card">
+          <div class="format-header">
+            <span class="format-name">CMYK</span>
+            <button class="mini-copy" (click)="copy('CMYK', cmykValue)" title="Copy CMYK">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+          <div class="format-val font-mono">{{ cmykValue }}</div>
+        </div>
+
+        <div class="format-card hub-card">
+          <div class="format-header">
+            <span class="format-name">HSV</span>
+            <button class="mini-copy" (click)="copy('HSV', hsvValue)" title="Copy HSV">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+          <div class="format-val font-mono">{{ hsvValue }}</div>
+        </div>
+      </div>
+
+      <!-- WCAG Contrast Verification Card -->
+      <div class="tool-workspace-card mt-4">
+        <h3 class="card-section-title mb-3">WCAG Accessibility Contrast</h3>
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="contrast-tile white-bg" [style.color]="hexValue">
+              <div class="tile-header">
+                <span class="bg-label">Against White (#FFF)</span>
+                <span class="ratio-val">{{ contrastWhite }}</span>
+              </div>
+              <div class="tile-preview">Sample Text</div>
+              <div class="compliance-badges">
+                <span class="tag-badge" [class.success]="passesWhiteAA" [class.danger]="!passesWhiteAA">
+                  AA {{ passesWhiteAA ? 'Pass' : 'Fail' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="contrast-tile black-bg" [style.color]="hexValue">
+              <div class="tile-header">
+                <span class="bg-label">Against Black (#000)</span>
+                <span class="ratio-val">{{ contrastBlack }}</span>
+              </div>
+              <div class="tile-preview">Sample Text</div>
+              <div class="compliance-badges">
+                <span class="tag-badge" [class.success]="passesBlackAA" [class.danger]="!passesBlackAA">
+                  AA {{ passesBlackAA ? 'Pass' : 'Fail' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

@@ -1,19 +1,161 @@
-<app-page-header header="JSON Formatter" description="JSON Formatter"></app-page-header>
+<app-page-header
+  header="JSON Formatter &amp; Validator"
+  category="Web Tools"
+  description="Validate, prettify, minify, and inspect JSON structures with interactive tree navigation and error reporting."
+  badge="Essential">
+</app-page-header>
 
-<div>
-  <div class="mt-4 d-flex justify-content-between align-items-center">
-    <div style="width: 49%">
-      <label for="unformattedJson">Unformatted JSON:</label>
-      <mat-form-field class="w-100">
-        <textarea matInput id="unformattedJson" [(ngModel)]="baseValue" rows="25" (ngModelChange)="onBaseValueChange()"></textarea>
-      </mat-form-field>
+<div class="json-hub-container fade-in">
+  <!-- Toolbar Card -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <!-- Status Badge & Format Options -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="tag-badge" [class.success]="isValidJson && !!rawJson" [class.danger]="!isValidJson">
+          <i [class]="isValidJson ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"></i>
+          {{ !rawJson ? 'Ready' : (isValidJson ? 'Valid JSON' : 'Syntax Error') }}
+        </span>
+
+        <!-- Indentation Selector -->
+        <div class="btn-group-pill">
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="indentOption === '2'"
+            (click)="setIndent('2')">
+            2 Spaces
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="indentOption === '4'"
+            (click)="setIndent('4')">
+            4 Spaces
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="indentOption === 'tab'"
+            (click)="setIndent('tab')">
+            Tabs
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="indentOption === 'min'"
+            (click)="setIndent('min')">
+            Minify
+          </button>
+        </div>
+      </div>
+
+      <!-- View Mode & Utility Actions -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="btn-group-pill">
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="viewMode === 'tree'"
+            (click)="viewMode = 'tree'">
+            <i class="fa-solid fa-folder-tree me-1"></i> Tree View
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="viewMode === 'raw'"
+            (click)="viewMode = 'raw'">
+            <i class="fa-solid fa-code me-1"></i> Code View
+          </button>
+        </div>
+
+        <button type="button" class="btn-secondary btn-sm" (click)="loadSample()">
+          <i class="fa-solid fa-flask"></i>
+          <span>Sample</span>
+        </button>
+        <button type="button" class="btn-primary btn-sm" (click)="copy()" [disabled]="!formattedOutput">
+          <i class="fa-regular fa-copy"></i>
+          <span>Copy</span>
+        </button>
+      </div>
     </div>
-    <div style="width: 49%">
-      <label for="formattedJson">
-        Formatted JSON:
-      </label>
-      <div class="json-res">
-        <ngx-json-viewer id="formattedJson" [json]="resultValue" [expanded]="false"></ngx-json-viewer>
+  </div>
+
+  <!-- Workstation Split Grid -->
+  <div class="row g-4">
+    <!-- Left: Raw Input Editor -->
+    <div class="col-lg-6 col-12">
+      <div class="tool-workspace-card h-100 d-flex flex-column">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <h3 class="panel-heading">JSON Input</h3>
+            <span class="byte-count">{{ rawJson.length }} characters</span>
+          </div>
+          <div class="d-flex gap-1">
+            <button type="button" class="btn-ghost btn-sm" (click)="paste()" title="Paste from clipboard">
+              <i class="fa-regular fa-paste"></i>
+              <span>Paste</span>
+            </button>
+            <button type="button" class="btn-ghost btn-sm" (click)="clear()" [disabled]="!rawJson" title="Clear input">
+              <i class="fa-regular fa-trash-can"></i>
+              <span>Clear</span>
+            </button>
+          </div>
+        </div>
+
+        @if (!isValidJson && errorMessage) {
+          <div class="error-banner mb-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+        <div class="editor-frame flex-grow-1">
+          <textarea
+            class="json-textarea font-mono"
+            rows="18"
+            [(ngModel)]="rawJson"
+            (ngModelChange)="onJsonInput()"
+            placeholder="Paste or type raw JSON here..."
+            spellcheck="false">
+          </textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Formatted Output / Tree Viewer -->
+    <div class="col-lg-6 col-12">
+      <div class="tool-workspace-card h-100 d-flex flex-column">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <h3 class="panel-heading">
+              {{ viewMode === 'tree' ? 'Interactive Object Tree' : 'Formatted Code' }}
+            </h3>
+          </div>
+          <span class="viewer-mode-label">{{ indentOption === 'min' ? 'Minified' : indentOption + ' indent' }}</span>
+        </div>
+
+        <div class="output-frame flex-grow-1">
+          @if (parsedJsonObj !== null) {
+            @if (viewMode === 'tree') {
+              <div class="tree-viewer-box">
+                <ngx-json-viewer [json]="parsedJsonObj" [expanded]="true"></ngx-json-viewer>
+              </div>
+            } @else {
+              <textarea
+                class="json-textarea font-mono"
+                rows="18"
+                [ngModel]="formattedOutput"
+                readonly
+                spellcheck="false">
+              </textarea>
+            }
+          } @else {
+            <div class="empty-output-box">
+              <i class="fa-solid fa-code text-muted mb-2" style="font-size: 28px;"></i>
+              <p class="m-0 text-muted">Valid formatted JSON will render here.</p>
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>

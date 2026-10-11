@@ -1,6 +1,6 @@
-import {Component, ElementRef, Injector, Input, OnChanges, SimpleChanges} from '@angular/core';
+import { Component, Injector, Input, OnChanges, SimpleChanges } from '@angular/core';
 import hljs from 'highlight.js';
-import {AppBaseComponent} from "../app-base/app-base.component";
+import { AppBaseComponent } from '../app-base/app-base.component';
 
 @Component({
   selector: 'app-code-snippet',
@@ -12,27 +12,42 @@ import {AppBaseComponent} from "../app-base/app-base.component";
 export class CodeSnippetComponent extends AppBaseComponent implements OnChanges {
   @Input() code: string = '';
   @Input() language: string = 'plaintext';
+  @Input() title: string = '';
   formattedCode: string = '';
+  copied = false;
 
-  constructor(private elRef: ElementRef,
-              private injector: Injector) {
+  constructor(injector: Injector) {
     super(injector);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['code'] && changes['code'].currentValue !== changes['code'].previousValue) {
+    if (changes['code'] || changes['language']) {
       this.updateCode();
     }
   }
 
-  updateCode() {
-    if (this.code) {
-      const highlighted = hljs.highlight(this.language, this.code).value;
-      this.formattedCode = highlighted;
+  updateCode(): void {
+    if (!this.code) {
+      this.formattedCode = '';
+      return;
+    }
+
+    try {
+      if (this.language && hljs.getLanguage(this.language)) {
+        this.formattedCode = hljs.highlight(this.code, { language: this.language }).value;
+      } else {
+        this.formattedCode = hljs.highlightAuto(this.code).value;
+      }
+    } catch {
+      this.formattedCode = this.code;
     }
   }
 
-  copy() {
+  copy(): void {
     this.copyString(this.code);
+    this.copied = true;
+    setTimeout(() => {
+      this.copied = false;
+    }, 2000);
   }
 }

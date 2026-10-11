@@ -1,7 +1,17 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () => import('./modules/home/home.component').then(mod => mod.HomeComponent)
+  },
+  {
+    path: 'home',
+    redirectTo: '',
+    pathMatch: 'full'
+  },
   {
     path: 'color-picker',
     loadComponent: () => import('./modules/web-tool/color-picker/color-picker.component').then(mod => mod.ColorPickerComponent)
@@ -21,6 +31,11 @@ const routes: Routes = [
   {
     path: 'case-converted',
     loadComponent: () => import('./modules/text/case-converter/case-converter.component').then(mod => mod.CaseConverterComponent)
+  },
+  {
+    path: 'case-converter',
+    redirectTo: 'case-converted',
+    pathMatch: 'full'
   },
   {
     path: 'base64',
@@ -98,11 +113,14 @@ const routes: Routes = [
     path: 'img-to-pdf',
     loadComponent: () => import('./modules/converter/img-to-pdf/img-to-pdf.component').then(mod => mod.ImgToPdfComponent)
   },
+  {
+    path: '**',
+    loadComponent: () => import('./modules/not-found/not-found.component').then(mod => mod.NotFoundComponent)
+  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

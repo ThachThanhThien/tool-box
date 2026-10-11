@@ -1,32 +1,161 @@
-<app-page-header header="QR Scanner" description="Scan QR Code"></app-page-header>
+<app-page-header
+  header="QR Code Scanner"
+  category="Image &amp; Media"
+  description="Read and decode QR codes instantly using your device's camera or by uploading/dragging an image file."
+  badge="Image & Media">
+</app-page-header>
 
-<div class="row">
-  <div>
-    <!-- Camera-based QR Scanner -->
-    <zxing-scanner
-      (scanSuccess)="onCodeScanned($event)"
-    ></zxing-scanner>
-    <button (click)="toggleCamera()">
-      {{ cameraEnabled ? 'Stop Camera' : 'Start Camera' }}
-    </button>
-
-    <hr/>
-
-    <!-- File Upload for QR Scanning -->
-    <h4>Upload QR Image</h4>
-    <input type="file" (change)="onFileSelected($event)"/>
-
-    <hr/>
-
-    <!-- Display scanned content -->
-    <h3>Scanned Content:</h3>
-    <div class="col-12">
-      <mat-form-field class="w-100">
-        <input matInput class="text-white" [value]="scannedContent || 'No content scanned yet.'" disabled spellcheck="false"/>
-        <button mat-icon-button matSuffix (click)="copyString(scannedContent)" [attr.aria-label]="'Copy'">
-          <i class="fa-regular fa-copy"></i>
+<div class="qr-scanner-hub fade-in">
+  <!-- Mode Selection Tabs -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="scan-mode-tabs">
+        <button
+          type="button"
+          class="mode-btn"
+          [class.active]="scanMode === 'file'"
+          (click)="setMode('file')">
+          <i class="fa-solid fa-file-image me-1"></i> Upload / Drop Image
         </button>
-      </mat-form-field>
+        <button
+          type="button"
+          class="mode-btn"
+          [class.active]="scanMode === 'camera'"
+          (click)="setMode('camera')">
+          <i class="fa-solid fa-camera me-1"></i> Device Camera
+        </button>
+      </div>
+
+      @if (scanMode === 'camera') {
+        <button
+          type="button"
+          class="btn-modern btn-sm"
+          [class.btn-danger]="cameraEnabled"
+          (click)="toggleCamera()">
+          <i [class]="cameraEnabled ? 'fa-solid fa-video-slash' : 'fa-solid fa-video'"></i>
+          <span>{{ cameraEnabled ? 'Stop Camera' : 'Start Camera' }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left: Scanner Source (Dropzone or Camera) -->
+    <div class="col-lg-6 col-12">
+      <div class="tool-workspace-card h-100">
+        @if (scanMode === 'file') {
+          <h3 class="panel-heading mb-3">Upload QR Image</h3>
+          <div
+            class="upload-dropzone"
+            [class.dragging]="isDragging"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            (click)="fileInput.click()">
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              class="d-none"
+              (change)="onFileSelected($event)">
+
+            @if (uploadedImageUrl) {
+              <div class="preview-image-wrap">
+                <img [src]="uploadedImageUrl" alt="Uploaded QR" class="uploaded-img">
+                <p class="dropzone-tip mt-2">Click or drop another image to replace</p>
+              </div>
+            } @else {
+              <div class="dropzone-placeholder">
+                <div class="dropzone-icon">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <h4 class="dropzone-title">Drag &amp; drop QR image here</h4>
+                <p class="dropzone-sub">or click to browse from your device (PNG, JPG, WebP)</p>
+              </div>
+            }
+          </div>
+        } @else {
+          <h3 class="panel-heading mb-3">Camera Scanner</h3>
+          <div class="camera-viewport-card">
+            @if (cameraEnabled) {
+              <div class="scanner-feed-wrap">
+                <zxing-scanner
+                  [enable]="cameraEnabled"
+                  (scanSuccess)="onCodeScanned($event)">
+                </zxing-scanner>
+                <div class="scanner-crosshair"></div>
+              </div>
+            } @else {
+              <div class="camera-offline-state">
+                <i class="fa-solid fa-camera text-muted mb-2" style="font-size: 36px;"></i>
+                <h4>Camera is turned off</h4>
+                <p class="text-muted" style="font-size: 13px;">Click "Start Camera" to grant browser permissions and begin scanning.</p>
+                <button type="button" class="btn-primary btn-sm mt-2" (click)="toggleCamera()">
+                  Start Camera
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right: Scanned Result Card -->
+    <div class="col-lg-6 col-12">
+      <div class="tool-workspace-card h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="panel-heading">Decoded Content</h3>
+            @if (scannedContent) {
+              <span class="tag-badge success">Detected</span>
+            }
+          </div>
+
+          @if (scannedContent) {
+            <div class="result-content-card mb-3">
+              <div class="font-mono result-text">{{ scannedContent }}</div>
+            </div>
+
+            <!-- Context Actions -->
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-4">
+              @if (isUrl(scannedContent)) {
+                <button type="button" class="btn-primary btn-sm" (click)="openUrl(scannedContent)">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  <span>Open URL in New Tab</span>
+                </button>
+              }
+              <button type="button" class="btn-secondary btn-sm" (click)="copyContent()">
+                <i class="fa-regular fa-copy"></i>
+                <span>Copy Text</span>
+              </button>
+              <button type="button" class="btn-ghost btn-sm" (click)="clear()">
+                <i class="fa-regular fa-trash-can"></i>
+                <span>Clear</span>
+              </button>
+            </div>
+          } @else {
+            <div class="empty-result-state">
+              <i class="fa-solid fa-qrcode text-muted mb-2" style="font-size: 32px;"></i>
+              <p class="m-0 text-muted">Point your camera at a QR code or upload an image to see results here.</p>
+            </div>
+          }
+        </div>
+
+        <!-- Scan History in Session -->
+        @if (scanHistory.length > 0) {
+          <div class="scan-history-section pt-3 border-top">
+            <h4 class="history-title mb-2">Recent Scans in this session:</h4>
+            <div class="history-chips-list">
+              @for (item of scanHistory; track item) {
+                <div class="history-scan-item" (click)="scannedContent = item">
+                  <span class="font-mono text-truncate">{{ item }}</span>
+                  <i class="fa-solid fa-chevron-right history-item-arrow"></i>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
     </div>
   </div>
 </div>

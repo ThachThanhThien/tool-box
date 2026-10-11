@@ -1,0 +1,109 @@
+.js-sandbox-hub {
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.panel-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.exec-time {
+  font-size: 11px;
+  color: var(--success);
+  background: var(--success-subtle);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+}
+
+.sandbox-editor {
+  width: 100%;
+  min-height: 380px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  color: var(--text-primary);
+  font-size: 13.5px;
+  line-height: 1.6;
+  outline: none;
+  resize: vertical;
+  tab-size: 2;
+  transition: border-color var(--transition);
+
+  &:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+}
+
+.terminal-screen {
+  background: #050811;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  min-height: 380px;
+  max-height: 480px;
+  overflow-y: auto;
+  font-size: 12.5px;
+  line-height: 1.5;
+
+  .terminal-logs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .log-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    word-break: break-all;
+    white-space: pre-wrap;
+
+    .log-time {
+      color: #64748b;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .log-type-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    &.log-log {
+      color: #f1f5f9;
+      .log-type-tag { color: #818cf8; }
+    }
+
+    &.log-info {
+      color: #38bdf8;
+      .log-type-tag { color: #38bdf8; }
+    }
+
+    &.log-warn {
+      color: #fbbf24;
+      .log-type-tag { color: #fbbf24; }
+    }
+
+    &.log-error {
+      color: #f87171;
+      .log-type-tag { color: #f87171; }
+    }
+  }
+
+  .terminal-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 340px;
+    text-align: center;
+  }
+}

@@ -1,14 +1,91 @@
-<app-page-header header="Word Counter" description="Count the number of words and characters of input text in real time."></app-page-header>
+<app-page-header
+  header="Word &amp; Character Counter"
+  category="Text Utilities"
+  description="Real-time text analysis: count words, characters, sentences, paragraphs, and estimate reading time."
+  badge="Text Utilities">
+</app-page-header>
 
-<div class="mt-4 mb-2" style="font-size: 20px">
-  <b>{{wordNumber}}</b> word{{wordNumber === 1 ? '' : 's'}}
-  <b>{{characterNumber}}</b> character{{characterNumber === 1 ? '' : 's'}}
-</div>
-<div class="row">
-  <div class="col-12">
-    <mat-form-field class="w-100">
-      <textarea matInput rows="13" [(ngModel)]="value" (ngModelChange)="count()"></textarea>
-    </mat-form-field>
+<div class="word-counter-hub fade-in">
+  <!-- Statistics Overview Grid -->
+  <div class="stats-counter-grid mb-4">
+    <div class="stat-card hub-card">
+      <span class="stat-number text-gradient">{{ wordNumber }}</span>
+      <span class="stat-label">Words</span>
+    </div>
+    <div class="stat-card hub-card">
+      <span class="stat-number">{{ characterNumber }}</span>
+      <span class="stat-label">Characters</span>
+    </div>
+    <div class="stat-card hub-card">
+      <span class="stat-number">{{ charNoSpacesNumber }}</span>
+      <span class="stat-label">Chars (No Spaces)</span>
+    </div>
+    <div class="stat-card hub-card">
+      <span class="stat-number">{{ sentenceNumber }}</span>
+      <span class="stat-label">Sentences</span>
+    </div>
+    <div class="stat-card hub-card">
+      <span class="stat-number">{{ paragraphNumber }}</span>
+      <span class="stat-label">Paragraphs</span>
+    </div>
+    <div class="stat-card hub-card">
+      <span class="stat-number">{{ readingTimeMin }} min</span>
+      <span class="stat-label">Reading Time</span>
+    </div>
   </div>
-</div>
 
+  <!-- Text Input Workstation -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <h3 class="panel-heading">Content Editor</h3>
+        <span class="speaking-badge">
+          <i class="fa-solid fa-microphone me-1"></i>
+          ~{{ speakingTimeMin }} min speaking
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn-secondary btn-sm" (click)="cleanWhitespace()" [disabled]="!value" title="Normalize and trim spaces">
+          <i class="fa-solid fa-broom"></i>
+          <span>Trim Spaces</span>
+        </button>
+        <button type="button" class="btn-ghost btn-sm" (click)="paste()" title="Paste from clipboard">
+          <i class="fa-regular fa-paste"></i>
+          <span>Paste</span>
+        </button>
+        <button type="button" class="btn-primary btn-sm" (click)="copy()" [disabled]="!value" title="Copy text">
+          <i class="fa-regular fa-copy"></i>
+          <span>Copy</span>
+        </button>
+        <button type="button" class="btn-ghost btn-sm" (click)="clear()" [disabled]="!value" title="Clear text">
+          <i class="fa-regular fa-trash-can"></i>
+          <span>Clear</span>
+        </button>
+      </div>
+    </div>
+
+    <textarea
+      class="counter-textarea"
+      rows="12"
+      [(ngModel)]="value"
+      (ngModelChange)="count()"
+      placeholder="Start typing or paste your text here to analyze in real time..."
+      spellcheck="true">
+    </textarea>
+  </div>
+
+  <!-- Keyword Frequency Breakdown -->
+  @if (topKeywords.length > 0) {
+    <div class="tool-workspace-card">
+      <h3 class="panel-heading mb-3">Top Keyword Frequencies</h3>
+      <div class="keywords-row">
+        @for (item of topKeywords; track item.word) {
+          <div class="keyword-chip">
+            <span class="kw-word">{{ item.word }}</span>
+            <span class="kw-count">{{ item.count }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,35 +1,45 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {NgForOf, NgIf} from "@angular/common";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import jsPDF from 'jspdf';
-import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
-import {FileUploaderComponent} from "../../../shared/components/file-uploader/file-uploader.component";
-import {DocPreviewComponent} from "../../../shared/components/doc-preview/doc-preview.component";
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { FileUploaderComponent } from '../../../shared/components/file-uploader/file-uploader.component';
+import { DocPreviewComponent } from '../../../shared/components/doc-preview/doc-preview.component';
+
+interface ImageItem {
+  file: File;
+  url: string;
+}
 
 @Component({
   selector: 'app-img-to-pdf',
   standalone: true,
   imports: [
-    NgForOf,
+    CommonModule,
+    FormsModule,
+    MatSnackBarModule,
     PageHeaderComponent,
     FileUploaderComponent,
-    NgIf,
     DocPreviewComponent
   ],
   templateUrl: './img-to-pdf.component.html',
   styleUrl: './img-to-pdf.component.scss'
 })
 export class ImgToPdfComponent {
-  images: { file: File, url: string }[] = [];
+  images: ImageItem[] = [];
+  orientation: 'portrait' | 'landscape' = 'portrait';
+  isGenerating = false;
 
-  // Handle file selection
-  onFileSelected(event: any) {
+  constructor(private snackBar: MatSnackBar) {}
+
+  onFileSelected(event: any): void {
     const files: FileList = event.target.files;
-    this.images = [];
+    if (!files || files.length === 0) return;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const reader = new FileReader();
-
       reader.onload = (e: any) => {
         this.images.push({ file, url: e.target.result });
       };
@@ -37,48 +47,66 @@ export class ImgToPdfComponent {
     }
   }
 
-  // Generate PDF with jsPDF
-  async generatePDF() {
-    const pdf = new jsPDF({
-      orientation: 'portrait', // or 'landscape'
-      unit: 'mm',
-      format: 'a4'
-    });
-
-    let yOffset = 10; // Initial vertical position
-
-    for (const img of this.images) {
-      const image = new Image();
-      image.src = img.url;
-
-      await new Promise<void>((resolve) => {
-        image.onload = () => {
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          const pageHeight = pdf.internal.pageSize.getHeight();
-
-          // Calculate new width & height to fit A4 page
-          let imgWidth = pageWidth - 20; // Keep margins
-          let imgHeight = (image.height * imgWidth) / image.width;
-
-          if (imgHeight > pageHeight - 20) {
-            imgHeight = pageHeight - 20;
-            imgWidth = (image.width * imgHeight) / image.height;
-          }
-
-          // If not enough space, add a new page
-          if (yOffset + imgHeight > pageHeight) {
-            pdf.addPage();
-            yOffset = 10;
-          }
-
-          pdf.addImage(image.src, 'JPEG', 10, yOffset, imgWidth, imgHeight);
-          yOffset += imgHeight + 10; // Add spacing
-          resolve();
-        };
-      });
-    }
-
-    pdf.save('images.pdf');
+  removeImage(index: number): void {
+    this.images.splice(index, 1);
   }
 
+  clearAll(): void {
+    this.images = [];
+  }
+
+  async generatePDF(): Promise<void> {
+    if (this.images.length === 0) return;
+    this.isGenerating = true;
+
+    try {
+      const pdf = new jsPDF({
+        orientation: this.orientation,
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      for (let i = 0; i < this.images.length; i++) {
+        if (i > 0) {
+          pdf.addPage();
+        }
+
+        const imgData = this.images[i];
+        const image = new Image();
+        image.src = imgData.url;
+
+        await new Promise<void>((resolve) => {
+          image.onload = () => {
+            const margin = 10;
+            const maxWidth = pageWidth - (margin * 2);
+            const maxHeight = pageHeight - (margin * 2);
+
+            let renderWidth = maxWidth;
+            let renderHeight = (image.height * maxWidth) / image.width;
+
+            if (renderHeight > maxHeight) {
+              renderHeight = maxHeight;
+              renderWidth = (image.width * maxHeight) / image.height;
+            }
+
+            const x = (pageWidth - renderWidth) / 2;
+            const y = (pageHeight - renderHeight) / 2;
+
+            pdf.addImage(image.src, 'JPEG', x, y, renderWidth, renderHeight);
+            resolve();
+          };
+        });
+      }
+
+      pdf.save(`compiled-document-${Date.now()}.pdf`);
+      this.snackBar.open('PDF generated and downloaded successfully!', '', { duration: 2500 });
+    } catch (e: any) {
+      this.snackBar.open(`Failed to generate PDF: ${e.message}`, '', { duration: 3000 });
+    } finally {
+      this.isGenerating = false;
+    }
+  }
 }

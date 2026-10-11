@@ -1,39 +1,139 @@
-.press-key {
-  height: 200px;
-  width: 100%;
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  text-align: center;
-  color: var(--text-secondary);
-  position: relative;
+.keycode-hub-container {
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.hero-keycap-card {
+  padding: 36px 20px 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 
-  .key-info {
-    font-size: 56px;
-    font-weight: 600;
-    color: var(--text-primary);
+  .keycap-hero-badge {
+    width: 110px;
+    height: 110px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    border: 2px solid var(--border-default);
+    box-shadow: 0 8px 0 var(--border-default), var(--shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 16px;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   }
 
-  .press-key-tip {
-    position: absolute;
-    font-size: 13px;
-    bottom: 16px;
-    color: var(--text-muted);
+  .key-name-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .key-instruction-sub {
+    font-size: 13.5px;
+    margin: 0;
   }
 }
 
-:host ::ng-deep mat-form-field {
-  height: 40px !important;
+.modifiers-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 
-  input {
-    color: var(--text-primary) !important;
+  .modifier-pill {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    transition: all var(--transition);
+
+    &.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+  }
+}
+
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+
+  .property-tile {
+    padding: 16px 18px;
+    cursor: pointer;
+
+    &:hover {
+      .copy-hint {
+        opacity: 1;
+        color: var(--accent);
+      }
+    }
+
+    .tile-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+
+      .prop-label {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .copy-hint {
+        font-size: 12px;
+        color: var(--text-muted);
+        opacity: 0.5;
+        transition: all var(--transition);
+      }
+    }
+
+    .prop-val {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+
+    .prop-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-subtle);
   }
 
-  .mat-mdc-form-field-infix {
-    min-height: 40px !important;
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
   }
 }

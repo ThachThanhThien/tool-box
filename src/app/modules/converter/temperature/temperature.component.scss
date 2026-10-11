@@ -1,49 +1,82 @@
-:host ::ng-deep mat-form-field {
-  .mdc-text-field--filled {
-    height: 40px !important;
+.temp-hub-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.temp-unit-card {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .unit-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .unit-symbol {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-subtle);
+      padding: 2px 7px;
+      border-radius: var(--radius-xs);
+    }
   }
-  .mat-mdc-form-field-infix {
-    min-height: 40px !important;
-  }
-  .mat-mdc-form-field-icon-suffix {
-    button {
-      height: fit-content;
-      padding: 0;
-      .mat-mdc-button-persistent-ripple::before {
-        background-color: transparent;
-      }
-      .fa-copy {
-        font-weight: 100 !important;
-        font-size: 16px;
+
+  .input-wrap {
+    .temp-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition);
+
+      &:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-subtle);
       }
     }
   }
-  .mdc-text-field {
-    border-radius: 0 !important;
+
+  .card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+
+    .formula-tip {
+      font-size: 11px;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 170px;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 2px;
+      transition: color var(--transition);
+
+      &:hover {
+        color: var(--accent);
+      }
+    }
   }
-}
-
-.field-prefix,
-.field-suffix {
-  height: 40px;
-  padding: 10px;
-  margin: 0;
-  background: var(--bg-surface);
-  display: flex;
-  align-items: center;
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.field-prefix {
-  border-right: 1px solid var(--border);
-  border-top-left-radius: var(--radius-sm);
-  border-bottom-left-radius: var(--radius-sm);
-}
-
-.field-suffix {
-  border-left: 1px solid var(--border);
-  border-top-right-radius: var(--radius-sm);
-  border-bottom-right-radius: var(--radius-sm);
 }

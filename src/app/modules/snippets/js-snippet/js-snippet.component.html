@@ -1,21 +1,89 @@
-<app-page-header header="JS Snippets" description="JS Snippets"></app-page-header>
+<app-page-header header="JavaScript Snippets" description="Searchable collection of essential, battle-tested modern JavaScript helper snippets and design patterns."></app-page-header>
 
-<div class="row mt-4">
-  <div class="col-4">
-    <div class="snippet-list">
-      @for (item of codeSnippets; track item) {
-        <div class="snippet-item d-flex align-items-top" [ngClass]="item.isSelected ? 'selected' : ''"
-             (click)="onSnippetSelected(item)">
-          <div class="me-1"><i class="fa-solid fa-code"></i></div>
-          {{ item.name }}
-        </div>
-      }
+<div class="row g-4 mt-1">
+  <!-- Left Side: Explorer & Categories -->
+  <div class="col-lg-4 col-md-5">
+    <div class="hub-card p-3 d-flex flex-column" style="min-height: 600px;">
+      <!-- Search Input -->
+      <div class="search-box mb-3">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text"
+               class="form-control form-control-sm search-input"
+               placeholder="Search snippets (e.g. debounce, clone)..."
+               [(ngModel)]="searchQuery">
+        @if (searchQuery) {
+          <button class="btn-clear" (click)="searchQuery = ''" title="Clear">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        }
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="category-pills d-flex flex-wrap gap-1 mb-3">
+        @for (cat of categories; track cat) {
+          <button class="cat-pill"
+                  [class.active]="selectedCategory === cat"
+                  (click)="onSelectCategory(cat)">
+            {{ cat }}
+          </button>
+        }
+      </div>
+
+      <!-- Count Header -->
+      <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+        <span class="text-xs text-muted fw-semibold text-uppercase tracking-wider">Snippets</span>
+        <span class="badge bg-subtle text-accent">{{ filteredSnippets.length }} found</span>
+      </div>
+
+      <!-- Snippet List -->
+      <div class="snippet-list-scroll flex-grow-1">
+        @for (item of filteredSnippets; track item.id) {
+          <div class="snippet-list-item"
+               [class.active]="selectedSnippet.id === item.id"
+               (click)="onSelectSnippet(item)">
+            <div class="item-title">{{ item.name }}</div>
+            <div class="d-flex align-items-center justify-content-between mt-1">
+              <span class="item-category">{{ item.category }}</span>
+              <i class="fa-solid fa-chevron-right item-arrow"></i>
+            </div>
+          </div>
+        } @empty {
+          <div class="text-center py-5 text-muted">
+            <i class="fa-solid fa-code text-secondary fs-3 mb-2 d-block"></i>
+            <p class="mb-0">No matching snippets found.</p>
+          </div>
+        }
+      </div>
     </div>
   </div>
-  <div class="col-8">
-    <app-code-snippet *ngIf="selectedSnippet"
-                      [code]="selectedSnippet"
-                      language="javascript">
-    </app-code-snippet>
+
+  <!-- Right Side: Detail & Code Viewer -->
+  <div class="col-lg-8 col-md-7">
+    @if (selectedSnippet) {
+      <div class="hub-card p-4">
+        <!-- Header Info -->
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3 pb-3 border-bottom">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <h3 class="snippet-title mb-0">{{ selectedSnippet.name }}</h3>
+              <span class="badge bg-subtle text-accent">{{ selectedSnippet.category }}</span>
+            </div>
+            <p class="text-muted text-sm mb-0">{{ selectedSnippet.description }}</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn-action-pill" (click)="openPlayground()" title="Test in interactive JavaScript Playground">
+              <i class="fa-solid fa-play text-emerald"></i>
+              <span>Playground</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Code Highlight Box -->
+        <app-code-snippet
+          [code]="selectedSnippet.code"
+          language="javascript">
+        </app-code-snippet>
+      </div>
+    }
   </div>
 </div>

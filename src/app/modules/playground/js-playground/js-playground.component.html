@@ -1,0 +1,101 @@
+<app-page-header
+  header="JavaScript Sandbox"
+  category="Playground &amp; Code"
+  description="Interactive JavaScript scratchpad with live in-browser execution and console output terminal."
+  badge="New">
+</app-page-header>
+
+<div class="js-sandbox-hub fade-in">
+  <!-- Toolbar Card -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <!-- Templates Row -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="text-muted fw-bold" style="font-size: 12px; text-transform: uppercase;">Snippets:</span>
+        @for (t of codeTemplates; track t.title) {
+          <button
+            type="button"
+            class="btn-action-pill"
+            (click)="loadTemplate(t)">
+            {{ t.title }}
+          </button>
+        }
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button type="button" class="btn-ghost btn-sm" (click)="copyCode()" title="Copy code">
+          <i class="fa-regular fa-copy"></i>
+          <span>Copy</span>
+        </button>
+        <button type="button" class="btn-primary" (click)="runCode()" title="Execute JavaScript (Ctrl+Enter)">
+          <i class="fa-solid fa-play"></i>
+          <span>Run Code</span>
+          <kbd class="ms-1 d-none d-sm-inline" style="font-size: 10px; opacity: 0.8;">Ctrl+↵</kbd>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dual Workspace: Code Editor & Console Output Terminal -->
+  <div class="row g-4">
+    <!-- Left: Code Editor -->
+    <div class="col-lg-7 col-12">
+      <div class="tool-workspace-card h-100 d-flex flex-column">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <span class="tag-badge">JavaScript (ES6+)</span>
+            <span class="text-muted" style="font-size: 11.5px;">Browser Sandbox</span>
+          </div>
+          <span class="text-muted" style="font-size: 11px;">Press Ctrl+Enter to execute</span>
+        </div>
+
+        <textarea
+          class="sandbox-editor font-mono flex-grow-1"
+          rows="16"
+          [(ngModel)]="code"
+          (keydown)="onKeyDown($event)"
+          placeholder="Write JavaScript code here..."
+          spellcheck="false">
+        </textarea>
+      </div>
+    </div>
+
+    <!-- Right: Console Output Terminal -->
+    <div class="col-lg-5 col-12">
+      <div class="tool-workspace-card h-100 d-flex flex-column">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <h3 class="panel-heading">Console Terminal</h3>
+            @if (hasExecuted) {
+              <span class="exec-time font-mono">{{ executionTimeMs }}ms</span>
+            }
+          </div>
+          <button type="button" class="btn-ghost btn-sm" (click)="clearLogs()" [disabled]="!logs.length">
+            <i class="fa-solid fa-ban"></i>
+            <span>Clear</span>
+          </button>
+        </div>
+
+        <div class="terminal-screen font-mono flex-grow-1">
+          @if (logs.length > 0) {
+            <div class="terminal-logs-list">
+              @for (entry of logs; track entry.timestamp + entry.message) {
+                <div class="log-row" [class]="'log-' + entry.type">
+                  <span class="log-time">{{ entry.timestamp }}</span>
+                  <span class="log-type-tag">[{{ entry.type }}]</span>
+                  <span class="log-msg">{{ entry.message }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="terminal-empty">
+              <i class="fa-solid fa-terminal text-muted mb-2" style="font-size: 24px;"></i>
+              <p class="m-0 text-muted">Console output will appear here.</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

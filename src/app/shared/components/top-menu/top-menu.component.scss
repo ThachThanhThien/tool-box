@@ -1,84 +1,125 @@
-.search-container {
-  width: 100%;
-}
-
-.search-button {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 10px 16px;
-  width: 100%;
+.top-menu-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all var(--transition);
-  color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 400;
-  cursor: pointer;
+  gap: 16px;
+  width: 100%;
+}
 
-  &:hover {
-    background: var(--bg-surface-hover);
-    border-color: var(--border-hover);
-    color: var(--text-secondary);
-  }
+.search-container {
+  flex: 1;
+  max-width: 580px;
 
-  .search-text {
+  .search-button {
+    width: 100%;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 8px 16px;
+    height: 42px;
+    cursor: pointer;
+    transition: all var(--transition);
 
-    i {
-      font-size: 14px;
-      color: var(--text-muted);
+    &:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-hover);
+      box-shadow: 0 0 0 3px var(--accent-subtle);
+
+      .search-text span {
+        color: var(--text-primary);
+      }
+      .search-icon {
+        color: var(--accent);
+      }
     }
-  }
 
-  .search-shortcut {
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
+    .search-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .search-icon {
+        font-size: 14px;
+        color: var(--text-muted);
+        transition: color var(--transition);
+      }
+
+      span {
+        font-size: 13.5px;
+        color: var(--text-secondary);
+        font-weight: 400;
+        transition: color var(--transition);
+      }
+    }
+
+    .search-shortcut {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      padding: 2px 7px;
+      line-height: 1.4;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+    }
   }
 }
 
-:host ::ng-deep mat-form-field {
-  .mdc-text-field--filled {
-    height: 44px !important;
-    border-radius: var(--radius-md) !important;
-    background: var(--bg-input);
-    border: 1px solid var(--border);
+.top-menu-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .header-action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--transition);
+
+    &:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    &.theme-toggle {
+      .sun-icon {
+        color: #f59e0b;
+      }
+      .moon-icon {
+        color: #818cf8;
+      }
+    }
   }
+}
 
-  .mat-mdc-form-field-infix {
-    min-height: 44px !important;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-  }
-
-  .mat-mdc-form-field-icon-suffix {
-    button {
-      height: fit-content;
-      padding: 8px;
-      border-radius: var(--radius-sm);
-      transition: all var(--transition);
-
-      &:hover {
-        background: var(--bg-surface-hover);
-      }
-
-      .mat-mdc-button-persistent-ripple::before {
-        background-color: transparent;
-      }
-
-      i {
-        font-size: 16px;
-        color: var(--text-secondary);
-      }
+@media (max-width: 576px) {
+  .search-container .search-button {
+    .search-text span {
+      display: none;
+    }
+    .search-text::after {
+      content: 'Search...';
+      font-size: 13px;
+      color: var(--text-secondary);
     }
   }
 }

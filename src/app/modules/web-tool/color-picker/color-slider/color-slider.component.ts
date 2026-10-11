@@ -23,7 +23,9 @@ export class ColorSliderComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.selectedWidth = this.defaultPositionX;
     this.draw();
-    this.emitColor(this.defaultPositionX, this.defaultPositionY)
+    queueMicrotask(() => {
+      this.emitColor(this.defaultPositionX, this.defaultPositionY);
+    });
   }
 
   draw() {

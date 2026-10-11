@@ -1,8 +1,52 @@
-.image-container {
-  width: 200px;
+.pdf-img-hub {
+  max-width: 1050px;
+  margin: 0 auto;
+}
 
-  img {
-    width: 100%;
+.panel-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.page-thumbnail-card {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .img-preview-box {
+    height: 180px;
+    background: #ffffff;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+
+    .pdf-thumb-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform var(--transition);
+
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
+  }
+
+  .thumb-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .page-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
   }
 }

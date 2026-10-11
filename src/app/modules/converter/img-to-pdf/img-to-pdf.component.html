@@ -1,14 +1,89 @@
-<app-page-header header="Images to PDF" description="Images to PDF"></app-page-header>
+<app-page-header
+  header="Images to PDF Converter"
+  category="Converters"
+  description="Combine and convert multiple image files into a single, clean PDF document with custom orientation."
+  badge="Converters">
+</app-page-header>
 
-<div class="container mt-4">
-  <app-file-uploader (onFileUploaded)="onFileSelected($event)" acceptFile="image/*" [multiple]="true"></app-file-uploader>
-  <div class="row">
-    <div class="col m-2 p-2 image-container d-flex align-items-center" *ngFor="let img of images">
-      <img [src]="img.url" alt="PDF Page" class="pdf-image" (click)="docPreview.show(img.url)">
-    </div>
+<div class="img-pdf-hub fade-in">
+  <!-- Upload Zone -->
+  <div class="tool-workspace-card mb-4">
+    <app-file-uploader
+      (onFileUploaded)="onFileSelected($event)"
+      acceptFile="image/*"
+      [multiple]="true"
+      title="Upload Images to Compile"
+      description="Select or drop multiple PNG, JPG, or WebP images">
+    </app-file-uploader>
   </div>
 
-  <button class="button-7" (click)="generatePDF()" *ngIf="images?.length">Generate PDF</button>
+  @if (images.length > 0) {
+    <!-- Controls Bar -->
+    <div class="tool-workspace-card mb-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-muted fw-bold" style="font-size: 12px; text-transform: uppercase;">Orientation:</span>
+          <div class="btn-group-pill">
+            <button
+              type="button"
+              class="pill-btn"
+              [class.active]="orientation === 'portrait'"
+              (click)="orientation = 'portrait'">
+              Portrait
+            </button>
+            <button
+              type="button"
+              class="pill-btn"
+              [class.active]="orientation === 'landscape'"
+              (click)="orientation = 'landscape'">
+              Landscape
+            </button>
+          </div>
+          <span class="ms-2 text-muted" style="font-size: 12.5px;">{{ images.length }} pages queued</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn-ghost btn-sm" (click)="clearAll()" [disabled]="isGenerating">
+            <i class="fa-regular fa-trash-can"></i>
+            <span>Clear All</span>
+          </button>
+          <button type="button" class="btn-primary" (click)="generatePDF()" [disabled]="isGenerating">
+            @if (isGenerating) {
+              <div class="spinner-border spinner-border-sm me-1" role="status"></div>
+              <span>Generating PDF...</span>
+            } @else {
+              <i class="fa-solid fa-file-pdf"></i>
+              <span>Compile &amp; Download PDF</span>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Pages Grid -->
+    <div class="tool-workspace-card">
+      <h3 class="panel-heading mb-3">Selected Images ({{ images.length }})</h3>
+
+      <div class="row g-3">
+        @for (item of images; track item.url; let idx = $index) {
+          <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="img-preview-card hub-card">
+              <div class="card-img-wrap" (click)="docPreview.show(item.url)">
+                <img [src]="item.url" [alt]="item.file.name" class="img-fluid">
+              </div>
+              <div class="card-meta-bar">
+                <span class="page-num-pill font-mono">#{{ idx + 1 }}</span>
+                <span class="file-name-text text-truncate">{{ item.file.name }}</span>
+                <button type="button" class="remove-btn" (click)="removeImage(idx)" title="Remove this page">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
 </div>
 
 <app-doc-preview #docPreview></app-doc-preview>

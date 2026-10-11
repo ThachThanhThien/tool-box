@@ -1,41 +1,102 @@
 <div class="side-menu-container">
-  <!-- Brand/Logo Section -->
+  <!-- Brand / Logo Section -->
   <div class="sidebar-brand">
-    <h3>Tool<span>Box</span></h3>
+    <a routerLink="/" class="brand-link" title="ToolHub Studio Home">
+      <img src="assets/brand/logo.svg" alt="ToolHub Studio" class="brand-logo-img">
+    </a>
   </div>
 
-  <!-- Menu Items -->
-  @for (menuGroup of menu; track menuGroup.name; let i = $index) {
-    <div class="side-menu-item">
-      <button
-        class="menu-group-header"
-        type="button"
-        data-bs-toggle="collapse"
-        [attr.data-bs-target]="'#menu-' + i"
-        [attr.aria-expanded]="menuGroup.isExpanded"
-        [attr.aria-controls]="'menu-' + i"
-        (click)="menuGroup.isExpanded = !menuGroup.isExpanded">
-        <i class="fa fa-angle-right" aria-hidden="true"></i>
-        {{ menuGroup.name }}
-      </button>
+  <!-- Quick Hub Navigation Link -->
+  <div class="sidebar-quick-nav">
+    <a
+      routerLink="/"
+      class="nav-hub-item"
+      [class.active]="isRouteActive('') || isRouteActive('home')">
+      <div class="nav-hub-icon">
+        <i class="fa-solid fa-shapes"></i>
+      </div>
+      <div class="nav-hub-text">
+        <span class="hub-title">Tool Hub</span>
+        <span class="hub-sub">Browse all {{ totalToolsCount }} tools</span>
+      </div>
+    </a>
+  </div>
 
-      @if (menuGroup.items) {
-        <div class="collapse" [class.show]="menuGroup.isExpanded" [id]="'menu-' + i">
-          @for (subItem of menuGroup.items; track subItem.name) {
-            <div class="side-menu-sub-item" (click)="onMenuClick(subItem.routerLink)">
-              @if (subItem.icon) {
-                <img [ngSrc]="subItem.icon" [alt]="subItem.name" width="20" height="20" priority>
+  <!-- Sidebar Quick Filter -->
+  <div class="sidebar-search-box">
+    <div class="search-input-wrap">
+      <i class="fa-solid fa-filter"></i>
+      <input
+        type="text"
+        placeholder="Filter sidebar..."
+        [(ngModel)]="sidebarFilter"
+        spellcheck="false">
+      @if (sidebarFilter) {
+        <button type="button" class="clear-filter" (click)="sidebarFilter = ''">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Tool Categories & Navigation Items -->
+  <div class="menu-categories-list">
+    @for (group of menu; track group.name; let i = $index) {
+      @if (hasVisibleItems(group)) {
+        <div class="side-menu-group">
+          <button
+            class="group-header-btn"
+            type="button"
+            (click)="toggleGroup(group)"
+            [attr.aria-expanded]="group.isExpanded">
+            <div class="d-flex align-items-center gap-2">
+              <i [class]="group.icon + ' group-icon'"></i>
+              <span class="group-title">{{ group.name }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <span class="group-count">{{ filteredItems(group).length }}</span>
+              <i class="fa-solid fa-chevron-right chevron-icon" [class.rotated]="group.isExpanded"></i>
+            </div>
+          </button>
+
+          @if (group.isExpanded || sidebarFilter) {
+            <div class="group-items-list slide-up">
+              @for (item of filteredItems(group); track item.routerLink) {
+                <a
+                  class="side-tool-link"
+                  [class.active]="isRouteActive(item.routerLink)"
+                  [routerLink]="item.routerLink"
+                  [title]="item.name + ' — ' + item.description">
+                  <div class="tool-item-icon">
+                    @if (item.icon) {
+                      <img [src]="item.icon" [alt]="item.name" width="16" height="16">
+                    } @else {
+                      <i [class]="item.faIcon || 'fa-solid fa-wrench'"></i>
+                    }
+                  </div>
+                  <span class="tool-item-name">{{ item.name }}</span>
+                  @if (item.badge) {
+                    <span class="tool-micro-badge">{{ item.badge }}</span>
+                  }
+                </a>
               }
-              <span class="menu-name">{{ subItem.name }}</span>
             </div>
           }
         </div>
       }
-    </div>
-
-    <!-- Add divider between sections -->
-    @if (i < menu.length - 1) {
-      <div class="menu-section-divider"></div>
     }
-  }
+  </div>
+
+  <!-- Sidebar Footer Info -->
+  <div class="sidebar-footer">
+    <div class="sidebar-footer-card">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <i class="fa-solid fa-shield-halved text-success"></i>
+        <span class="fw-semibold text-primary" style="font-size: 11.5px;">100% Client-Side</span>
+      </div>
+      <p class="m-0 text-muted" style="font-size: 10.5px; line-height: 1.4;">
+        Data processed securely inside your browser. No server logging.
+      </p>
+    </div>
+  </div>
 </div>

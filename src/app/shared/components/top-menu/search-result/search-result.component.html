@@ -1,23 +1,105 @@
 @if (isShow) {
-  <div class="search-panel">
-    <div class="search-backdrop" (click)="isShow = false">
-    </div>
-    <div class="search-res">
-      <mat-form-field class="w-100">
-        <input #searchInput matInput [(ngModel)]="searchedText" spellcheck="false"
-               placeholder="Type to search a tool"
-               (ngModelChange)="menuRes = []; this.searchTextUpdated.next($event)"/>
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </mat-form-field>
-      @if (searchedText && size(menuRes)) {
-        <div class="menu-res">
-          <button class="btn btn-primary w-100 menu-item-res d-flex align-items-center" *ngFor="let menu of menuRes"
-                  (click)="onMenuClick(menu.routerLink)">
-            <img class="me-2" [ngSrc]="menu.icon" [alt]="menu.name" width="15" height="15" priority>
-            {{ menu.name }}
+  <div class="command-palette-backdrop" (click)="close()">
+    <div class="command-palette-modal slide-up" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      
+      <!-- Search Input Bar -->
+      <div class="palette-input-wrap">
+        <i class="fa-solid fa-magnifying-glass palette-icon"></i>
+        <input
+          #searchInput
+          type="text"
+          class="palette-input"
+          placeholder="Search tools by name, category, or keywords..."
+          [(ngModel)]="searchedText"
+          (ngModelChange)="onSearchChange($event)"
+          spellcheck="false"
+          autocomplete="off">
+        @if (searchedText) {
+          <button class="clear-btn" (click)="searchedText = ''; performSearch('')" type="button" aria-label="Clear search">
+            <i class="fa-solid fa-xmark"></i>
           </button>
+        }
+        <kbd class="esc-badge" (click)="close()">ESC</kbd>
+      </div>
+
+      <!-- Category Filter Chips -->
+      <div class="palette-categories">
+        @for (cat of categories; track cat.key) {
+          <button
+            type="button"
+            class="cat-chip"
+            [class.active]="selectedCategory === cat.key"
+            (click)="setCategory(cat.key)">
+            {{ cat.label }}
+          </button>
+        }
+      </div>
+
+      <!-- Results Count & List -->
+      <div class="palette-results-container" #resultsList>
+        @if (searchResults.length > 0) {
+          <div class="results-meta">
+            <span>{{ searchResults.length }} {{ searchResults.length === 1 ? 'tool' : 'tools' }} available</span>
+            <span>Use <kbd>↑</kbd> <kbd>↓</kbd> to navigate, <kbd>↵</kbd> to open</span>
+          </div>
+
+          <div class="results-list">
+            @for (tool of searchResults; track tool.routerLink; let idx = $index) {
+              <div
+                class="search-result-item"
+                [class.selected]="idx === selectedIndex"
+                (mouseenter)="selectedIndex = idx"
+                (click)="selectTool(tool)">
+                <div class="tool-icon-box">
+                  @if (tool.icon) {
+                    <img [src]="tool.icon" [alt]="tool.name" width="22" height="22">
+                  } @else {
+                    <i [class]="tool.faIcon || 'fa-solid fa-screwdriver-wrench'"></i>
+                  }
+                </div>
+                <div class="tool-info">
+                  <div class="tool-header">
+                    <span class="tool-name">{{ tool.name }}</span>
+                    @if (tool.badge) {
+                      <span class="tag-badge">{{ tool.badge }}</span>
+                    }
+                    <span class="tool-cat-pill">{{ tool.category }}</span>
+                  </div>
+                  <p class="tool-desc">{{ tool.description }}</p>
+                </div>
+                <div class="tool-action-arrow">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- Empty State -->
+          <div class="palette-empty-state">
+            <div class="empty-icon-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <h4>No tools found</h4>
+            <p>No tools matched "{{ searchedText }}". Try searching for keywords like "hex", "encode", "qr", or "counter".</p>
+            <button type="button" class="btn-secondary btn-sm mt-2" (click)="searchedText = ''; selectedCategory = 'all'; performSearch('')">
+              View all tools
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Footer Quick Tips -->
+      <div class="palette-footer">
+        <div class="footer-tip">
+          <i class="fa-solid fa-bolt"></i>
+          <span>Instant, client-side, privacy-focused utilities</span>
         </div>
-      }
+        <div class="footer-shortcuts">
+          <span><kbd>↵</kbd> Open</span>
+          <span><kbd>ESC</kbd> Close</span>
+        </div>
+      </div>
+
     </div>
   </div>
 }

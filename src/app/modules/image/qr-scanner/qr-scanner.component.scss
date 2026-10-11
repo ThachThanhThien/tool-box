@@ -1,6 +1,204 @@
-zxing-scanner {
-  display: block;
-  width: 100%;
-  max-width: 500px;
-  margin-bottom: 10px;
+.qr-scanner-hub {
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.scan-mode-tabs {
+  display: flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 2px;
+
+  .mode-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    transition: all var(--transition);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    &.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 1px 4px var(--accent-glow);
+    }
+  }
+}
+
+.panel-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.upload-dropzone {
+  border: 2px dashed var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 36px 20px;
+  text-align: center;
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: all var(--transition);
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover,
+  &.dragging {
+    border-color: var(--accent);
+    background: var(--bg-surface-hover);
+  }
+
+  .dropzone-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .dropzone-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .dropzone-sub {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .preview-image-wrap {
+    .uploaded-img {
+      max-width: 220px;
+      max-height: 220px;
+      border-radius: var(--radius-md);
+      object-fit: contain;
+      box-shadow: var(--shadow-sm);
+    }
+    .dropzone-tip {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  }
+}
+
+.camera-viewport-card {
+  min-height: 280px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .scanner-feed-wrap {
+    width: 100%;
+    max-height: 360px;
+    position: relative;
+    overflow: hidden;
+
+    zxing-scanner {
+      width: 100%;
+    }
+
+    .scanner-crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 180px;
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-md);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+    }
+  }
+
+  .camera-offline-state {
+    padding: 36px 20px;
+    text-align: center;
+  }
+}
+
+.result-content-card {
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  word-break: break-all;
+
+  .result-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+}
+
+.empty-result-state {
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-md);
+}
+
+.history-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.history-chips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .history-scan-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 12px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all var(--transition);
+
+    &:hover {
+      background: var(--bg-surface-hover);
+      color: var(--text-primary);
+
+      .history-item-arrow {
+        color: var(--accent);
+      }
+    }
+
+    .history-item-arrow {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+  }
 }

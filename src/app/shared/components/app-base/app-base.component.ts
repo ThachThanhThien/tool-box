@@ -9,15 +9,19 @@ import {Router} from "@angular/router";
   template: '',
 })
 export abstract class AppBaseComponent {
-  helperServices: HelperServices;
-  router: Router;
+  helperServices: HelperServices | null;
+  router: Router | null;
 
   constructor(injector: Injector) {
-    this.helperServices = injector.get(HelperServices);
-    this.router = injector.get(Router);
+    this.helperServices = injector.get(HelperServices, null);
+    this.router = injector.get(Router, null);
   }
 
   copyString(value: string | null) {
-    this.helperServices.copyString(value);
+    if (this.helperServices) {
+      this.helperServices.copyString(value);
+    } else if (value && typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(value);
+    }
   }
 }

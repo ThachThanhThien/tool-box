@@ -1,29 +1,39 @@
+.app-layout-container {
+  height: 100vh;
+  background: var(--bg-canvas);
+}
+
 .sidebar-container {
-  width: 260px;
+  width: 270px;
   background: var(--bg-elevated);
-  border-right: 1px solid var(--border);
-  transition: width var(--transition-slow);
+  border-right: 1px solid var(--border-subtle);
+  transition: width var(--transition);
+  box-shadow: var(--shadow-sm);
 }
 
 .main-container {
   height: 100vh;
-  background: var(--bg-primary);
-  position: relative;
+  background: var(--bg-canvas);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .top-header {
+  height: 64px;
   background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  z-index: 10;
+  gap: 16px;
+  z-index: 20;
+  box-shadow: var(--shadow-sm);
 }
 
 .side-menu-toggle {
-  background: transparent;
-  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   width: 40px;
   height: 40px;
@@ -32,37 +42,46 @@
   justify-content: center;
   transition: all var(--transition);
   color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
 
   &:hover {
-    background: var(--bg-surface);
+    background: var(--bg-surface-hover);
     border-color: var(--border-hover);
     color: var(--text-primary);
   }
 
   i {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 .content-wrapper {
-  padding: 32px;
-  position: relative;
-  z-index: 1;
-  height: calc(100vh - 64px);
+  flex: 1;
+  padding: 32px 36px;
   overflow-y: auto;
+  position: relative;
+  background: var(--bg-canvas);
 }
 
 // ─── Responsive ──────────────────────────────────────────────────
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .sidebar-container {
-    width: 240px;
+    width: 280px;
   }
 
   .content-wrapper {
-    padding: 20px 16px;
+    padding: 24px 20px;
   }
 
   .top-header {
-    padding: 10px 16px;
+    padding: 0 16px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .content-wrapper {
+    padding: 16px 12px;
   }
 }

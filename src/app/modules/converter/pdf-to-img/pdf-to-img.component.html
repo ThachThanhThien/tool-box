@@ -1,15 +1,53 @@
-<app-page-header header="PDF to Images" description="PDF to Images"></app-page-header>
+<app-page-header
+  header="PDF to Images Converter"
+  category="Converters"
+  description="Convert PDF document pages into high-resolution PNG image files with instant preview."
+  badge="Converters">
+</app-page-header>
 
-<div class="container mt-4">
-  <app-file-uploader (onFileUploaded)="onFileSelected($event)"></app-file-uploader>
-  <div class="mt-2" *ngIf="images.length">
-    <h3 class="m-0">Converted Images:</h3>
-    <div class="row">
-      <div class="col-2 mt-2 image-container" *ngFor="let img of images">
-        <img [src]="img" alt="PDF Page" class="pdf-image" (click)="docPreview.show(img)">
+<div class="pdf-img-hub fade-in">
+  <div class="tool-workspace-card mb-4">
+    <app-file-uploader
+      (onFileUploaded)="onFileSelected($event)"
+      acceptFile="application/pdf"
+      title="Upload PDF Document"
+      description="Drop your multi-page PDF document here">
+    </app-file-uploader>
+  </div>
+
+  @if (isLoading) {
+    <div class="tool-workspace-card text-center py-4 mb-4">
+      <div class="spinner-border text-primary mb-2" role="status"></div>
+      <p class="m-0 text-secondary font-mono">{{ progressText }}</p>
+    </div>
+  }
+
+  @if (images.length > 0) {
+    <div class="tool-workspace-card">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h3 class="panel-heading">Converted Pages ({{ images.length }})</h3>
+        <span class="text-muted" style="font-size: 12px;">Click any image to view full preview</span>
+      </div>
+
+      <div class="row g-3">
+        @for (img of images; track img; let idx = $index) {
+          <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="page-thumbnail-card hub-card">
+              <div class="img-preview-box" (click)="docPreview.show(img)">
+                <img [src]="img" [alt]="'Page ' + (idx + 1)" class="pdf-thumb-img">
+              </div>
+              <div class="thumb-footer">
+                <span class="page-label font-mono">Page {{ idx + 1 }}</span>
+                <button type="button" class="btn-ghost btn-sm" (click)="downloadImage(img, idx)" title="Download Page {{ idx + 1 }}">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 </div>
 
 <app-doc-preview #docPreview></app-doc-preview>

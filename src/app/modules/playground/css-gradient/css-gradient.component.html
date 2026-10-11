@@ -1,49 +1,139 @@
-<app-page-header header="CSS Gradient" description="CSS Gradient"></app-page-header>
+<app-page-header
+  header="CSS Gradient Studio"
+  category="Playground &amp; Code"
+  description="Design linear and radial gradients with interactive color stops, directional angles, and ready-to-use CSS output."
+  badge="Playground & Code">
+</app-page-header>
 
-<div class="sample-gradient" [style.background]="gradientStyle"></div>
-
-<div class="mt-4 row">
-  <div class="col-5 row">
-    <div class="col-12">
-      <div class="d-flex justify-content-center">
-        <app-color-palette [hue]="hue" (color)="onSelectColor($event)"></app-color-palette>
-      </div>
-      <div class="d-flex justify-content-center">
-        <app-color-slider (color)="hue=$event"></app-color-slider>
-      </div>
+<div class="gradient-hub-container fade-in">
+  <!-- Live Gradient Canvas Hero -->
+  <div class="gradient-preview-card mb-4" [style.background]="gradientStyle">
+    <div class="preview-overlay-info">
+      <span class="preview-style-text font-mono">{{ gradientStyle }}</span>
     </div>
   </div>
-  <div class="col-3 row">
-    <div>
-      <mat-button-toggle-group name="gradient-mode" [(ngModel)]="selectedMode" (ngModelChange)="updateGradient()">
-        @for (item of gradientModes; track item) {
-          <mat-button-toggle [value]="item.value">{{ item.name }}</mat-button-toggle>
-        }
-      </mat-button-toggle-group>
-    </div>
-<!--    <app-degree-select></app-degree-select>-->
-  </div>
-  <div class="col-4">
-    @for (item of colorStops; track item; let i = $index) {
-      <div class="py-2 d-flex align-items-center justify-content-between" style="height: 60px">
-        <div class="sample-color-container" [ngClass]="currentColorIndex === i ? 'selected' : ''">
-          <div class="sample-color" style="--color: {{item.color}}" (click)="currentColorIndex = i"></div>
-        </div>
-        <mat-form-field class="input-field">
-          <input matInput type="number" [(ngModel)]="item.stop" (change)="onColorStopChanged(item)">
-        </mat-form-field>
-        <button mat-icon-button matSuffix (click)="removeColor(i)">
-          <i class="fa-solid fa-xmark"></i>
+
+  <!-- Presets Bar -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="text-muted fw-bold" style="font-size: 12px; text-transform: uppercase;">Curated Presets:</span>
+      @for (p of presets; track p.name) {
+        <button
+          type="button"
+          class="btn-action-pill"
+          (click)="applyPreset(p)">
+          {{ p.name }}
         </button>
-      </div>
-    }
-    <button mat-icon-button matSuffix (click)="addColorStop()">
-      <i class="fa-solid fa-plus"></i>
-    </button>
+      }
+    </div>
   </div>
+
+  <div class="row g-4 mb-4">
+    <!-- Left: Type & Angle Controls -->
+    <div class="col-lg-5 col-12">
+      <div class="tool-workspace-card h-100">
+        <h3 class="panel-heading mb-3">Gradient Type &amp; Direction</h3>
+
+        <!-- Mode Toggle -->
+        <div class="btn-group-pill w-100 mb-4">
+          <button
+            type="button"
+            class="pill-btn flex-fill"
+            [class.active]="selectedMode === 'linear'"
+            (click)="selectedMode = 'linear'; updateGradient()">
+            Linear Gradient
+          </button>
+          <button
+            type="button"
+            class="pill-btn flex-fill"
+            [class.active]="selectedMode === 'radial'"
+            (click)="selectedMode = 'radial'; updateGradient()">
+            Radial Gradient
+          </button>
+        </div>
+
+        @if (selectedMode === 'linear') {
+          <!-- Angle Slider -->
+          <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <label class="form-label-sm">Angle Direction:</label>
+              <span class="angle-badge font-mono">{{ angle }}°</span>
+            </div>
+            <mat-slider min="0" max="360" step="5" class="w-100">
+              <input matSliderThumb [(ngModel)]="angle" (ngModelChange)="updateGradient()">
+            </mat-slider>
+
+            <!-- Angle Presets -->
+            <div class="d-flex flex-wrap gap-1 mt-2">
+              @for (ap of anglePresets; track ap.val) {
+                <button
+                  type="button"
+                  class="angle-preset-btn font-mono"
+                  [class.active]="angle === ap.val"
+                  (click)="setAngle(ap.val)">
+                  {{ ap.label }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right: Color Stops Configuration -->
+    <div class="col-lg-7 col-12">
+      <div class="tool-workspace-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="panel-heading">Color Stops ({{ colorStops.length }})</h3>
+          <button type="button" class="btn-secondary btn-sm" (click)="addColorStop()">
+            <i class="fa-solid fa-plus me-1"></i> Add Color Stop
+          </button>
+        </div>
+
+        <div class="color-stops-list">
+          @for (stop of colorStops; track stop; let idx = $index) {
+            <div class="color-stop-row">
+              <div class="d-flex align-items-center gap-2">
+                <input
+                  type="color"
+                  class="stop-color-input"
+                  [(ngModel)]="stop.color"
+                  (ngModelChange)="updateGradient()">
+                <input
+                  type="text"
+                  class="stop-hex-input font-mono"
+                  [(ngModel)]="stop.color"
+                  (ngModelChange)="updateGradient()"
+                  maxlength="7">
+              </div>
+
+              <!-- Stop Percentage Slider -->
+              <div class="d-flex align-items-center gap-2 flex-grow-1 mx-2">
+                <mat-slider min="0" max="100" step="1" class="flex-grow-1">
+                  <input matSliderThumb [(ngModel)]="stop.stop" (ngModelChange)="updateGradient()">
+                </mat-slider>
+                <span class="stop-percent-text font-mono">{{ stop.stop }}%</span>
+              </div>
+
+              <button
+                type="button"
+                class="remove-stop-btn"
+                (click)="removeColor(idx)"
+                [disabled]="colorStops.length <= 2"
+                title="Remove Stop">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generated CSS Output Snippet -->
+  <app-code-snippet
+    [code]="gradientCssCode"
+    language="css"
+    title="Ready-to-use CSS">
+  </app-code-snippet>
 </div>
-
-<app-code-snippet [code]="gradientCode" language="css">
-</app-code-snippet>
-
-

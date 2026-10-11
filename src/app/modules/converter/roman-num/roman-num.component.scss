@@ -1,0 +1,96 @@
+.roman-hub-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.form-label-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.panel-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.large-roman-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition);
+
+  &:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+}
+
+.error-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--error-subtle);
+  border: 1px solid var(--error);
+  color: var(--error);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.breakdown-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .breakdown-chip {
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+  }
+
+  .equals-tag {
+    font-size: 15px;
+    color: var(--accent);
+  }
+}
+
+.reference-symbols-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+
+  .symbol-card {
+    padding: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    .ref-sym {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .ref-val {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+  }
+}

@@ -1,22 +1,100 @@
-<app-page-header header="CSS Snippets" description="CSS Snippets"></app-page-header>
+<app-page-header header="CSS Snippets & Components" description="Interactive gallery of modern CSS animated buttons and micro-interaction loaders with zero JavaScript dependencies."></app-page-header>
 
-<div class="row">
-  <div class="col-12">
-    <div class="snippet-list">
-      <mat-list class="d-flex justify-content-start">
-        @for (item of codeSnippets; track item) {
-          <mat-list-item style="width: auto" [ngClass]="item.isSelected ? 'selected' : ''">
-            <span class="pointer" (click)="onSelect(item)">{{ item.name }}</span>
-          </mat-list-item>
-        }
-      </mat-list>
-    </div>
+<!-- Category Selector & Stats -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 mt-2">
+  <div class="category-tabs d-flex gap-2">
+    @for (cat of categories; track cat) {
+      <button class="cat-btn"
+              [class.active]="selectedCategory === cat"
+              (click)="selectCategory(cat)">
+        <i class="fa-solid me-1" [class.fa-toggle-on]="cat === 'Button'" [class.fa-spinner]="cat === 'Loader'"></i>
+        {{ cat }}s
+        <span class="count-pill">
+          {{ (cat === 'Button' ? 7 : 20) }}
+        </span>
+      </button>
+    }
   </div>
-  <div class="col-12 row">
-    <div *ngFor="let template of safeTemplates"
-         class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-center justify-content-center snippet-item"
-         (click)="copySnippet(template)">
-      <span [innerHTML]="template.html"></span>
-    </div>
+
+  <div class="text-sm text-muted">
+    <i class="fa-solid fa-circle-info text-accent me-1"></i>
+    Click any preview or use the action buttons to copy HTML and CSS
   </div>
+</div>
+
+<!-- Code Inspection Drawer (when a snippet is inspected) -->
+@if (inspectedSnippet) {
+  <div class="hub-card p-4 mb-4 border-accent animate-fade-in">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-subtle text-accent">{{ inspectedSnippet.category }}</span>
+        <h4 class="mb-0 fs-6 fw-bold text-primary">{{ inspectedSnippet.name }} — Source Code</h4>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="btn btn-outline-secondary" [class.active]="codeViewMode === 'combined'" (click)="codeViewMode = 'combined'">HTML + CSS</button>
+          <button type="button" class="btn btn-outline-secondary" [class.active]="codeViewMode === 'css'" (click)="codeViewMode = 'css'">CSS Only</button>
+          <button type="button" class="btn btn-outline-secondary" [class.active]="codeViewMode === 'html'" (click)="codeViewMode = 'html'">HTML Only</button>
+        </div>
+        <button class="btn-icon" (click)="inspectedSnippet = null" title="Close code viewer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <app-code-snippet
+      [code]="inspectCodeContent"
+      [language]="inspectCodeLanguage">
+    </app-code-snippet>
+  </div>
+}
+
+<!-- Snippet Gallery Grid -->
+<div class="row g-4">
+  @for (snippet of currentCategorySnippets; track snippet.id) {
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+      <div class="snippet-card hub-card h-100 d-flex flex-column" [class.inspected]="inspectedSnippet?.id === snippet.id">
+        <!-- Card Header -->
+        <div class="card-header-bar d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+          <span class="snippet-tag">{{ snippet.name }}</span>
+          <button class="btn-icon-sm" (click)="inspectSnippet(snippet)" title="Inspect code">
+            <i class="fa-solid fa-code"></i>
+          </button>
+        </div>
+
+        <!-- Live Preview Stage -->
+        <div class="preview-stage flex-grow-1 d-flex align-items-center justify-content-center p-3"
+             (click)="copyFullSnippet(snippet)"
+             title="Click to copy HTML & CSS">
+          <div class="preview-wrapper" [innerHTML]="snippet.safeHtml"></div>
+        </div>
+
+        <!-- Action Bar Footer -->
+        <div class="card-footer-bar px-3 py-2 border-top d-flex align-items-center justify-content-between">
+          <button class="action-btn"
+                  [class.copied]="snippet.copiedType === 'all'"
+                  (click)="copyFullSnippet(snippet)"
+                  title="Copy combined HTML and CSS">
+            <i class="fa-solid" [class.fa-check]="snippet.copiedType === 'all'" [class.fa-copy]="snippet.copiedType !== 'all'"></i>
+            <span>{{ snippet.copiedType === 'all' ? 'Copied All' : 'Copy All' }}</span>
+          </button>
+
+          <div class="d-flex gap-1">
+            <button class="sub-btn"
+                    [class.copied]="snippet.copiedType === 'css'"
+                    (click)="copyCssOnly(snippet)"
+                    title="Copy CSS only">
+              <span>CSS</span>
+            </button>
+            <button class="sub-btn"
+                    [class.copied]="snippet.copiedType === 'html'"
+                    (click)="copyHtmlOnly(snippet)"
+                    title="Copy HTML only">
+              <span>HTML</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>

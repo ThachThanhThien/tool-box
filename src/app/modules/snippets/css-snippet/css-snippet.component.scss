@@ -1,9 +1,152 @@
-.snippet-item {
-  margin-bottom: 1rem;
-  height: 150px;
-  cursor: pointer;
+.category-tabs {
+  .cat-btn {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all var(--transition);
+
+    .count-pill {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    &:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    &.active {
+      background: var(--accent-subtle);
+      border-color: var(--accent);
+      color: var(--accent);
+
+      .count-pill {
+        background: var(--accent);
+        color: #ffffff;
+      }
+    }
+  }
 }
 
-mat-list-item.selected .pointer {
-  color: var(--accent) !important;
+.snippet-card {
+  transition: all var(--transition);
+  background: var(--bg-surface);
+
+  &:hover {
+    border-color: var(--border-focus);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &.inspected {
+    border-color: var(--accent);
+  }
+}
+
+.card-header-bar {
+  background: var(--bg-surface-elevated);
+
+  .snippet-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+}
+
+.btn-icon-sm {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 11px;
+  transition: all var(--transition);
+
+  &:hover {
+    background: var(--bg-surface-hover);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+}
+
+.preview-stage {
+  min-height: 140px;
+  cursor: pointer;
+  background: repeating-conic-gradient(var(--bg-surface-elevated) 0% 25%, var(--bg-surface) 0% 50%) 50% / 16px 16px;
+  position: relative;
+  overflow: hidden;
+
+  .preview-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.card-footer-bar {
+  background: var(--bg-surface-elevated);
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &.copied {
+    background: var(--emerald-subtle);
+    border-color: var(--emerald);
+    color: var(--emerald);
+  }
+}
+
+.sub-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+  }
+
+  &.copied {
+    border-color: var(--emerald);
+    color: var(--emerald);
+  }
 }

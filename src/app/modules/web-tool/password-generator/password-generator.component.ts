@@ -1,115 +1,162 @@
-import {Component, OnInit} from '@angular/core';
-import {FormsModule} from "@angular/forms";
-import {MatFormField, MatSuffix} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
-import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
-import {MatSlider, MatSliderThumb} from "@angular/material/slider";
-import {MatIconButton} from "@angular/material/button";
-import {MatCheckbox} from "@angular/material/checkbox";
-import {AppBaseComponent} from "../../../shared/components/app-base/app-base.component";
-import {NgStyle} from "@angular/common";
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { copyToClipboard } from '../../../shared/Helper';
 
-const upperCaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const lowerCaseChars = 'abcdefghijklmnopqrstuvwxyz';
-const numbers = '0123456789';
-const specialChars = "!@#$%^&*()_+{}[];:<>,./?~-=";
-const passStrengthMeter = {
-  veryWeak: {
-    name: 'Very Weak',
-    color: '#f62626',
-    icon: '',
-  },
-  weak: {
-    name: 'Weak',
-    color: '#dc6916',
-    icon: '',
-  },
-  good: {
-    name: 'Good',
-    color: '#f8d005',
-    icon: '',
-  },
-  strong: {
-    name: 'Strong',
-    color: '#32dd82',
-    icon: '',
-  },
-  veryStrong: {
-    name: 'Very Strong',
-    color: '#3bef05',
-    icon: '',
-  },
+interface StrengthInfo {
+  name: string;
+  color: string;
+  score: number; // 1 to 5
+  entropy: number;
 }
 
 @Component({
   selector: 'app-password-generator',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
-    MatFormField,
-    MatInput,
-    PageHeaderComponent,
-    MatSlider,
-    MatSliderThumb,
-    MatIconButton,
-    MatSuffix,
-    MatCheckbox,
-    NgStyle
+    MatSliderModule,
+    MatCheckboxModule,
+    MatSnackBarModule,
+    PageHeaderComponent
   ],
   templateUrl: './password-generator.component.html',
   styleUrl: './password-generator.component.scss'
 })
-export class PasswordGeneratorComponent extends AppBaseComponent implements OnInit {
+export class PasswordGeneratorComponent implements OnInit {
   password = '';
-  passwordLength = 9;
+  passwordLength = 16;
   hasUppercase = true;
   hasLowerCase = true;
   hasNumber = true;
-  hasSpecialChar = false;
-  passStrength: any = {};
+  hasSpecialChar = true;
+  excludeSimilar = false;
 
-  ngOnInit() {
+  passStrength: StrengthInfo = { name: 'Strong', color: '#10b981', score: 4, entropy: 90 };
+  history: string[] = [];
+
+  readonly presets = [
+    { name: 'Maximum Security', length: 24, upper: true, lower: true, num: true, sym: true },
+    { name: 'Standard Strong', length: 16, upper: true, lower: true, num: true, sym: true },
+    { name: 'Simple Alphanumeric', length: 12, upper: true, lower: true, num: true, sym: false },
+    { name: 'Numeric PIN', length: 6, upper: false, lower: false, num: true, sym: false }
+  ];
+
+  constructor(private snackBar: MatSnackBar) {}
+
+  ngOnInit(): void {
     this.generatePassword();
   }
 
-  generatePassword() {
-    let characterPool = "";
+  generatePassword(): void {
+    let charset = '';
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+~|}{[]:;?><,.-=';
 
-    if (this.hasUppercase) characterPool += upperCaseChars;
-    if (this.hasLowerCase) characterPool += lowerCaseChars;
-    if (this.hasNumber) characterPool += numbers;
-    if (this.hasSpecialChar) characterPool += specialChars;
-    this.password = '';
+    let guaranteedChars: string[] = [];
 
-    if (!characterPool) {
-      this.passStrength = {};
+    if (this.hasUppercase) {
+      charset += uppercase;
+      guaranteedChars.push(this.getRandomChar(uppercase));
+    }
+    if (this.hasLowerCase) {
+      charset += lowercase;
+      guaranteedChars.push(this.getRandomChar(lowercase));
+    }
+    if (this.hasNumber) {
+      charset += numbers;
+      guaranteedChars.push(this.getRandomChar(numbers));
+    }
+    if (this.hasSpecialChar) {
+      charset += symbols;
+      guaranteedChars.push(this.getRandomChar(symbols));
+    }
+
+    if (this.excludeSimilar) {
+      charset = charset.replace(/[il1Lo0O]/g, '');
+    }
+
+    if (!charset) {
+      this.password = '';
+      this.passStrength = { name: 'No Character Types Selected', color: '#f43f5e', score: 0, entropy: 0 };
       return;
     }
 
-    for (let i = 0; i < this.passwordLength; i++) {
-      const randomIndex = Math.floor(Math.random() * characterPool.length);
-      this.password += characterPool[randomIndex];
+    let result = [...guaranteedChars];
+    const array = new Uint32Array(this.passwordLength);
+    crypto.getRandomValues(array);
+
+    for (let i = result.length; i < this.passwordLength; i++) {
+      result.push(charset[array[i] % charset.length]);
     }
-    this.passStrength = this.calculatePasswordEntropy(this.password);
+
+    // Shuffle characters
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = array[i] % (i + 1);
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+
+    this.password = result.slice(0, this.passwordLength).join('');
+    this.calculateStrength(charset.length);
+
+    if (this.password && !this.history.includes(this.password)) {
+      this.history = [this.password, ...this.history].slice(0, 5);
+    }
   }
 
-  calculatePasswordEntropy(password: string): any {
-    let charSetSize = 0;
+  private getRandomChar(set: string): string {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return set[array[0] % set.length];
+  }
 
-    // Determine character set size
-    if (/[a-z]/.test(password)) charSetSize += 26; // Lowercase
-    if (/[A-Z]/.test(password)) charSetSize += 26; // Uppercase
-    if (/[0-9]/.test(password)) charSetSize += 10; // Numbers
-    if (/[@#$%^&*!()_+|~=`{}\[\]:";'<>?,.\/\\]/.test(password)) charSetSize += 32; // Special characters
-    if (/[\u0080-\uFFFF]/.test(password)) charSetSize += 100; // Non-ASCII characters (approximation)
+  private calculateStrength(poolSize: number): void {
+    const entropy = Math.round(this.passwordLength * (Math.log(poolSize || 1) / Math.LN2));
 
-    // Calculate entropy
-    const entropy = password.length * Math.log2(charSetSize);
+    let score = 1;
+    let name = 'Very Weak';
+    let color = '#f43f5e';
 
-    if (entropy < 28) return passStrengthMeter.veryWeak;
-    if (entropy < 36) return passStrengthMeter.weak;
-    if (entropy < 60) return passStrengthMeter.good;
-    if (entropy < 128) return passStrengthMeter.strong;
-    return passStrengthMeter.veryStrong;
+    if (entropy >= 80) {
+      score = 5;
+      name = 'Very Strong';
+      color = '#10b981';
+    } else if (entropy >= 60) {
+      score = 4;
+      name = 'Strong';
+      color = '#06b6d4';
+    } else if (entropy >= 40) {
+      score = 3;
+      name = 'Medium';
+      color = '#f59e0b';
+    } else if (entropy >= 25) {
+      score = 2;
+      name = 'Weak';
+      color = '#f97316';
+    }
+
+    this.passStrength = { name, color, score, entropy };
+  }
+
+  applyPreset(preset: typeof this.presets[0]): void {
+    this.passwordLength = preset.length;
+    this.hasUppercase = preset.upper;
+    this.hasLowerCase = preset.lower;
+    this.hasNumber = preset.num;
+    this.hasSpecialChar = preset.sym;
+    this.generatePassword();
+  }
+
+  copyString(val: string): void {
+    if (!val) return;
+    copyToClipboard(val);
+    this.snackBar.open('Password copied to clipboard!', '', { duration: 2000 });
   }
 }

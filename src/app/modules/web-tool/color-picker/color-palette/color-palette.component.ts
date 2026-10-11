@@ -82,7 +82,9 @@ export class ColorPaletteComponent implements OnChanges, AfterViewInit {
       this.draw();
       const pos = this.selectedPosition;
       if (pos && this.ctx) {
-        this.color.emit(this.getColorAtPosition(pos.x, pos.y));
+        queueMicrotask(() => {
+          this.color.emit(this.getColorAtPosition(pos.x, pos.y));
+        });
       }
     }
   }

@@ -1,12 +1,141 @@
-<app-page-header header="Stopwatch" description="Stopwatch"></app-page-header>
+<app-page-header header="High-Precision Stopwatch" description="Milliseconds-accurate digital chronograph with split times, lap records, keyboard shortcuts, and performance statistics."></app-page-header>
 
-<div class="stopwatch d-flex justify-content-center">
-  <div class="clock d-flex align-items-center justify-content-center">
-    {{getFormattedTime()}}
+<div class="row g-4 mt-1 justify-content-center">
+  <div class="col-lg-8 col-md-10 col-12">
+    <!-- Chronograph Hero Card -->
+    <div class="hub-card p-4 text-center">
+      <!-- Digital LCD Display -->
+      <div class="digital-dial-container mb-4">
+        <div class="digital-time-display">
+          @if (formatted.hours) {
+            <span class="digit-unit">{{ formatted.hours }}</span>
+            <span class="colon">:</span>
+          }
+          <span class="digit-unit">{{ formatted.minutes }}</span>
+          <span class="colon">:</span>
+          <span class="digit-unit">{{ formatted.seconds }}</span>
+          <span class="dot">.</span>
+          <span class="digit-ms">{{ formatted.milliseconds }}</span>
+        </div>
+        <div class="status-indicator mt-2">
+          <span class="status-badge" [class.running]="running" [class.paused]="pausing">
+            <i class="fa-solid fa-circle pulse-dot me-1"></i>
+            {{ running ? 'RUNNING' : (pausing ? 'PAUSED' : 'READY') }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Action Control Buttons -->
+      <div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-3">
+        <!-- Start / Pause / Resume Button -->
+        @if (!running) {
+          <button class="btn btn-primary btn-lg px-4" (click)="start()">
+            <i class="fa-solid fa-play me-2"></i>
+            {{ pausing ? 'Resume' : 'Start' }}
+          </button>
+        } @else {
+          <button class="btn btn-warning btn-lg px-4 text-dark" (click)="pause()">
+            <i class="fa-solid fa-pause me-2"></i>
+            Pause
+          </button>
+        }
+
+        <!-- Lap Button -->
+        <button class="btn btn-secondary btn-lg px-4"
+                [disabled]="!running"
+                (click)="recordLap()">
+          <i class="fa-solid fa-stopwatch-20 me-2"></i>
+          Lap
+        </button>
+
+        <!-- Reset Button -->
+        <button class="btn btn-outline-danger btn-lg px-4"
+                [disabled]="!running && !pausing && time === 0"
+                (click)="reset()">
+          <i class="fa-solid fa-rotate-left me-2"></i>
+          Reset
+        </button>
+      </div>
+
+      <!-- Keyboard Shortcuts Help -->
+      <div class="keyboard-hints d-flex flex-wrap justify-content-center gap-3 text-muted text-xs">
+        <span><kbd>Space</kbd> Start / Pause</span>
+        <span><kbd>L</kbd> Lap</span>
+        <span><kbd>R</kbd> Reset</span>
+      </div>
+    </div>
+
+    <!-- Lap Times & Analytics Section (Visible when laps recorded) -->
+    @if (laps.length > 0) {
+      <div class="hub-card p-4 mt-4 animate-fade-in">
+        <!-- Lap Metrics Summary -->
+        <div class="row g-3 mb-4 text-center">
+          <div class="col-4">
+            <div class="stat-pill p-2">
+              <span class="stat-label">Total Laps</span>
+              <span class="stat-value text-accent">{{ laps.length }}</span>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-pill p-2">
+              <span class="stat-label">Fastest Lap</span>
+              <span class="stat-value text-emerald font-monospace">{{ fastestLap ? formatMsToString(fastestLap.splitTime) : '--' }}</span>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-pill p-2">
+              <span class="stat-label">Average Lap</span>
+              <span class="stat-value text-primary font-monospace">{{ formatMsToString(averageLapTime) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lap Table Header with Export Actions -->
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+          <h4 class="fs-6 fw-bold mb-0 text-primary">Lap Records</h4>
+          <div class="d-flex gap-2">
+            <button class="btn-action-pill" (click)="copyLaps()" title="Copy lap table">
+              <i class="fa-solid fa-copy"></i>
+              <span>Copy</span>
+            </button>
+            <button class="btn-action-pill" (click)="exportCsv()" title="Download CSV">
+              <i class="fa-solid fa-file-csv text-emerald"></i>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Laps Table -->
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle mb-0 lap-table">
+            <thead>
+              <tr class="text-muted text-xs text-uppercase">
+                <th style="width: 20%;">Lap</th>
+                <th style="width: 40%;">Split Time</th>
+                <th style="width: 40%; text-align: right;">Overall Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (lap of laps; track lap.lapNumber) {
+                <tr [class.table-success-subtle]="laps.length > 1 && fastestLap?.lapNumber === lap.lapNumber"
+                    [class.table-danger-subtle]="laps.length > 1 && slowestLap?.lapNumber === lap.lapNumber">
+                  <td>
+                    <span class="badge bg-subtle text-accent fw-bold">#{{ lap.lapNumber }}</span>
+                    @if (laps.length > 1 && fastestLap?.lapNumber === lap.lapNumber) {
+                      <span class="badge bg-emerald-subtle text-emerald ms-1 text-xs">Fastest</span>
+                    }
+                    @if (laps.length > 1 && slowestLap?.lapNumber === lap.lapNumber) {
+                      <span class="badge bg-rose-subtle text-rose ms-1 text-xs">Slowest</span>
+                    }
+                  </td>
+                  <td class="font-monospace fw-semibold">{{ formatMsToString(lap.splitTime) }}</td>
+                  <td class="font-monospace text-muted" style="text-align: right;">{{ formatMsToString(lap.overallTime) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
   </div>
-</div>
-<div class="text-center">
-  <button class="btn btn-outline-success mx-2" (click)="start()" *ngIf="!running">Start</button>
-  <button class="btn btn-outline-warning mx-2" (click)="pause()" *ngIf="running">Pause</button>
-  <button class="btn btn-outline-secondary mx-2" (click)="stop()" *ngIf="running || pausing">Stop</button>
 </div>

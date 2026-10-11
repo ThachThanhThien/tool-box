@@ -1,21 +1,30 @@
-<mat-sidenav-container>
-  <mat-sidenav #sidenav mode="side" opened class="sidebar-container"
-               [fixedInViewport]="true">
+<mat-sidenav-container class="app-layout-container">
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="!isMobile"
+    class="sidebar-container"
+    [fixedInViewport]="true">
     <app-side-menu></app-side-menu>
   </mat-sidenav>
 
   <mat-sidenav-content class="main-container">
-    <div class="top-header">
-      <button class="side-menu-toggle" mat-button (click)="sidenav.toggle()">
+    <header class="top-header">
+      <button
+        class="side-menu-toggle"
+        type="button"
+        (click)="sidenav.toggle()"
+        title="Toggle Navigation Menu"
+        aria-label="Toggle Navigation Menu">
         <i class="fa-solid fa-bars"></i>
       </button>
       <app-top-menu style="flex-grow: 1" (showSearchResult)="searchResult.show()"></app-top-menu>
-    </div>
-    <div class="content-wrapper fade-in">
+    </header>
+
+    <main class="content-wrapper">
       <router-outlet></router-outlet>
-    </div>
+    </main>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
 <app-search-result #searchResult></app-search-result>
-
-

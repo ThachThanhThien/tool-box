@@ -1,18 +1,187 @@
-<app-page-header header="Current Local Time"
-                 description="Current Local Time"></app-page-header>
+<app-page-header header="Current Time & Epoch Hub" description="Real-time local digital clock, global developer world timezones, and precision Unix epoch timestamp converters."></app-page-header>
 
-<div class="time d-flex align-items-center justify-content-center">
-  <span class="time-unit">
-    {{currentTime|date:'HH'}}
-  </span> :
-  <span class="time-unit">
-    {{currentTime|date:'mm'}}
-  </span> :
-  <span class="time-unit">
-    {{currentTime|date:'ss'}}
-  </span>
-</div>
-<div class="date" (click)="openCalendar()">
-  {{currentTime|date:'EEEE, MMMM d, y, zzzz'}}, Week {{weekNumber}}
+<!-- Hero: Local Time Digital Dial -->
+<div class="row g-4 mt-1">
+  <div class="col-lg-8 col-12">
+    <div class="hub-card p-4 text-center hero-clock-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-subtle text-accent">
+            <i class="fa-solid fa-location-dot me-1"></i>
+            {{ localTimeZone }}
+          </span>
+          <span class="badge bg-subtle text-muted">{{ localUtcOffset }}</span>
+        </div>
+        <button class="btn-action-pill" (click)="openCalendar()" title="View full annual calendar">
+          <i class="fa-solid fa-calendar-days text-accent"></i>
+          <span>Calendar</span>
+        </button>
+      </div>
+
+      <!-- Giant Digital Clock Display -->
+      <div class="digital-hero-time mb-2">
+        <span class="time-digit">{{ currentTime | date:'HH' }}</span>
+        <span class="colon">:</span>
+        <span class="time-digit">{{ currentTime | date:'mm' }}</span>
+        <span class="colon">:</span>
+        <span class="time-digit text-accent">{{ currentTime | date:'ss' }}</span>
+      </div>
+
+      <!-- Human Readable Date & Week -->
+      <div class="date-hero-subtitle text-muted">
+        <span class="fw-semibold text-primary">{{ currentTime | date:'EEEE, MMMM d, y' }}</span>
+        <span class="mx-2">•</span>
+        <span>Week {{ weekNumber }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Unix Epoch Card -->
+  <div class="col-lg-4 col-12">
+    <div class="hub-card p-4 h-100 d-flex flex-column justify-content-between">
+      <div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="fs-6 fw-bold mb-0 text-primary">Live Unix Timestamp</h4>
+          <span class="live-pulse-badge">
+            <i class="fa-solid fa-circle pulse-dot"></i> Live
+          </span>
+        </div>
+
+        <!-- Epoch Seconds Box -->
+        <div class="epoch-box p-3 mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-xs text-muted text-uppercase fw-semibold">Seconds (s)</span>
+            <button class="btn-icon-xs" (click)="copyString(epochSeconds.toString())" title="Copy seconds">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+          <div class="epoch-value font-monospace text-emerald">{{ epochSeconds }}</div>
+        </div>
+
+        <!-- Epoch Milliseconds Box -->
+        <div class="epoch-box p-3">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-xs text-muted text-uppercase fw-semibold">Milliseconds (ms)</span>
+            <button class="btn-icon-xs" (click)="copyString(epochMillis.toString())" title="Copy milliseconds">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+          <div class="epoch-value font-monospace text-accent">{{ epochMillis }}</div>
+        </div>
+      </div>
+
+      <div class="text-xs text-muted mt-3">
+        Seconds elapsed since Jan 01 1970 00:00:00 UTC. Standard epoch representation for databases, JWT tokens, and APIs.
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- World Clocks Grid -->
+<div class="mt-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h3 class="fs-6 fw-bold mb-0 text-primary">Global Developer Hubs</h3>
+    <span class="text-xs text-muted">Auto-synchronized with Intl API</span>
+  </div>
+
+  <div class="row g-3">
+    @for (wc of worldClocks; track wc.city) {
+      <div class="col-xl col-md-4 col-sm-6 col-12">
+        <div class="hub-card p-3 world-clock-item h-100">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <div class="wc-city fw-bold">{{ wc.city }}</div>
+              <div class="wc-country text-xs text-muted">{{ wc.country }}</div>
+            </div>
+            <span class="badge bg-subtle text-muted text-xs font-monospace">{{ wc.offsetStr }}</span>
+          </div>
+          <div class="wc-time font-monospace text-primary fw-bold">{{ wc.timeStr }}</div>
+          <div class="wc-date text-xs text-muted mt-1">{{ wc.dateStr }}</div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Bidirectional Unix Timestamp Converter -->
+<div class="row g-4 mt-1">
+  <!-- Converter: Epoch -> Human Date -->
+  <div class="col-lg-6 col-12">
+    <div class="hub-card p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fs-6 fw-bold mb-0 text-primary">Epoch to Date Converter</h4>
+        <button class="btn-action-pill" (click)="setCurrentEpochToInput()" title="Set current epoch">
+          <i class="fa-solid fa-clock-rotate-left text-accent"></i>
+          <span>Use Current</span>
+        </button>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-xs fw-semibold text-muted text-uppercase">Unix Timestamp (s or ms)</label>
+        <div class="input-group">
+          <input type="text"
+                 class="form-control font-monospace"
+                 placeholder="e.g. 1715000000"
+                 [(ngModel)]="inputEpoch"
+                 (ngModelChange)="convertEpoch()">
+          <button class="btn btn-outline-secondary" type="button" (click)="convertEpoch()">Convert</button>
+        </div>
+      </div>
+
+      @if (convertedEpochDate) {
+        <div class="result-breakdown p-3 rounded">
+          <div class="result-row d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted text-xs">ISO 8601:</span>
+            <span class="font-monospace text-xs text-primary fw-semibold">{{ convertedEpochIso }}</span>
+          </div>
+          <div class="result-row d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted text-xs">UTC String:</span>
+            <span class="font-monospace text-xs text-primary">{{ convertedEpochUtc }}</span>
+          </div>
+          <div class="result-row d-flex justify-content-between py-1">
+            <span class="text-muted text-xs">Local Time:</span>
+            <span class="font-monospace text-xs text-emerald fw-semibold">{{ convertedEpochLocal }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Converter: Human Date -> Epoch -->
+  <div class="col-lg-6 col-12">
+    <div class="hub-card p-4 h-100">
+      <h4 class="fs-6 fw-bold mb-3 text-primary">Date to Unix Timestamp</h4>
+
+      <div class="mb-3">
+        <label class="form-label text-xs fw-semibold text-muted text-uppercase">Pick Date & Time</label>
+        <input type="datetime-local"
+               class="form-control font-monospace"
+               [(ngModel)]="inputDateString"
+               (ngModelChange)="convertDateToEpoch()">
+      </div>
+
+      @if (resultEpochSec !== null) {
+        <div class="result-breakdown p-3 rounded">
+          <div class="result-row d-flex justify-content-between align-items-center py-2 border-bottom">
+            <span class="text-muted text-xs">Epoch Seconds:</span>
+            <div class="d-flex align-items-center gap-2">
+              <span class="font-monospace text-xs text-emerald fw-bold">{{ resultEpochSec }}</span>
+              <button class="btn-icon-xs" (click)="copyString(resultEpochSec.toString())" title="Copy">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+          </div>
+          <div class="result-row d-flex justify-content-between align-items-center py-2">
+            <span class="text-muted text-xs">Epoch Milliseconds:</span>
+            <div class="d-flex align-items-center gap-2">
+              <span class="font-monospace text-xs text-accent fw-bold">{{ resultEpochMs }}</span>
+              <button class="btn-icon-xs" (click)="copyString(resultEpochMs?.toString() || '')" title="Copy">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

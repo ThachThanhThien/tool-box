@@ -1,41 +1,61 @@
 import {AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {MatFormField} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule} from "@angular/forms";
 import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogComponent} from "../../../shared/components/dialog/dialog.component";
 import {DialogData} from "../../../core/models/dialog-data";
-import {size} from "lodash";
+import {NgIf, NgForOf} from "@angular/common";
+
+const WHEEL_COLORS = [
+  '#4f46e5', // Indigo
+  '#06b6d4', // Cyan
+  '#10b981', // Emerald
+  '#f59e0b', // Amber
+  '#f43f5e', // Rose
+  '#8b5cf6', // Violet
+  '#14b8a6', // Teal
+  '#ec4899', // Pink
+  '#3b82f6', // Blue
+  '#84cc16'  // Lime
+];
+
+const PRESETS = [
+  { name: 'Yes / No / Maybe', items: ['Yes', 'No', 'Maybe', 'Definitely', 'Never'] },
+  { name: 'Dice Roll (1-6)', items: ['1', '2', '3', '4', '5', '6'] },
+  { name: 'Lunch Choices', items: ['Pizza', 'Sushi', 'Burgers', 'Tacos', 'Salad', 'Ramen', 'Pasta'] },
+  { name: 'Coin Flip', items: ['Heads', 'Tails'] },
+  { name: 'Team Meeting Order', items: ['Alex', 'Brian', 'Chloe', 'David', 'Elena'] }
+];
 
 @Component({
   selector: 'app-spinning-wheel',
   standalone: true,
   imports: [
-    MatFormField,
-    MatInput,
-    ReactiveFormsModule,
     FormsModule,
-    PageHeaderComponent
+    PageHeaderComponent,
+    NgIf,
+    NgForOf
   ],
   templateUrl: './spinning-wheel.component.html',
   styleUrl: './spinning-wheel.component.scss'
 })
 export class SpinningWheelComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+
   values: string[] = [];
-  selectedValue: string | null = null;
   inputValues = '';
-  dialog = inject(MatDialog);
+  isSpinning = false;
+  selectedValue: string | null = null;
+  history: string[] = [];
+  presets = PRESETS;
+
   private context!: CanvasRenderingContext2D;
   private startAngle = 0;
-  private spinAngle = 0;
-  isSpinning = false;
-  private colors = ['#3369e8', '#d50f25', '#eeb211', '#009925'];
+  dialog = inject(MatDialog);
 
   ngOnInit() {
-    this.values = ['Anne', 'Ben', 'Camile', 'Dick'];
-    this.inputValues = this.values.join('\n')
+    this.values = ['Anne', 'Ben', 'Camile', 'Dick', 'Elena', 'Felix'];
+    this.inputValues = this.values.join('\n');
   }
 
   ngAfterViewInit(): void {
@@ -44,79 +64,176 @@ export class SpinningWheelComponent implements OnInit, AfterViewInit {
   }
 
   onValuesChanged() {
-    this.values = (this.inputValues.split(/\r?\n|\r|\n/g) || []).filter(item => item);
+    this.values = (this.inputValues.split(/\r?\n|\r|\n/g) || [])
+      .map(s => s.trim())
+      .filter(item => item.length > 0);
     this.drawWheel();
   }
 
-  // Draw the spinning wheel on the canvas
+  loadPreset(preset: { name: string; items: string[] }) {
+    if (this.isSpinning) return;
+    this.values = [...preset.items];
+    this.inputValues = this.values.join('\n');
+    this.selectedValue = null;
+    this.drawWheel();
+  }
+
+  shuffleEntries() {
+    if (this.isSpinning || this.values.length <= 1) return;
+    const array = [...this.values];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    this.values = array;
+    this.inputValues = this.values.join('\n');
+    this.drawWheel();
+  }
+
+  removeWinner() {
+    if (!this.selectedValue) return;
+    this.values = this.values.filter(v => v !== this.selectedValue);
+    this.inputValues = this.values.join('\n');
+    this.selectedValue = null;
+    this.drawWheel();
+  }
+
+  clearEntries() {
+    if (this.isSpinning) return;
+    this.values = [];
+    this.inputValues = '';
+    this.selectedValue = null;
+    this.drawWheel();
+  }
+
   drawWheel(): void {
+    if (!this.canvasRef) return;
     const canvas = this.canvasRef.nativeElement;
     const ctx = this.context;
+    if (!ctx) return;
+
     const numValues = this.values.length;
-    const arcSize = (2 * Math.PI) / numValues;
-    const centerX = canvas.width / 2 - 2;
-    const centerY = canvas.height / 2 - 2;
-    const radius = canvas.width / 2 - 2;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = centerX - 12;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    if (numValues === 0) {
+      // Empty wheel placeholder
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = '#1e293b';
+      ctx.fill();
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Add entries to spin', centerX, centerY);
+      return;
+    }
+
+    const arcSize = (2 * Math.PI) / numValues;
+
+    // Draw slices
     this.values.forEach((value, i) => {
       const startAngle = this.startAngle + i * arcSize;
       const endAngle = startAngle + arcSize;
 
-      // Segment background color
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-      ctx.fillStyle = this.colors[i % 4 === 0 && i >= 4 && i === this.values.length - 1 ? 1 : i % 4];
+      ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
       ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Text (the value)
+      // Text label
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + arcSize / 2);
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#fff';
-      ctx.font = '16px Arial';
-      ctx.fillText(value, radius - 10, 10);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 15px sans-serif';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+      ctx.shadowBlur = 4;
+
+      // Truncate long text
+      const maxText = value.length > 18 ? value.substring(0, 16) + '...' : value;
+      ctx.fillText(maxText, radius - 20, 5);
       ctx.restore();
     });
 
-    // Draw the static triangle on the right side of the wheel
-    this.drawStaticTriangle();
+    // Draw center hub
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 34, 0, 2 * Math.PI);
+    ctx.fillStyle = '#0f172a';
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('SPIN', centerX, centerY + 4);
+
+    // Draw pointer needle at 3 o'clock (right side) pointing inward
+    this.drawPointer(centerX, centerY, radius);
   }
 
-  // Spin the wheel with acceleration and deceleration
+  private drawPointer(centerX: number, centerY: number, radius: number): void {
+    const ctx = this.context;
+    const pointerSize = 24;
+    const tipX = centerX + radius - 6;
+    const tipY = centerY;
+
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 6;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(tipX, tipY);
+    ctx.lineTo(tipX + pointerSize, tipY - pointerSize / 2);
+    ctx.lineTo(tipX + pointerSize, tipY + pointerSize / 2);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+  }
+
   spin(): void {
-    if (this.isSpinning || !size(this.values)) return;
+    if (this.isSpinning || this.values.length < 2) return;
 
     this.isSpinning = true;
-    const spinDuration = 5000; // Spin time in milliseconds
-    const totalRotationDegrees = Math.random() * 360 + 360 * 10; // Total random degrees to spin (at least 10 full rotations)
+    this.selectedValue = null;
+    const spinDuration = 4500;
+    const totalRotationDegrees = Math.random() * 360 + 360 * 8; // At least 8 full rotations
     let currentAngle = 0;
     let startTime: number;
 
-    // Ease-in and ease-out cubic function for smooth acceleration and deceleration
-    const easeInOutCubic = (t: number) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
     const animateSpin = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / spinDuration, 1); // Progress between 0 and 1
+      const progress = Math.min(elapsed / spinDuration, 1);
 
-      // Apply ease-in-out effect for smoother acceleration and deceleration
-      const easingFactor = easeInOutCubic(progress);
+      const easingFactor = easeOutCubic(progress);
       const targetAngle = totalRotationDegrees * easingFactor;
       const deltaAngle = targetAngle - currentAngle;
       currentAngle = targetAngle;
 
-      // Update the wheel angle
       this.startAngle = (this.startAngle + (deltaAngle * Math.PI) / 180) % (2 * Math.PI);
       this.drawWheel();
 
-      // Continue the animation until the progress is 1 (completed)
       if (progress < 1) {
         requestAnimationFrame(animateSpin);
       } else {
@@ -128,40 +245,24 @@ export class SpinningWheelComponent implements OnInit, AfterViewInit {
     requestAnimationFrame(animateSpin);
   }
 
-  // Draw a static triangle on the right side of the canvas
-  drawStaticTriangle(): void {
-    const canvas = this.canvasRef.nativeElement;
-    const ctx = this.context;
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = canvas.width / 2;
-    const triangleSize = 30; // Increased triangle size for visibility
-
-    // Set the triangle position on the right edge of the wheel
-    const triangleX = centerX + radius - 15; // Slightly inside the wheel edge
-    const triangleY = centerY; // Vertically centered with the wheel
-
-    // Draw the triangle pointing inward toward the center
-    ctx.fillStyle = 'white'; // Make sure the color contrasts with the background
-    ctx.beginPath();
-    ctx.moveTo(triangleX, triangleY); // Tip of the triangle (inside the wheel)
-    ctx.lineTo(triangleX + triangleSize, triangleY - triangleSize / 2); // Top right corner
-    ctx.lineTo(triangleX + triangleSize, triangleY + triangleSize / 2); // Bottom right corner
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  // Determine the selected value based on the final spin angle
   determineSelectedValue(finalAngle: number): void {
     const numValues = this.values.length;
     const segmentAngle = (2 * Math.PI) / numValues;
-    const selectedIndex = Math.floor((2 * Math.PI - finalAngle) / segmentAngle) % numValues;
+    const normalizedAngle = (2 * Math.PI - (finalAngle % (2 * Math.PI))) % (2 * Math.PI);
+    const selectedIndex = Math.floor(normalizedAngle / segmentAngle) % numValues;
     this.selectedValue = this.values[selectedIndex];
+
+    // Record in history
+    this.history.unshift(this.selectedValue);
+    if (this.history.length > 8) {
+      this.history.pop();
+    }
+
     const dialogData = new DialogData();
-    dialogData.title = 'The chosen one is'
+    dialogData.title = 'The Chosen Winner!';
     dialogData.message = this.selectedValue;
     this.dialog.open(DialogComponent, {
       data: dialogData
-    })
+    });
   }
 }

@@ -1,79 +1,140 @@
 import { Component } from '@angular/core';
-import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
-import {ZXingScannerModule} from "@zxing/ngx-scanner";
-import jsQR from "jsqr";
-import {MatIconButton} from "@angular/material/button";
-import {MatFormField, MatSuffix} from "@angular/material/form-field";
-import {AppBaseComponent} from "../../../shared/components/app-base/app-base.component";
-import {MatInput} from "@angular/material/input";
-import {ReactiveFormsModule} from "@angular/forms";
+import { CommonModule } from '@angular/common';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import jsQR from 'jsqr';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { copyToClipboard } from '../../../shared/Helper';
 
 @Component({
   selector: 'app-qr-scanner',
   standalone: true,
   imports: [
-    PageHeaderComponent,
+    CommonModule,
     ZXingScannerModule,
-    MatIconButton,
-    MatSuffix,
-    MatFormField,
-    MatInput,
-    ReactiveFormsModule
+    MatSnackBarModule,
+    PageHeaderComponent
   ],
   templateUrl: './qr-scanner.component.html',
   styleUrl: './qr-scanner.component.scss'
 })
-export class QrScannerComponent extends AppBaseComponent {
+export class QrScannerComponent {
+  scanMode: 'file' | 'camera' = 'file';
   cameraEnabled = false;
   scannedContent: string | null = null;
+  uploadedImageUrl: string | null = null;
+  isDragging = false;
+  scanHistory: string[] = [];
 
-  // Toggle the camera on or off
+  constructor(private snackBar: MatSnackBar) {}
+
+  setMode(mode: 'file' | 'camera'): void {
+    this.scanMode = mode;
+    if (mode === 'file' && this.cameraEnabled) {
+      this.cameraEnabled = false;
+    }
+  }
+
   toggleCamera(): void {
     this.cameraEnabled = !this.cameraEnabled;
   }
 
-  // Handle scanning success from camera
   onCodeScanned(result: string): void {
-    this.scannedContent = result;
-  }
-
-  // Handle file selection and scan for QR code
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageData = e.target?.result as string;
-        this.scanQrFromImage(imageData);
-      };
-      reader.readAsDataURL(file);
+    if (result && result !== this.scannedContent) {
+      this.handleResult(result);
+      this.snackBar.open('QR code detected successfully!', '', { duration: 2000 });
     }
   }
 
-  // Decode the QR code from an image
-  scanQrFromImage(imageData: string): void {
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      this.processImageFile(file);
+    }
+  }
+
+  onDragOver(e: DragEvent): void {
+    e.preventDefault();
+    this.isDragging = true;
+  }
+
+  onDragLeave(e: DragEvent): void {
+    e.preventDefault();
+    this.isDragging = false;
+  }
+
+  onDrop(e: DragEvent): void {
+    e.preventDefault();
+    this.isDragging = false;
+    const file = e.dataTransfer?.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      this.processImageFile(file);
+    } else {
+      this.snackBar.open('Please drop an image file (PNG, JPG, etc.)', '', { duration: 2000 });
+    }
+  }
+
+  private processImageFile(file: File): void {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      this.uploadedImageUrl = dataUrl;
+      this.scanFromImageDataUrl(dataUrl);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  private scanFromImageDataUrl(dataUrl: string): void {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
       canvas.height = img.height;
-      const context = canvas.getContext('2d');
-
-      if (context) {
-        context.drawImage(img, 0, 0);
-        const imageData = context.getImageData(0, 0, img.width, img.height);
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, img.width, img.height);
         const code = jsQR(imageData.data, imageData.width, imageData.height);
 
         if (code) {
-          this.scannedContent = code.data;
+          this.handleResult(code.data);
+          this.snackBar.open('QR code detected from image!', '', { duration: 2000 });
         } else {
-          this.scannedContent = 'No QR code found in the image.';
+          this.scannedContent = null;
+          this.snackBar.open('No QR code could be found in the image. Try another image.', '', { duration: 3000 });
         }
       }
     };
-    img.src = imageData;
+    img.src = dataUrl;
   }
 
+  private handleResult(content: string): void {
+    this.scannedContent = content;
+    if (!this.scanHistory.includes(content)) {
+      this.scanHistory = [content, ...this.scanHistory].slice(0, 5);
+    }
+  }
+
+  isUrl(text: string | null): boolean {
+    if (!text) return false;
+    return /^https?:\/\//i.test(text.trim());
+  }
+
+  openUrl(url: string | null): void {
+    if (url && this.isUrl(url)) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+  copyContent(): void {
+    if (!this.scannedContent) return;
+    copyToClipboard(this.scannedContent);
+    this.snackBar.open('Copied scanned content to clipboard', '', { duration: 2000 });
+  }
+
+  clear(): void {
+    this.scannedContent = null;
+    this.uploadedImageUrl = null;
+  }
 }

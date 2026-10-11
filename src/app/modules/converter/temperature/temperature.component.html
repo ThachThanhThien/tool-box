@@ -1,19 +1,60 @@
-<app-page-header header="Temperature Converter" description="Temperature Converter"></app-page-header>
+<app-page-header
+  header="Temperature Converter"
+  category="Converters"
+  description="Real-time multi-unit temperature conversions across Celsius, Fahrenheit, Kelvin, Rankine, and historical scales."
+  badge="Converters">
+</app-page-header>
 
-<div class="row d-flex justify-content-center mt-4">
-  @for (item of targetValue; track item) {
-    <div class="row w-75 mb-2 d-flex align-items-center justify-content-center">
-      <div class="col-2 field-prefix">
-        <label>{{ item.label }}</label>
-      </div>
-      <div class="col-5 p-0 m-0">
-        <mat-form-field class="w-100">
-          <input matInput [(ngModel)]="item.value" spellcheck="false" (ngModelChange)="onChangeTemperature(item)"/>
-        </mat-form-field>
-      </div>
-      <div class="col-1 field-suffix justify-content-center">
-        <label>{{ item.unit }}</label>
+<div class="temp-hub-container fade-in">
+  <!-- Presets Bar -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="text-muted fw-bold" style="font-size: 12px; text-transform: uppercase;">Reference Benchmarks:</span>
+        @for (p of presets; track p.label) {
+          <button
+            type="button"
+            class="btn-action-pill"
+            [class.active]="celsiusValue === p.celsius"
+            (click)="setPreset(p.celsius)">
+            {{ p.label }} ({{ p.celsius }}°C)
+          </button>
+        }
       </div>
     </div>
-  }
+  </div>
+
+  <!-- Units Cards Grid -->
+  <div class="row g-3">
+    @for (u of units; track u.id) {
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="temp-unit-card hub-card">
+          <div class="card-top">
+            <span class="unit-name">{{ u.label }}</span>
+            <span class="unit-symbol font-mono">{{ u.unit }}</span>
+          </div>
+
+          <div class="input-wrap my-2">
+            <input
+              type="number"
+              class="temp-input font-mono"
+              [(ngModel)]="u.value"
+              (ngModelChange)="onUnitChange(u)"
+              step="any">
+          </div>
+
+          <div class="card-bottom">
+            <span class="formula-tip" [title]="u.formula">{{ u.formula }}</span>
+            <button
+              type="button"
+              class="copy-btn"
+              (click)="copyVal(u)"
+              title="Copy {{ u.label }}">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>

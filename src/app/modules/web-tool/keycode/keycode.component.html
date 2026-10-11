@@ -1,59 +1,111 @@
-<app-page-header header="Keycode Info"
-                 description="Press any key and instantly get the JavaScript'on-key press' key"></app-page-header>
+<app-page-header
+  header="Keycode Inspector"
+  category="Web Tools"
+  description="Press any keyboard key to inspect JavaScript key, keyCode, code, event modifiers, and location in real time."
+  badge="Web Tools">
+</app-page-header>
 
-<div class="row mt-4 d-flex justify-content-center">
-  <div class="col-7 d-flex justify-content-center">
-    <div class="press-key d-flex align-items-center justify-content-center">
-      @if (keyInfo.key) {
-        <div class="key-info">
-          {{ keyInfo.key }}
-        </div>
-      }
-      <div class="press-key-tip" >
-        Press any key...
-      </div>
+<div class="keycode-hub-container fade-in">
+  <!-- Hero Keycap Display -->
+  <div class="hero-keycap-card tool-workspace-card text-center mb-4">
+    <div class="keycap-hero-badge font-mono">
+      {{ currentKey.keyCode }}
+    </div>
+
+    <div class="key-name-title">
+      {{ currentKey.key }}
+    </div>
+
+    <p class="key-instruction-sub text-muted">
+      {{ hasPressed ? 'Press another key to inspect' : 'Press any key on your keyboard to start...' }}
+    </p>
+
+    <!-- Modifiers Status Bar -->
+    <div class="modifiers-row mt-3">
+      <span class="modifier-pill" [class.active]="currentKey.shift">Shift</span>
+      <span class="modifier-pill" [class.active]="currentKey.ctrl">Control (Ctrl)</span>
+      <span class="modifier-pill" [class.active]="currentKey.alt">Alt / Option</span>
+      <span class="modifier-pill" [class.active]="currentKey.meta">Meta / Command / Win</span>
     </div>
   </div>
-  <div class="col-7 mt-2">
-    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
-      <div class="col-2">
-        <label>{{ 'Key:' }}</label>
+
+  <!-- Key Event Property Tiles Grid -->
+  <div class="properties-grid mb-4">
+    <div class="property-tile hub-card" (click)="copyVal(currentKey.key, 'event.key')">
+      <div class="tile-top">
+        <span class="prop-label">event.key</span>
+        <i class="fa-regular fa-copy copy-hint"></i>
       </div>
-      <div class="col-10 p-0 m-0">
-        <mat-form-field class="w-100">
-          <input matInput [ngModel]="keyInfo.key" spellcheck="false" disabled/>
-        </mat-form-field>
-      </div>
+      <div class="prop-val font-mono">{{ currentKey.key }}</div>
+      <span class="prop-desc">Character or key identifier</span>
     </div>
-    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
-      <div class="col-2">
-        <label>{{ 'Key code:' }}</label>
+
+    <div class="property-tile hub-card" (click)="copyVal(currentKey.keyCode, 'event.keyCode')">
+      <div class="tile-top">
+        <span class="prop-label">event.keyCode</span>
+        <i class="fa-regular fa-copy copy-hint"></i>
       </div>
-      <div class="col-10 p-0 m-0">
-        <mat-form-field class="w-100">
-          <input matInput [ngModel]="keyInfo.keyCode" spellcheck="false" disabled/>
-        </mat-form-field>
-      </div>
+      <div class="prop-val font-mono text-gradient">{{ currentKey.keyCode }}</div>
+      <span class="prop-desc">Legacy numeric code</span>
     </div>
-    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
-      <div class="col-2">
-        <label>{{ 'Code:' }}</label>
+
+    <div class="property-tile hub-card" (click)="copyVal(currentKey.code, 'event.code')">
+      <div class="tile-top">
+        <span class="prop-label">event.code</span>
+        <i class="fa-regular fa-copy copy-hint"></i>
       </div>
-      <div class="col-10 p-0 m-0">
-        <mat-form-field class="w-100">
-          <input matInput [ngModel]="keyInfo.code" spellcheck="false" disabled/>
-        </mat-form-field>
-      </div>
+      <div class="prop-val font-mono">{{ currentKey.code }}</div>
+      <span class="prop-desc">Physical key position on keyboard</span>
     </div>
-    <div class="col-12 mb-2 d-flex align-items-center justify-content-start">
-      <div class="col-2">
-        <label>{{ 'Location:' }}</label>
+
+    <div class="property-tile hub-card" (click)="copyVal(currentKey.location, 'event.location')">
+      <div class="tile-top">
+        <span class="prop-label">event.location</span>
+        <i class="fa-regular fa-copy copy-hint"></i>
       </div>
-      <div class="col-10 p-0 m-0">
-        <mat-form-field class="w-100">
-          <input matInput [ngModel]="keyInfoLocation" spellcheck="false" disabled/>
-        </mat-form-field>
-      </div>
+      <div class="prop-val font-mono">{{ currentKey.location }}</div>
+      <span class="prop-desc">Keyboard location standard</span>
     </div>
   </div>
+
+  <!-- Key Press History -->
+  @if (history.length > 0) {
+    <div class="tool-workspace-card">
+      <h3 class="card-title mb-3">Recent Keypress History</h3>
+      <div class="table-responsive">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Key</th>
+              <th>Code</th>
+              <th>KeyCode</th>
+              <th>Modifiers</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of history; track item.time + item.code) {
+              <tr>
+                <td class="text-muted font-mono" style="font-size: 12px;">{{ item.time }}</td>
+                <td class="font-mono fw-bold text-primary">{{ item.key }}</td>
+                <td class="font-mono text-secondary">{{ item.code }}</td>
+                <td class="font-mono text-accent fw-bold">{{ item.keyCode }}</td>
+                <td>
+                  <div class="d-flex gap-1">
+                    @if (item.shift) { <span class="tag-badge">Shift</span> }
+                    @if (item.ctrl) { <span class="tag-badge">Ctrl</span> }
+                    @if (item.alt) { <span class="tag-badge">Alt</span> }
+                    @if (item.meta) { <span class="tag-badge">Meta</span> }
+                    @if (!item.shift && !item.ctrl && !item.alt && !item.meta) {
+                      <span class="text-muted" style="font-size: 11px;">None</span>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
 </div>

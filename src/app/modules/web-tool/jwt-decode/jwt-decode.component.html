@@ -1,42 +1,170 @@
-<app-page-header header="JWT parser" description="JSON Web Tokens are an open, industry standard RFC 7519 method for representing claims securely between two parties."></app-page-header>
+<app-page-header
+  header="JWT Parser &amp; Inspector"
+  category="Web Tools"
+  description="Decode and inspect RFC 7519 JSON Web Tokens with colorized segmentation, claim descriptions, and expiration verification."
+  badge="Popular">
+</app-page-header>
 
-<div class="mt-3">
-  <label>JWT</label>
-  <mat-form-field class="w-100">
-    <textarea matInput rows="10" [(ngModel)]="jwtToken" (ngModelChange)="decodeToken()"></textarea>
-  </mat-form-field>
-
-  <div *ngIf="errorMessage" class="error">
-    {{ errorMessage }}
-  </div>
-
-  <div class="row mt-2">
-    <div class="col-12" *ngIf="size(decodedHeader)">
-      <div class="col-12 header">
-        <label>Header</label>
+<div class="jwt-hub-container fade-in">
+  <!-- Token Input Workspace -->
+  <div class="tool-workspace-card mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <h3 class="panel-heading">Encoded Token</h3>
+        <span class="segment-legend">
+          <span class="legend-dot header-dot"></span> Header
+          <span class="legend-dot payload-dot"></span> Payload
+          <span class="legend-dot sig-dot"></span> Signature
+        </span>
       </div>
-      <div class="row" *ngFor="let val of decodedHeader; let i = index">
-        <div class="col-6 text-break">
-          <span [matTooltip]="getTooltipForJwtProps(val[0])" matTooltipPosition="right">{{ val[0] }}</span>
-        </div>
-        <div class="col-6 text-break">{{ val[1] }}</div>
-        <div class="col-12" *ngIf="i < size(decodedHeader) - 1">
-          <hr class="my-2">
-        </div>
+      <div class="d-flex align-items-center gap-1">
+        <button type="button" class="btn-secondary btn-sm" (click)="loadSample()">
+          <i class="fa-solid fa-flask"></i>
+          <span>Sample</span>
+        </button>
+        <button type="button" class="btn-ghost btn-sm" (click)="clear()" [disabled]="!jwtToken">
+          <i class="fa-regular fa-trash-can"></i>
+          <span>Clear</span>
+        </button>
       </div>
     </div>
-    <div class="col-12">
-      <div class="col-12 header" *ngIf="size(decodedToken)">
-        <label>Payload</label>
+
+    <!-- Token Textarea / Colorized Visualizer -->
+    <div class="token-input-wrap">
+      <textarea
+        class="jwt-textarea font-mono"
+        rows="4"
+        [(ngModel)]="jwtToken"
+        (ngModelChange)="onTokenChange()"
+        placeholder="Paste your Bearer / JWT token here..."
+        spellcheck="false">
+      </textarea>
+    </div>
+
+    <!-- Segment Highlight Preview -->
+    @if (tokenHeaderPart && tokenPayloadPart && tokenSignaturePart) {
+      <div class="token-color-preview font-mono">
+        <span class="token-seg seg-header">{{ tokenHeaderPart }}</span>.<span class="token-seg seg-payload">{{ tokenPayloadPart }}</span>.<span class="token-seg seg-sig">{{ tokenSignaturePart }}</span>
       </div>
-      <div class="row" *ngFor="let val of decodedToken; let i = index">
-        <div class="col-6 text-break">
-          <span [matTooltip]="getTooltipForJwtProps(val[0])" matTooltipPosition="right">{{ val[0] }}</span>
+    }
+
+    <!-- Expiration Status Banner -->
+    @if (hasExpiration) {
+      <div class="expiration-status-banner mt-3" [class.expired]="isExpired" [class.active]="!isExpired">
+        <i [class]="isExpired ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check'"></i>
+        <div class="banner-text">
+          <strong>{{ isExpired ? 'Token Expired' : 'Token Active & Valid' }}</strong>
+          <span>— {{ expirationText }}</span>
         </div>
-        <div class="col-6 text-break">{{ val[1] }}</div>
-        <div class="col-12" *ngIf="i < size(decodedToken) - 1">
-          <hr class="my-2">
+      </div>
+    }
+
+    <!-- Error Alert -->
+    @if (errorMessage) {
+      <div class="error-banner mt-3">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Decoded Details (Header & Payload) -->
+  <div class="row g-4">
+    <!-- Header Claims -->
+    <div class="col-lg-5 col-12">
+      <div class="tool-workspace-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="section-tag header-tag">Header</span>
+            <span class="claims-count">{{ headerClaims.length }} claims</span>
+          </div>
+          <button
+            type="button"
+            class="btn-ghost btn-sm"
+            (click)="copyJson(headerClaims, 'Header')"
+            [disabled]="!headerClaims.length">
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy JSON</span>
+          </button>
         </div>
+
+        @if (headerClaims.length > 0) {
+          <div class="claims-table-wrap">
+            <table class="claims-table">
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of headerClaims; track c.key) {
+                  <tr>
+                    <td class="key-cell font-mono">
+                      <span class="claim-key" [matTooltip]="c.description">{{ c.key }}</span>
+                    </td>
+                    <td class="val-cell font-mono">{{ c.value }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="empty-claims">No header data available.</div>
+        }
+      </div>
+    </div>
+
+    <!-- Payload Claims -->
+    <div class="col-lg-7 col-12">
+      <div class="tool-workspace-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="section-tag payload-tag">Payload (Data Claims)</span>
+            <span class="claims-count">{{ payloadClaims.length }} claims</span>
+          </div>
+          <button
+            type="button"
+            class="btn-primary btn-sm"
+            (click)="copyJson(payloadClaims, 'Payload')"
+            [disabled]="!payloadClaims.length">
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy Payload JSON</span>
+          </button>
+        </div>
+
+        @if (payloadClaims.length > 0) {
+          <div class="claims-table-wrap">
+            <table class="claims-table">
+              <thead>
+                <tr>
+                  <th>Claim</th>
+                  <th>Value</th>
+                  <th>Interpreted Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of payloadClaims; track c.key) {
+                  <tr>
+                    <td class="key-cell font-mono">
+                      <span class="claim-key" [matTooltip]="c.description">{{ c.key }}</span>
+                    </td>
+                    <td class="val-cell font-mono">{{ c.value }}</td>
+                    <td class="human-cell">
+                      @if (c.humanFormatted) {
+                        <span class="human-date">{{ c.humanFormatted }}</span>
+                      } @else {
+                        <span class="text-muted" style="font-size: 11.5px;">{{ c.description }}</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="empty-claims">No payload claims available.</div>
+        }
       </div>
     </div>
   </div>

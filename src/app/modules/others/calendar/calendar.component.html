@@ -1,15 +1,76 @@
-<app-page-header header="Calendar"
-                 description=""></app-page-header>
+<app-page-header header="Annual Calendar Explorer" description="Full 12-month annual view with multi-year navigation, quarter segmentation, and current day indicators."></app-page-header>
 
-<div class="row">
-  <div class="year d-flex align-items-center">
-    {{curYear}}
+<!-- Year Control Navigation Bar -->
+<div class="hub-card p-3 mb-4 mt-2">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <!-- Year Switcher Buttons -->
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-outline-secondary btn-sm" (click)="prevYear()" title="Previous year">
+        <i class="fa-solid fa-chevron-left me-1"></i>
+        <span>{{ curYear - 1 }}</span>
+      </button>
+
+      <div class="year-badge px-3 py-1 fw-bold fs-5 text-primary font-monospace">
+        {{ curYear }}
+      </div>
+
+      <button class="btn btn-outline-secondary btn-sm" (click)="nextYear()" title="Next year">
+        <span>{{ curYear + 1 }}</span>
+        <i class="fa-solid fa-chevron-right ms-1"></i>
+      </button>
+
+      <button class="btn-action-pill ms-2"
+              [class.active]="curYear === today.getFullYear()"
+              (click)="jumpToCurrentYear()"
+              title="Jump to current year">
+        <i class="fa-solid fa-calendar-check text-accent"></i>
+        <span>Current Year</span>
+      </button>
+    </div>
+
+    <!-- Today Indicator & Year Input Jump -->
+    <div class="d-flex align-items-center gap-3">
+      <div class="text-xs text-muted d-none d-md-block">
+        <span class="fw-semibold text-primary">Today:</span> {{ today | date:'fullDate' }}
+      </div>
+
+      <div class="d-flex align-items-center gap-1">
+        <label class="text-xs text-muted fw-semibold text-uppercase mb-0 me-1">Jump:</label>
+        <input type="number"
+               class="form-control form-control-sm font-monospace text-center year-jump-input"
+               [(ngModel)]="yearInput"
+               (change)="onYearInputChange()"
+               min="1970"
+               max="2100">
+      </div>
+    </div>
   </div>
-  @for (month of calendar; track month) {
-    <div class="col-xl-2 col-lg-3 col-md-4 mt-2">
-      <div class="month">{{month.name}}</div>
-      <hr class="month-divider">
-      <mat-calendar [startAt]="month.startDate"></mat-calendar>
+</div>
+
+<!-- 12-Month Grid -->
+<div class="row g-4">
+  @for (month of calendar; track month.index) {
+    <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+      <div class="hub-card p-3 h-100 month-card" [class.current-month-card]="month.isCurrentMonth">
+        <!-- Month Header -->
+        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <span class="month-num font-monospace text-muted text-xs">{{ month.index < 10 ? '0' + month.index : month.index }}</span>
+            <span class="month-name fw-bold text-primary">{{ month.name }}</span>
+          </div>
+          <div class="d-flex align-items-center gap-1">
+            <span class="badge bg-subtle text-muted text-xs">Q{{ month.quarter }}</span>
+            @if (month.isCurrentMonth) {
+              <span class="badge bg-emerald-subtle text-emerald text-xs fw-bold">Now</span>
+            }
+          </div>
+        </div>
+
+        <!-- Material Calendar Component -->
+        <div class="mat-calendar-wrapper">
+          <mat-calendar [startAt]="month.startDate"></mat-calendar>
+        </div>
+      </div>
     </div>
   }
 </div>

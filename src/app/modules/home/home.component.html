@@ -1,0 +1,232 @@
+<div class="home-hub-container fade-in">
+  <!-- Hero Section -->
+  <section class="hub-hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-sparkles"></i>
+      <span>All-in-One Utility Workstation</span>
+    </div>
+
+    <h1 class="hero-title">
+      Everyday Utilities &amp; Developer Tools, <span class="text-gradient">Refined</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Fast, private, client-side tools designed for software engineers, designers, and productive individuals.
+      No accounts, no server tracking, zero latency.
+    </p>
+
+    <!-- Global Hub Search Bar -->
+    <div class="hero-search-wrapper">
+      <div class="hero-search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input
+          type="text"
+          class="hero-search-input"
+          placeholder="Search 24+ tools by name, action, or keyword (e.g. hex, base64, diff, qr)..."
+          [(ngModel)]="searchQuery"
+          spellcheck="false"
+          autocomplete="off">
+        @if (searchQuery) {
+          <button type="button" class="clear-search-btn" (click)="searchQuery = ''" aria-label="Clear search query">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Quick Stats Pills -->
+    <div class="hero-stats-row">
+      <div class="stat-pill">
+        <i class="fa-solid fa-bolt text-warning"></i>
+        <span><strong>24+</strong> Utilities</span>
+      </div>
+      <div class="stat-pill">
+        <i class="fa-solid fa-lock text-success"></i>
+        <span><strong>100%</strong> Client-Side</span>
+      </div>
+      <div class="stat-pill">
+        <i class="fa-solid fa-moon text-primary"></i>
+        <span>Dark &amp; Light Theme</span>
+      </div>
+      <div class="stat-pill">
+        <i class="fa-solid fa-keyboard text-info"></i>
+        <span>Press <kbd>Ctrl+K</kbd> anywhere</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pinned Favorites Section (if any pinned tools) -->
+  @if (favoriteTools.length > 0 && !searchQuery) {
+    <section class="hub-section">
+      <div class="section-header">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fa-solid fa-star text-warning"></i>
+          <h2 class="section-title">Pinned Favorites</h2>
+          <span class="count-badge">{{ favoriteTools.length }}</span>
+        </div>
+        <span class="section-caption">Your quick-access toolbox</span>
+      </div>
+
+      <div class="tools-grid">
+        @for (tool of favoriteTools; track tool.routerLink) {
+          <a
+            [routerLink]="tool.routerLink"
+            (click)="onToolClick(tool.routerLink)"
+            class="tool-card hub-card">
+            <div class="tool-card-top">
+              <div class="tool-card-icon">
+                @if (tool.icon) {
+                  <img [src]="tool.icon" [alt]="tool.name" width="24" height="24">
+                } @else {
+                  <i [class]="tool.faIcon || 'fa-solid fa-wrench'"></i>
+                }
+              </div>
+              <button
+                type="button"
+                class="star-toggle-btn active"
+                (click)="toggleFavorite($event, tool.routerLink)"
+                title="Remove from favorites"
+                aria-label="Remove from favorites">
+                <i class="fa-solid fa-star"></i>
+              </button>
+            </div>
+
+            <div class="tool-card-body">
+              <div class="tool-card-header">
+                <h3 class="tool-card-title">{{ tool.name }}</h3>
+                @if (tool.badge) {
+                  <span class="tag-badge">{{ tool.badge }}</span>
+                }
+              </div>
+              <p class="tool-card-desc">{{ tool.description }}</p>
+            </div>
+
+            <div class="tool-card-footer">
+              <span class="tool-category-label">{{ tool.category }}</span>
+              <span class="launch-action">Open <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Recently Used Tools Section (if any and no search filter) -->
+  @if (recentTools.length > 0 && !searchQuery) {
+    <section class="hub-section">
+      <div class="section-header">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-info"></i>
+          <h2 class="section-title">Recently Used</h2>
+        </div>
+        <span class="section-caption">Pick up where you left off</span>
+      </div>
+
+      <div class="recent-tools-row">
+        @for (tool of recentTools; track tool.routerLink) {
+          <a
+            [routerLink]="tool.routerLink"
+            (click)="onToolClick(tool.routerLink)"
+            class="recent-chip">
+            <div class="chip-icon">
+              @if (tool.icon) {
+                <img [src]="tool.icon" [alt]="tool.name" width="16" height="16">
+              } @else {
+                <i [class]="tool.faIcon || 'fa-solid fa-wrench'"></i>
+              }
+            </div>
+            <span class="chip-name">{{ tool.name }}</span>
+            <i class="fa-solid fa-arrow-right chip-arrow"></i>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Main Tools Directory Section -->
+  <section class="hub-section">
+    <div class="section-header">
+      <div class="d-flex align-items-center gap-2">
+        <i class="fa-solid fa-grid-2 text-primary"></i>
+        <h2 class="section-title">Tool Directory</h2>
+        <span class="count-badge">{{ filteredTools.length }}</span>
+      </div>
+      <span class="section-caption">Explore all available utilities</span>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="category-tabs-bar">
+      @for (cat of categories; track cat.key) {
+        <button
+          type="button"
+          class="cat-tab-btn"
+          [class.active]="selectedCategory === cat.key"
+          (click)="setCategory(cat.key)">
+          <i [class]="cat.icon"></i>
+          <span>{{ cat.label }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- Tools Grid -->
+    @if (filteredTools.length > 0) {
+      <div class="tools-grid">
+        @for (tool of filteredTools; track tool.routerLink) {
+          <a
+            [routerLink]="tool.routerLink"
+            (click)="onToolClick(tool.routerLink)"
+            class="tool-card hub-card">
+            <div class="tool-card-top">
+              <div class="tool-card-icon">
+                @if (tool.icon) {
+                  <img [src]="tool.icon" [alt]="tool.name" width="24" height="24">
+                } @else {
+                  <i [class]="tool.faIcon || 'fa-solid fa-wrench'"></i>
+                }
+              </div>
+              <button
+                type="button"
+                class="star-toggle-btn"
+                [class.active]="isFavorite(tool.routerLink)"
+                (click)="toggleFavorite($event, tool.routerLink)"
+                [title]="isFavorite(tool.routerLink) ? 'Remove from favorites' : 'Pin to favorites'"
+                [attr.aria-label]="isFavorite(tool.routerLink) ? 'Remove from favorites' : 'Pin to favorites'">
+                <i [class]="isFavorite(tool.routerLink) ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+              </button>
+            </div>
+
+            <div class="tool-card-body">
+              <div class="tool-card-header">
+                <h3 class="tool-card-title">{{ tool.name }}</h3>
+                @if (tool.badge) {
+                  <span class="tag-badge">{{ tool.badge }}</span>
+                }
+              </div>
+              <p class="tool-card-desc">{{ tool.description }}</p>
+            </div>
+
+            <div class="tool-card-footer">
+              <span class="tool-category-label">{{ tool.category }}</span>
+              <span class="launch-action">Launch <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+        }
+      </div>
+    } @else {
+      <!-- Empty Filter State -->
+      <div class="hub-empty-state">
+        <div class="empty-icon-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <h3>No matching tools found</h3>
+        <p>No utility matches your search "{{ searchQuery }}".</p>
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="searchQuery = ''; selectedCategory = 'all'">
+          Clear Filters
+        </button>
+      </div>
+    }
+  </section>
+</div>
