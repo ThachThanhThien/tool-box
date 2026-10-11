@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" fill="none">
+  <defs>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <linearGradient id="cubeTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="cubeLeft" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#3730a3" />
+    </linearGradient>
+    <linearGradient id="cubeRight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#0891b2" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Logo Mark (Hexagonal Modular Toolbox Cube) -->
+  <g transform="translate(16, 12)">
+    <!-- Cube Background Glow -->
+    <polygon points="36,4 68,22 68,58 36,76 4,58 4,22" fill="url(#primaryGrad)" opacity="0.25" filter="url(#glow)"/>
+
+    <!-- Isometric Faces -->
+    <!-- Top Face -->
+    <polygon points="36,6 66,23 36,40 6,23" fill="url(#cubeTop)" />
+    <!-- Left Face -->
+    <polygon points="6,23 36,40 36,72 6,55" fill="url(#cubeLeft)" />
+    <!-- Right Face -->
+    <polygon points="36,40 66,23 66,55 36,72" fill="url(#cubeRight)" />
+
+    <!-- Symbol inside Top face: Precision Grid / Core -->
+    <path d="M36,15 L51,23.5 L36,32 L21,23.5 Z" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" fill="rgba(255,255,255,0.15)"/>
+    
+    <!-- Code Bracket Symbol on Left Face -->
+    <path d="M22,46 L16,50 L22,54" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Utility Transform Arrow on Right Face -->
+    <path d="M48,47 L54,51 L48,55" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="36" cy="40" r="3" fill="#ffffff" />
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(104, 28)">
+    <!-- Tool -->
+    <text x="0" y="36" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="34" font-weight="800" letter-spacing="-0.5" fill="var(--brand-text, #ffffff)">Tool<tspan fill="url(#primaryGrad)">Hub</tspan></text>
+    <!-- Tagline/Badge -->
+    <rect x="156" y="14" width="76" height="20" rx="10" fill="url(#primaryGrad)" opacity="0.15"/>
+    <rect x="156" y="14" width="76" height="20" rx="10" stroke="url(#primaryGrad)" stroke-width="1" fill="none"/>
+    <text x="194" y="28" font-family="'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1" fill="#818cf8" text-anchor="middle">STUDIO</text>
+    <text x="0" y="54" font-family="'Inter', sans-serif" font-size="11" font-weight="500" letter-spacing="0.4" fill="var(--brand-subtext, #94a3b8)">DEVELOPER &amp; PRODUCTIVITY WORKSTATION</text>
+  </g>
+</svg>
